@@ -8,5 +8,5 @@ import com.itsol.recruit.entity.User;
 public interface AuthenticateService {
     public User signup(UserDTO dto);
 
-
+    public String changePassword(String code,UserDTO userDto);
 }

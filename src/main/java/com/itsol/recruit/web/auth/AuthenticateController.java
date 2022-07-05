@@ -79,4 +79,9 @@ public class AuthenticateController {
         return ResponseEntity.ok().body(Collections.singletonMap("message",otpService.sendOTP(email)));
     }
 
+    @PostMapping("/change-password")
+    public  ResponseEntity<Object> changePassword(@RequestParam String code,@Valid @RequestBody UserDTO userDTO){
+        return ResponseEntity.ok().body(Collections.singletonMap("message",authenticateService.changePassword(code,userDTO)));
+    }
+
 }
