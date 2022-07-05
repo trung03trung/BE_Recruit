@@ -75,8 +75,8 @@ public class AuthenticateController {
     }
 
     @PostMapping("/send-otp")
-    public ResponseEntity<String> sendOtpEmail(@RequestParam String email){
-        return ResponseEntity.ok().body(otpService.sendOTP(email));
+    public ResponseEntity<Object> sendOtpEmail(@RequestParam String email){
+        return ResponseEntity.ok().body(Collections.singletonMap("message",otpService.sendOTP(email)));
     }
 
 }
