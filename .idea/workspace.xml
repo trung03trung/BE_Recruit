@@ -36,6 +36,13 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/com/itsol/recruit/web/UserController.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/resources/application.properties" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/resources/application.yml" root0="FORCE_HIGHLIGHTING" />
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="6b701f1f-cb00-449a-9a52-a80f3768b393" />
+        <option name="url" value="https://github.com/sonchuvan/BE_Recuiment" />
+      </UrlAndAccount>
+    </option>
   </component>
   <component name="JpbToolWindowState">
     <option name="myId2FirstActivated">
@@ -97,6 +104,19 @@
     </option>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="itsol_recruit" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="itsol_recruit" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="RecruitApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <option name="ACTIVE_PROFILES" />
       <module name="recruit" />
@@ -128,6 +148,14 @@
       <workItem from="1656985525849" duration="23511000" />
       <workItem from="1657032006421" duration="3778000" />
     </task>
+    <task id="LOCAL-00001" summary="first commit">
+      <created>1656839973745</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1656839973745</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -139,6 +167,15 @@
         <entry key="MAIN">
           <value>
             <State />
+            <State>
+              <option name="COLUMN_ID_WIDTH">
+                <map>
+                  <entry key="Table.Default.Author.ColumnIdWidth" value="53" />
+                  <entry key="Table.Default.Date.ColumnIdWidth" value="75" />
+                  <entry key="Table.Space.CommitStatus.ColumnIdWidth" value="74" />
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -155,5 +192,8 @@
         <watch expression="    public ResponseEntity&lt;String&gt; sendOtpEmail(@RequestParam String email){&#10;" />
       </configuration>
     </watches-manager>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="first commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="first commit" />
   </component>
 </project>
