@@ -75,5 +75,6 @@ public final class SecurityUtils {
             return authorities.stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(authority));
         }).orElse(false);
     }
+//    trs
 
 }
