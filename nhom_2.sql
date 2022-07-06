@@ -1,4 +1,3 @@
---- level---
 Create table rank(
                      id  NUMBER(4) primary key NOT NULL,
                      code nvarchar2(50) NOT NULL,
@@ -6,7 +5,6 @@ Create table rank(
                      is_delete INTEGER NOT NULL
 );
 
----- status_job ---
 Create table status_job(
                            id NUMBER(4) primary key,
                            code nvarchar2(50),
@@ -21,7 +19,6 @@ Create table status_job_register(
                                     is_delete INTEGER NOT NULL
 );
 
-----academic level (trình độ học vấn)----
 Create table academic_level(
                                id NUMBER(4) primary key,
                                code nvarchar2(50), --- trình độ học vấn---
@@ -36,7 +33,6 @@ CREATE TABLE working_form(
                              is_delete INTEGER NOT NULL,
                              PRIMARY KEY(id )
 );
-
 
 CREATE TABLE users(
                       id NUMBER(4) NOT NULL  PRIMARY KEY,
@@ -53,7 +49,6 @@ CREATE TABLE users(
                       is_delete INTEGER NOT NULL
 );
 
-
 Create table otp(
                     id NUMBER(4) primary key,
                     code varchar(20) NOT NULL,
@@ -62,8 +57,6 @@ Create table otp(
                     CONSTRAINT fk_user_otp FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
-
-----file (hồ sơ)----
 Create table profiles(
                          user_id  NUMBER(4) PRIMARY KEY,
                          skill varchar(50),
@@ -76,7 +69,6 @@ Create table profiles(
                          CONSTRAINT fk_user_profile    FOREIGN KEY (user_id)    REFERENCES users (id),
                          CONSTRAINT fk_academic_level    FOREIGN KEY (academic_name_id)    REFERENCES academic_level(id)
 );
-
 
 CREATE TABLE roles(
                      id NUMBER(4) NOT NULL,
@@ -94,6 +86,12 @@ CREATE TABLE permisstion(
                             CONSTRAINT fk_role    FOREIGN KEY (role_id)    REFERENCES roles(id)
 );
 
+Create table job_position(
+             id NUMBER(4) primary key,
+             code nvarchar2(50),
+             description nvarchar2(50),
+             is_delete INTEGER NOT NULL
+);
 
 CREATE TABLE job(
                     id NUMBER(4) PRIMARY KEY,
@@ -128,7 +126,9 @@ CREATE TABLE job(
                     CONSTRAINT fk_contact FOREIGN KEY (contact_id)  REFERENCES users (id),
                     CONSTRAINT fk_update FOREIGN KEY (update_id)  REFERENCES users (id),
                     CONSTRAINT fk_create FOREIGN KEY (create_id)  REFERENCES users (id),
-                    CONSTRAINT fk_status_job FOREIGN KEY (status_id)  REFERENCES status_job(id)
+                    CONSTRAINT fk_status_job FOREIGN KEY (status_id)  REFERENCES status_job(id),
+                    CONSTRAINT FK_JOB_POSITION FOREIGN KEY (job_position_id) REFERENCES JOB_POSITION(id)
+
 );
 
 CREATE TABLE jobs_register(
@@ -150,16 +150,7 @@ CREATE TABLE jobs_register(
                               CONSTRAINT fk_reg_status FOREIGN KEY (status_id)  REFERENCES status_job_register(id)
 );
 
-
-
-Create table type(
-                     id NUMBER(4) primary key,
-                     code nvarchar2(50),
-                     description nvarchar2(50),
-                     is_delete INTEGER NOT NULL
-);
-
-Create table job_position(
+Create table type_notifications(
                      id NUMBER(4) primary key,
                      code nvarchar2(50),
                      description nvarchar2(50),
@@ -180,7 +171,6 @@ CREATE TABLE notifications(
                               CONSTRAINT fk_sender_id  FOREIGN KEY (sender_id)   REFERENCES users (id),
                               CONSTRAINT fk_receiver_id   FOREIGN KEY (receiver_id)    REFERENCES users (id)
 );
-
 
 CREATE TABLE company(
                         id NUMBER NOT NULL,
