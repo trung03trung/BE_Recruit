@@ -13,7 +13,7 @@ Create table status_job(
             description nvarchar2(50),
             is_delete INTEGER NOT NULL
 );
-
+-- trạng thái(đang phỏng vấn, đã tuyển)
 Create table status_job_register(
             id NUMBER(4) primary key,
             code nvarchar2(50),
@@ -130,12 +130,13 @@ CREATE TABLE job(
             CONSTRAINT fk_status_job FOREIGN KEY (status_id)  REFERENCES status_job(id)
 );
 
+--Chi tiết hồ sơ ứng tuyển
 CREATE TABLE jobs_register(
             job_id NUMBER NOT NULL,
             user_id NUMBER NOT NULL,
-            date_register DATE NOT NULL ,
-            date_interview DATE,
-            method_interview VARCHAR(50),
+            date_register DATE NOT NULL ,     -- Đặt lịch phỏng vấn
+            date_interview DATE,              -- ngày phỏng vấn
+            method_interview VARCHAR(50),     -- Hình thức phỏng vấn: online, offline
             address_interview VARCHAR(50),
             status_id NUMBER NOT NULL,
             reason VARCHAR(50),               -- Lý do (chỉ có giá trị khi trạng thái là “Ứng viên bị từ chối” hoặc “Ứng viên đã hủy ứng tuyển”)
