@@ -45,7 +45,9 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             user.setActive(false);
             user.setDelete(false);
             user.setRoles(roles);
-//
+
+
+
             userRepository.save(user);
 //        OTP otp = userService.generateOTP(user);
 //        String linkActive = accountActivationConfig.getActivateUrl() + user.getId();
