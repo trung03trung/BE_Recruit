@@ -9,9 +9,6 @@ import java.util.Date;
 public class UserDTO {
     String name;
 
-
-    String name;
-
     String fullName;
 
     String email;
