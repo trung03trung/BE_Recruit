@@ -65,16 +65,14 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         try {
             User userName = userRepository.findByUserName(dto.getUserName());
             User email = userRepository.findUserByEmail(dto.getEmail());
-            User phoneNumber = userRepository.findUserByPhoneNumber(dto.getPhoneNumber());
+
             if (userName != null) {
                 return null;
             }
             if (email != null) {
                 return null;
             }
-            if (phoneNumber != null) {
-                return null;
-            }
+
             Set<Role> roles = roleRepository.findByCode(Constants.Role.USER);
             User user = userMapper.toEntity(dto);
             user.setDelete(false);
