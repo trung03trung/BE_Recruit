@@ -1,6 +1,7 @@
 package com.itsol.recruit.web.auth;
 
 import com.itsol.recruit.core.Constants;
+import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.dto.UserDTO;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.security.jwt.JWTFilter;
@@ -9,7 +10,9 @@ import com.itsol.recruit.service.ActiveService;
 import com.itsol.recruit.service.AuthenticateService;
 import com.itsol.recruit.service.OtpService;
 import com.itsol.recruit.service.UserService;
+import com.itsol.recruit.web.vm.ChangePassVM;
 import com.itsol.recruit.web.vm.LoginVM;
+import com.sun.xml.internal.ws.handler.HandlerException;
 import io.swagger.annotations.Api;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -51,8 +54,17 @@ public class AuthenticateController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@Valid @RequestBody UserDTO dto) {
-        return ResponseEntity.ok().body(authenticateService.signup(dto));
+    public ResponseEntity<ResponseDTO> signup(@Valid @RequestBody UserDTO dto) {
+        try {
+
+            ResponseDTO responseDTO = authenticateService.signup(dto);
+            responseDTO.setStatus(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (NullPointerException e) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.NOT_FOUND, "Username exist"));
+        } catch (HandlerException e) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.NO_CONTENT, "Email exist"));
+        }
     }
 
     /*
@@ -79,18 +91,24 @@ public class AuthenticateController {
     }
 
     @PostMapping("/send-otp")
-    public ResponseEntity<Object> sendOtpEmail(@RequestParam String email){
-        return ResponseEntity.ok().body(Collections.singletonMap("message",otpService.sendOTP(email)));
+    public ResponseEntity<Object> sendOtpEmail(@RequestParam String email) {
+        return ResponseEntity.ok().body(Collections.singletonMap("message", otpService.sendOTP(email)));
     }
 
     @PostMapping("/change-password")
-    public  ResponseEntity<Object> changePassword(@RequestParam String code,@Valid @RequestBody UserDTO userDTO){
-        return ResponseEntity.ok().body(Collections.singletonMap("message",authenticateService.changePassword(code,userDTO)));
+    public ResponseEntity<Object> changePassword(@Valid @RequestBody ChangePassVM changePassVM) {
+        return ResponseEntity.ok().body(Collections.singletonMap("message", authenticateService.changePassword(changePassVM)));
     }
 
     @GetMapping("/active")
-    public  ResponseEntity<Object> changePassword(@RequestParam String code) {
-        return ResponseEntity.ok().body(Collections.singletonMap("message", activeService.activeAccount(code)));
+    public ResponseEntity<ResponseDTO> activeAccount(@RequestParam String code) {
+        try {
+            ResponseDTO responseDTO = activeService.activeAccount(code);
+            responseDTO.setStatus(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            return ResponseEntity.ok(new ResponseDTO(HttpStatus.BAD_REQUEST, "Fail"));
+        }
     }
 
 }
