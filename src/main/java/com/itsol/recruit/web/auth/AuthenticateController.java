@@ -5,7 +5,9 @@ import com.itsol.recruit.dto.UserDTO;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.security.jwt.JWTFilter;
 import com.itsol.recruit.security.jwt.TokenProvider;
+import com.itsol.recruit.service.ActiveService;
 import com.itsol.recruit.service.AuthenticateService;
+import com.itsol.recruit.service.OtpService;
 import com.itsol.recruit.service.UserService;
 import com.itsol.recruit.web.vm.LoginVM;
 import io.swagger.annotations.Api;
@@ -35,11 +37,17 @@ public class AuthenticateController {
 
     private final TokenProvider tokenProvider;
 
-    public AuthenticateController(AuthenticateService authenticateService, AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService, TokenProvider tokenProvider) {
+    private final OtpService otpService;
+
+    private final ActiveService activeService;
+
+    public AuthenticateController(AuthenticateService authenticateService, AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService, TokenProvider tokenProvider, OtpService otpService, ActiveService activeService) {
         this.authenticateService = authenticateService;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userService = userService;
         this.tokenProvider = tokenProvider;
+        this.otpService = otpService;
+        this.activeService = activeService;
     }
 
     @PostMapping("/signup")
@@ -68,6 +76,21 @@ public class AuthenticateController {
 //        User userLogin = userService.findUserByUserName(adminLoginVM.getUserName());
 //        return ResponseEntity.ok().body(new JWTTokenResponse(jwt, userLogin.getUserName())); //Trả về chuỗi jwt(authentication string)
 
+    }
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<Object> sendOtpEmail(@RequestParam String email){
+        return ResponseEntity.ok().body(Collections.singletonMap("message",otpService.sendOTP(email)));
+    }
+
+    @PostMapping("/change-password")
+    public  ResponseEntity<Object> changePassword(@RequestParam String code,@Valid @RequestBody UserDTO userDTO){
+        return ResponseEntity.ok().body(Collections.singletonMap("message",authenticateService.changePassword(code,userDTO)));
+    }
+
+    @GetMapping("/active")
+    public  ResponseEntity<Object> changePassword(@RequestParam String code) {
+        return ResponseEntity.ok().body(Collections.singletonMap("message", activeService.activeAccount(code)));
     }
 
 }
