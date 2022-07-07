@@ -15,17 +15,12 @@ import com.itsol.recruit.service.AuthenticateService;
 import com.itsol.recruit.service.email.EmailService;
 import com.itsol.recruit.service.mapper.UserMapper;
 import com.itsol.recruit.web.vm.ChangePassVM;
-import com.itsol.recruit.web.vm.LoginVM;
 import com.sun.xml.internal.ws.handler.HandlerException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.Set;
 
@@ -106,25 +101,20 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     @Override
-    public String changePassword(ChangePassVM changePassVM) {
-        String message;
+    public ResponseDTO changePassword(ChangePassVM changePassVM) {
         User user = userRepository.findUserByEmail(changePassVM.getEmail());
         if (user != null) {
             OTP optdb = otpRepository.findByUser(user);
-            if (optdb.isExpired())
-                message = "expired";
-            else if (optdb.getCode().equals(changePassVM.getCode())) {
+            if(optdb.isExpired()) throw new HandlerException("OTP Expired");
+            if (optdb.getCode().equals(changePassVM.getCode())) {
                 user.setPassword(passwordEncoder.encode(changePassVM.getPassword()));
                 userRepository.save(user);
-                message = "success";
-            } else {
-                message = "notfound";
+                return new ResponseDTO("Change password success");
             }
-        } else {
-            message = "fail";
+            else throw new NullPointerException();
         }
-        return message;
-
-
+        else {
+            return new ResponseDTO("Fail");
+        }
     }
 }

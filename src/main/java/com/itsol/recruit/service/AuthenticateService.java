@@ -10,5 +10,5 @@ import com.itsol.recruit.web.vm.ChangePassVM;
 public interface AuthenticateService {
     public ResponseDTO signup(UserDTO dto);
 
-    public String changePassword(ChangePassVM changePassVM);
+    public ResponseDTO changePassword(ChangePassVM changePassVM);
 }
