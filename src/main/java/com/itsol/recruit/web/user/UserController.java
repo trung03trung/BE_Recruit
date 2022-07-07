@@ -1,4 +1,4 @@
-package com.itsol.recruit.web;
+package com.itsol.recruit.web.user;
 
 import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.entity.User;
@@ -31,4 +31,15 @@ public class UserController {
     public ResponseEntity<User> findUserById(@RequestParam("id") Long id){
         return  ResponseEntity.ok().body( userService.findById(id));
     }
+
+    @GetMapping(value = "/user/{userName}")
+    public ResponseEntity<User> findUserByUserName(@RequestParam("userName") String userName){
+        return  ResponseEntity.ok().body( userService.findUserByUserName(userName));
+    }
+
+    @GetMapping(value = "/userje")
+    public ResponseEntity<List<User>> getAllUserJE(){
+        return  ResponseEntity.ok().body( userService.getAllUserJe());
+    }
+
 }
