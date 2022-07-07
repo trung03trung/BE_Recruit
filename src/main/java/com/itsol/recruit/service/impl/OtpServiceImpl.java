@@ -27,7 +27,7 @@ public class OtpServiceImpl implements OtpService {
         try {
         User user=userRepository.findUserByEmail(email);
         if(user==null)
-            return "Không tìm thấy email";
+            return "notfound";
         OTP otp=new OTP(user);
         OTP oldOTP=otpRepository.findByUser(user);
         if(oldOTP!=null){
@@ -39,10 +39,10 @@ public class OtpServiceImpl implements OtpService {
             otpRepository.save(otp);
         String emails=emailService.buildOtpEmail(user.getName(), otp.getCode());
         emailService.sendEmail(user.getEmail(),emails);
-        return "Gửi mã OTP đến mail thành công";
+        return "success";
         }catch (Exception e){
             e.printStackTrace();
-            return "Gửi mail không thành công";
+            return "fail";
         }
 
     }

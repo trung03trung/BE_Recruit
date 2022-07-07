@@ -9,6 +9,7 @@ import com.itsol.recruit.service.ActiveService;
 import com.itsol.recruit.service.AuthenticateService;
 import com.itsol.recruit.service.OtpService;
 import com.itsol.recruit.service.UserService;
+import com.itsol.recruit.web.vm.ChangePassVM;
 import com.itsol.recruit.web.vm.LoginVM;
 import io.swagger.annotations.Api;
 import org.springframework.http.HttpHeaders;
@@ -84,8 +85,8 @@ public class AuthenticateController {
     }
 
     @PostMapping("/change-password")
-    public  ResponseEntity<Object> changePassword(@RequestParam String code,@Valid @RequestBody UserDTO userDTO){
-        return ResponseEntity.ok().body(Collections.singletonMap("message",authenticateService.changePassword(code,userDTO)));
+    public  ResponseEntity<Object> changePassword(@Valid @RequestBody ChangePassVM changePassVM){
+        return ResponseEntity.ok().body(Collections.singletonMap("message",authenticateService.changePassword(changePassVM)));
     }
 
     @GetMapping("/active")
