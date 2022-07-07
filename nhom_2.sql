@@ -36,7 +36,6 @@ CREATE TABLE working_form(
             is_delete INTEGER NOT NULL,
             PRIMARY KEY(id )
 );
-
 -- thông tin cá nhân
 CREATE TABLE users(
             id NUMBER(4) NOT NULL  PRIMARY KEY,
@@ -53,7 +52,6 @@ CREATE TABLE users(
             is_delete INTEGER NOT NULL
 );
 
-
 Create table otp(
             id NUMBER(4) primary key,
             code varchar(20) NOT NULL,
@@ -61,7 +59,6 @@ Create table otp(
             user_id  NUMBER(4)  NOT NULL,
             CONSTRAINT fk_user_otp FOREIGN KEY(user_id) REFERENCES users(id)
 );
-
 ----file (Thông tin về kinh nghiệm, Thông tin về mong muốn)----
 Create table profiles(
             user_id  NUMBER(4) PRIMARY KEY,
@@ -75,7 +72,6 @@ Create table profiles(
             CONSTRAINT fk_user_profile    FOREIGN KEY (user_id)    REFERENCES users (id),
             CONSTRAINT fk_academic_level    FOREIGN KEY (academic_name_id)    REFERENCES academic_level(id)
 );
-
 
 CREATE TABLE roles(
             id NUMBER(4) NOT NULL,
@@ -93,6 +89,12 @@ CREATE TABLE permisstion(
             CONSTRAINT fk_role    FOREIGN KEY (role_id)    REFERENCES roles(id)
 );
 
+Create table job_position(
+             id NUMBER(4) primary key,
+             code nvarchar2(50),
+             description nvarchar2(50),
+             is_delete INTEGER NOT NULL
+);
 
 CREATE TABLE job(
             id NUMBER(4) PRIMARY KEY,
@@ -120,14 +122,14 @@ CREATE TABLE job(
             status_id NUMBER(4) NOT NULL,             -- trạng thái
             views  INTEGER ,
             is_delete INTEGER NOT NULL,
-
             CONSTRAINT fk_working_form FOREIGN KEY (working_form_id)  REFERENCES working_form(id),
             CONSTRAINT fk_academic_level_job FOREIGN KEY (academic_level_id)  REFERENCES academic_level (id),
             CONSTRAINT fk_rank FOREIGN KEY (rank_id)  REFERENCES rank (id),
             CONSTRAINT fk_contact FOREIGN KEY (contact_id)  REFERENCES users (id),
             CONSTRAINT fk_update FOREIGN KEY (update_id)  REFERENCES users (id),
             CONSTRAINT fk_create FOREIGN KEY (create_id)  REFERENCES users (id),
-            CONSTRAINT fk_status_job FOREIGN KEY (status_id)  REFERENCES status_job(id)
+            CONSTRAINT fk_status_job FOREIGN KEY (status_id)  REFERENCES status_job(id),
+            CONSTRAINT FK_JOB_POSITION FOREIGN KEY (job_position_id) REFERENCES JOB_POSITION(id)
 );
 
 --Chi tiết hồ sơ ứng tuyển
@@ -150,14 +152,11 @@ CREATE TABLE jobs_register(
             CONSTRAINT fk_reg_status FOREIGN KEY (status_id)  REFERENCES status_job_register(id)
 );
 
-
-
-Create table type(
-            id NUMBER(4) primary key,
-            code nvarchar2(50),
-            description nvarchar2(50),
-            is_delete INTEGER NOT NULL
-);
+Create table type_notifications(
+             id NUMBER(4) primary key,
+             code nvarchar2(50),
+             description nvarchar2(50),
+             is_delete INTEGER NOT NULL
 
 Create table job_position(
             id NUMBER(4) primary key,
@@ -180,7 +179,6 @@ CREATE TABLE notifications(
             CONSTRAINT fk_sender_id  FOREIGN KEY (sender_id)   REFERENCES users (id),
             CONSTRAINT fk_receiver_id   FOREIGN KEY (receiver_id)    REFERENCES users (id)
 );
-
 -- thông tin công ty
 CREATE TABLE company(
             id NUMBER NOT NULL,

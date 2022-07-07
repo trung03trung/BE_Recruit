@@ -7,8 +7,6 @@ import java.util.Date;
 
 @Data
 public class UserDTO {
-
-
     String name;
 
     String fullName;

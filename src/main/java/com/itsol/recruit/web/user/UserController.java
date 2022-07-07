@@ -41,5 +41,4 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUserJE(){
         return  ResponseEntity.ok().body( userService.getAllUserJe());
     }
-
 }
