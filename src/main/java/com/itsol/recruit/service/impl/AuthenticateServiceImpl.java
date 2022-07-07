@@ -11,6 +11,7 @@ import com.itsol.recruit.repository.RoleRepository;
 import com.itsol.recruit.repository.UserRepository;
 import com.itsol.recruit.service.AuthenticateService;
 import com.itsol.recruit.service.mapper.UserMapper;
+import com.itsol.recruit.web.vm.ChangePassVM;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -70,24 +71,24 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     @Override
-    public String changePassword(String code,UserDTO userDto) {
+    public String changePassword(ChangePassVM changePassVM) {
         String message;
-        User user = userRepository.findUserByEmail(userDto.getEmail());
+        User user = userRepository.findUserByEmail(changePassVM.getEmail());
         if (user != null) {
             OTP optdb = otpRepository.findByUser(user);
             if (optdb.isExpired())
-                message= "Mã otp đã hết hạn";
-            else if (optdb.getCode().equals(code)) {
-                user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+                message= "expired";
+            else if (optdb.getCode().equals(changePassVM.getCode())) {
+                user.setPassword(passwordEncoder.encode(changePassVM.getPassword()));
                 userRepository.save(user);
-                message="Đổi mật khẩu thành công";
+                message="success";
             }
             else{
-                message="Mã otp không chính xác";
+                message="notfound";
             }
         }
         else {
-            message="Không thể đổi mật khẩu";
+            message="fail";
         }
         return message;
 
