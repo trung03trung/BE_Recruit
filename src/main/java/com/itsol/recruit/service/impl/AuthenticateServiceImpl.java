@@ -80,7 +80,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             user.setActive(false);
             user.setDelete(false);
             user.setRoles(roles);
-
             userRepository.save(user);
 
             OTP otp=new OTP(user);
