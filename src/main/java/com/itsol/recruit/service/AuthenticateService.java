@@ -8,7 +8,7 @@ import com.itsol.recruit.entity.User;
 import com.itsol.recruit.web.vm.ChangePassVM;
 
 public interface AuthenticateService {
-    public User signup(UserDTO dto);
+    public ResponseDTO signup(UserDTO dto);
 
     public ResponseDTO changePassword(ChangePassVM changePassVM);
 }
