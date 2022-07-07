@@ -1,6 +1,7 @@
 package com.itsol.recruit.service.impl;
 
 import com.itsol.recruit.core.Constants;
+import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.dto.UserDTO;
 import com.itsol.recruit.entity.OTP;
 import com.itsol.recruit.entity.Role;
@@ -15,6 +16,9 @@ import com.itsol.recruit.service.email.EmailService;
 import com.itsol.recruit.service.mapper.UserMapper;
 import com.itsol.recruit.web.vm.ChangePassVM;
 import com.itsol.recruit.web.vm.LoginVM;
+import com.sun.corba.se.impl.orbutil.threadpool.TimeoutException;
+import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
+import com.sun.xml.internal.ws.handler.HandlerException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,7 +27,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.naming.TimeLimitExceededException;
 import javax.transaction.Transactional;
+import java.util.IllegalFormatCodePointException;
 import java.util.Set;
 
 @Service
@@ -105,27 +111,24 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     @Override
-    public String changePassword(ChangePassVM changePassVM) {
-        String message;
+    public ResponseDTO changePassword(ChangePassVM changePassVM) {
         User user = userRepository.findUserByEmail(changePassVM.getEmail());
         if (user != null) {
             OTP optdb = otpRepository.findByUser(user);
-            if (optdb.isExpired())
-                message= "expired";
-            else if (optdb.getCode().equals(changePassVM.getCode())) {
+            if(optdb.isExpired()) throw new HandlerException("OTP Expired");
+            if (optdb.getCode().equals(changePassVM.getCode())) {
                 user.setPassword(passwordEncoder.encode(changePassVM.getPassword()));
                 userRepository.save(user);
-                message="success";
+                return new ResponseDTO("Change password success");
             }
-            else{
-                message="notfound";
-            }
+            else throw new NullPointerException();
         }
         else {
-            message="fail";
+            return new ResponseDTO("Fail");
         }
-        return message;
+
 
 
     }
+
 }
