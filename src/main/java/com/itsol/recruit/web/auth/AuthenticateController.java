@@ -5,6 +5,7 @@ import com.itsol.recruit.dto.UserDTO;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.security.jwt.JWTFilter;
 import com.itsol.recruit.security.jwt.TokenProvider;
+import com.itsol.recruit.service.ActiveService;
 import com.itsol.recruit.service.AuthenticateService;
 import com.itsol.recruit.service.OtpService;
 import com.itsol.recruit.service.UserService;
@@ -39,12 +40,15 @@ public class AuthenticateController {
 
     private final OtpService otpService;
 
-    public AuthenticateController(AuthenticateService authenticateService, AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService, TokenProvider tokenProvider, OtpService otpService) {
+    private final ActiveService activeService;
+
+    public AuthenticateController(AuthenticateService authenticateService, AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService, TokenProvider tokenProvider, OtpService otpService, ActiveService activeService) {
         this.authenticateService = authenticateService;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userService = userService;
         this.tokenProvider = tokenProvider;
         this.otpService = otpService;
+        this.activeService = activeService;
     }
 
     @PostMapping("/signup")
@@ -83,6 +87,11 @@ public class AuthenticateController {
     @PostMapping("/change-password")
     public  ResponseEntity<Object> changePassword(@Valid @RequestBody ChangePassVM changePassVM){
         return ResponseEntity.ok().body(Collections.singletonMap("message",authenticateService.changePassword(changePassVM)));
+    }
+
+    @GetMapping("/active")
+    public  ResponseEntity<Object> changePassword(@RequestParam String code) {
+        return ResponseEntity.ok().body(Collections.singletonMap("message", activeService.activeAccount(code)));
     }
 
 }

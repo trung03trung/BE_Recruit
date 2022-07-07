@@ -7,6 +7,7 @@ import java.util.Date;
 
 @Data
 public class UserDTO {
+    String name;
 
     String fullName;
 
@@ -23,6 +24,10 @@ public class UserDTO {
     String avatarName;
 
     String gender;
+
+//    Number activate;
+//
+//    Number is_delete;
 
     String newPassword;
 
