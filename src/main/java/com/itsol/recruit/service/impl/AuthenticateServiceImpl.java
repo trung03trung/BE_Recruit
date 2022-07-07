@@ -126,9 +126,5 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         else {
             return new ResponseDTO("Fail");
         }
-
-
-
     }
-
 }

@@ -64,8 +64,18 @@ public class AuthenticateController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> authenticateAdmin(@Valid @RequestBody LoginVM loginVM) {
-//		Tạo chuỗi authentication từ username và password (object LoginRequest
+        if (userService.findUserByUserName(loginVM.getUserName()) == null) {
+            return ResponseEntity.ok().body(
+                    new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
+        }
+
+        //		Tạo chuỗi authentication từ username và password (object LoginRequest
 //		- file này chỉ là 1 class bình thường, chứa 2 trường username và password)
+        User user = userService.findUserByUserName(loginVM.getUserName());
+        if(user.isActive()==false){
+            return ResponseEntity.ok().body(
+                    new ResponseDTO(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED"));
+        }
         UsernamePasswordAuthenticationToken authenticationString = new UsernamePasswordAuthenticationToken(
                 loginVM.getUserName(),
                 loginVM.getPassword()
