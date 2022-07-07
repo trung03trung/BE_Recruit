@@ -39,5 +39,11 @@ public class EmailService {
 
     }
 
+    public String buildActiveLink(String link){
+        return  "Link active account"+
+                "<a href=\" " + link + "\">Click vào đây để kích hoạt tài khoản</a>";
+
+    }
+
 
 }
