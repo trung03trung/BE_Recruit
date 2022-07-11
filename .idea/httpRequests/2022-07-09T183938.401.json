@@ -1,0 +1,6 @@
+{
+  "timestamp": 1657366777899,
+  "status": 401,
+  "error": "Unauthorized",
+  "path": "/api/admin/job"
+}

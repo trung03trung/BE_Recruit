@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import javax.naming.TimeLimitExceededException;
 import javax.transaction.Transactional;
 import java.util.IllegalFormatCodePointException;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -82,7 +83,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             if (phoneNumber != null) {
                 return null;
             }
-            Set<Role> roles = roleRepository.findByCode(Constants.Role.USER);
+            List<Role> roles = roleRepository.findByCode(Constants.Role.USER);
             User user = userMapper.toEntity(dto);
             user.setDelete(false);
             user.setActive(false);
