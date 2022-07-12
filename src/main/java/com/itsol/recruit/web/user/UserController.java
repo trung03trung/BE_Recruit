@@ -4,10 +4,7 @@ import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,4 +38,10 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUserJE() {
         return ResponseEntity.ok().body(userService.getAllUserJe());
     }
+
+    @PutMapping("/updateUser")
+    public ResponseEntity<Object> updateUser(@RequestBody User user) {
+        return ResponseEntity.ok().body(userService.updateUser(user));
+    }
+
 }
