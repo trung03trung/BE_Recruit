@@ -57,18 +57,12 @@ public class AuthenticateController {
         return ResponseEntity.ok().body(authenticateService.signup(dto));
     }
 
-    /*
-    Login api
-     */
     @PostMapping("/login")
     public ResponseEntity<?> authenticateAdmin(@Valid @RequestBody LoginVM loginVM) {
         if (userService.findUserByUserName(loginVM.getUserName()) == null) {
             return ResponseEntity.ok().body(
                     new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
         }
-
-        //		Tạo chuỗi authentication từ username và password (object LoginRequest
-//		- file này chỉ là 1 class bình thường, chứa 2 trường username và password)
         User user = userService.findUserByUserName(loginVM.getUserName());
         if(user.isActive()==false){
             return ResponseEntity.ok().body(
@@ -84,10 +78,8 @@ public class AuthenticateController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, String.format("Bearer %s", jwt));
         return new ResponseEntity<>(Collections.singletonMap("token", jwt), httpHeaders, HttpStatus.OK); //Trả về chuỗi jwt(authentication string)
-
 //        User userLogin = userService.findUserByUserName(adminLoginVM.getUserName());
 //        return ResponseEntity.ok().body(new JWTTokenResponse(jwt, userLogin.getUserName())); //Trả về chuỗi jwt(authentication string)
-
     }
 
     @PostMapping("/send-otp")

@@ -4,10 +4,7 @@ import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,29 +13,35 @@ import java.util.List;
 
 public class UserController {
 
-   public final UserService userService ;
+    public final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping(value = "/user")
-    public ResponseEntity<List<User>> getAllUser(){
-        return  ResponseEntity.ok().body( userService.getAllUser());
+    public ResponseEntity<List<User>> getAllUser() {
+        return ResponseEntity.ok().body(userService.getAllUser());
     }
 
     @GetMapping(value = "/user/{id}")
-    public ResponseEntity<User> findUserById(@RequestParam("id") Long id){
-        return  ResponseEntity.ok().body( userService.findById(id));
+    public ResponseEntity<User> findUserById(@RequestParam("id") Long id) {
+        return ResponseEntity.ok().body(userService.findById(id));
     }
 
     @GetMapping(value = "/user/{userName}")
-    public ResponseEntity<User> findUserByUserName(@RequestParam("userName") String userName){
-        return  ResponseEntity.ok().body( userService.findUserByUserName(userName));
+    public ResponseEntity<User> findUserByUserName(@RequestParam("userName") String userName) {
+        return ResponseEntity.ok().body(userService.findUserByUserName(userName));
     }
 
     @GetMapping(value = "/userje")
-    public ResponseEntity<List<User>> getAllUserJE(){
-        return  ResponseEntity.ok().body( userService.getAllUserJe());
+    public ResponseEntity<List<User>> getAllUserJE() {
+        return ResponseEntity.ok().body(userService.getAllUserJe());
     }
+
+    @PutMapping("/updateUser")
+    public ResponseEntity<Object> updateUser(@RequestBody User user) {
+        return ResponseEntity.ok().body(userService.updateUser(user));
+    }
+
 }
