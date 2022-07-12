@@ -12,6 +12,7 @@ import com.itsol.recruit.service.OtpService;
 import com.itsol.recruit.service.UserService;
 import com.itsol.recruit.web.vm.ChangePassVM;
 import com.itsol.recruit.web.vm.LoginVM;
+import com.sun.xml.internal.ws.handler.HandlerException;
 import io.swagger.annotations.Api;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -83,13 +85,31 @@ public class AuthenticateController {
     }
 
     @PostMapping("/send-otp")
-    public ResponseEntity<Object> sendOtpEmail(@RequestParam String email){
-        return ResponseEntity.ok().body(Collections.singletonMap("message",otpService.sendOTP(email)));
+    public ResponseEntity<ResponseDTO> sendOtpEmail(@RequestParam String email){
+        try {
+            ResponseDTO responseDTO=otpService.sendOTP(email);
+            responseDTO.setStatus(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (UsernameNotFoundException e){
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.NOT_FOUND,"Email not found"));
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Fail"));
+        }
     }
 
     @PostMapping("/change-password")
-    public  ResponseEntity<Object> changePassword(@Valid @RequestBody ChangePassVM changePassVM){
-        return ResponseEntity.ok().body(Collections.singletonMap("message",authenticateService.changePassword(changePassVM)));
+    public  ResponseEntity<ResponseDTO> changePassword(@Valid @RequestBody ChangePassVM changePassVM){
+       try{
+           ResponseDTO responseDTO=authenticateService.changePassword(changePassVM);
+           responseDTO.setStatus(HttpStatus.OK);
+           return ResponseEntity.ok().body(responseDTO);
+       }catch (NullPointerException e){
+           return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.NOT_FOUND,"OTP not found"));
+       }catch (HandlerException e){
+           return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.REQUEST_TIMEOUT,"OTP is expired"));
+       }
     }
 
     @GetMapping("/active")
