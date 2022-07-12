@@ -22,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -63,41 +64,27 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Override
     public ResponseDTO signup(UserDTO dto) {
-
         User userName = userRepository.findByUserName(dto.getUserName());
         User email = userRepository.findUserByEmail(dto.getEmail());
-
         if (userName != null) throw new NullPointerException();
         if (email != null) throw new HandlerException("email");
-
-        Set<Role> roles = roleRepository.findByCode(Constants.Role.USER);
+        List<Role> roles = roleRepository.findByCode(Constants.Role.USER);
         User user = userMapper.toEntity(dto);
         user.setDelete(false);
         user.setActive(false);
         user.setActive(false);
         user.setDelete(false);
         user.setRoles(roles);
-
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String enCryptPassword = bCryptPasswordEncoder.encode(dto.getPassword());
         user.setPassword(enCryptPassword);
-
         userRepository.save(user);
-
         OTP otp = new OTP(user);
         otpRepository.save(otp);
         String link = linkActiveAccount + otp.getCode();
         String emails = emailService.buildActiveLink(link);
         emailService.sendEmail(user.getEmail(), emails);
         return new ResponseDTO("Signup success");
-
-//        OTP otp = userService.generateOTP(user);
-//        String linkActive = accountActivationConfig.getActivateUrl() + user.getId();
-//        emailService.sendSimpleMessage(user.getEmail(),
-//                "Link active account",
-//                "<a href=\" " + linkActive + "\">Click vào đây để kích hoạt tài khoản</a>");
-
-
     }
 
     @Override

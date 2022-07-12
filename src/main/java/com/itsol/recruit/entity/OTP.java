@@ -18,13 +18,14 @@ public class OTP implements Serializable {
     @SequenceGenerator(name = "GEN_OTP_ID", sequenceName = "SEQ_OTP", allocationSize = 1)
     private int id;
 
+    @Column(nullable = false)
     private String code;
 
-    @Column(name = "issue_at")
+    @Column(name = "issue_at",nullable = false)
     private Date issueAt;
 
     @OneToOne()
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
     public OTP(User user){

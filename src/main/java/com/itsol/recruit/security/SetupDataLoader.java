@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Configuration
@@ -40,7 +41,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             return;
         }
         if (userRepository.findByUserName("admin") == null) {
-            Set<Role> adminRole = roleRepository.findByCode("ROLE_ADMIN");
+            List<Role> adminRole = roleRepository.findByCode("ROLE_ADMIN");
             User user = new User();
             user.setUserName("admin");
             user.setName("admin");
