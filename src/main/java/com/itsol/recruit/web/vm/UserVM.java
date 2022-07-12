@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class UserVM {
-    private List<User> jobs;
+    private List<User> users;
 
     private int pageNo;
 

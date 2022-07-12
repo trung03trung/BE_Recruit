@@ -3,6 +3,7 @@ package com.itsol.recruit.web.user;
 import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.service.UserService;
+import com.itsol.recruit.web.vm.UserVM;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +43,15 @@ public class UserController {
     @PutMapping("/updateUser")
     public ResponseEntity<Object> updateUser(@RequestBody User user) {
         return ResponseEntity.ok().body(userService.updateUser(user));
+    }
+
+    @PutMapping(value = "/hoang")
+    public ResponseEntity<UserVM> getAllJob(
+            @RequestParam(value = "pageNo",defaultValue = "0",required = false) int pageNo,
+            @RequestParam(value = "pageSize",defaultValue = "1",required = false) int pageSize,
+            @RequestParam(value = "sortBy",defaultValue = "dueDate",required = false) String sortBy,
+            @RequestParam(value = "sortDir",defaultValue = "asc",required = false)String sortDir ){
+        return ResponseEntity.ok().body(userService.getAllJE(pageNo,pageSize,sortBy,sortDir));
     }
 
 }

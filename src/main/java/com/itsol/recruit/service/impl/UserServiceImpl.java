@@ -8,6 +8,10 @@ import com.itsol.recruit.repository.UserRepository;
 import com.itsol.recruit.service.UserService;
 import com.itsol.recruit.web.vm.UserVM;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -89,6 +93,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserVM getAllJE(int pageNo, int pageSize, String sortBy, String sortDir) {
-        return null;
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
+        Page<User> users = userRepository.findAll(pageable);
+        UserVM userVM =new UserVM(users.getContent(),users.getNumber(),users.getSize(),users.getTotalElements(),
+                users.getTotalPages(),users.isLast());
+        return userVM;
     }
 }
