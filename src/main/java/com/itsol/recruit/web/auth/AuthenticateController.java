@@ -55,17 +55,30 @@ public class AuthenticateController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@Valid @RequestBody UserDTO dto) {
-        return ResponseEntity.ok().body(authenticateService.signup(dto));
+    public ResponseEntity<ResponseDTO> signup(@Valid @RequestBody UserDTO dto) {
+        try {
+
+            ResponseDTO responseDTO = authenticateService.signup(dto);
+            responseDTO.setStatus(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (NullPointerException e) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.NOT_FOUND, "Username exist"));
+        } catch (HandlerException e) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.NO_CONTENT, "Email exist"));
+        }
     }
 
-    /*
-    Login api
-     */
     @PostMapping("/login")
     public ResponseEntity<?> authenticateAdmin(@Valid @RequestBody LoginVM loginVM) {
-//		Tạo chuỗi authentication từ username và password (object LoginRequest
-//		- file này chỉ là 1 class bình thường, chứa 2 trường username và password)
+        if (userService.findUserByUserName(loginVM.getUserName()) == null) {
+            return ResponseEntity.ok().body(
+                    new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
+        }
+        User user = userService.findUserByUserName(loginVM.getUserName());
+        if(user.isActive()==false){
+            return ResponseEntity.ok().body(
+                    new ResponseDTO(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED"));
+        }
         UsernamePasswordAuthenticationToken authenticationString = new UsernamePasswordAuthenticationToken(
                 loginVM.getUserName(),
                 loginVM.getPassword()
@@ -76,10 +89,8 @@ public class AuthenticateController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, String.format("Bearer %s", jwt));
         return new ResponseEntity<>(Collections.singletonMap("token", jwt), httpHeaders, HttpStatus.OK); //Trả về chuỗi jwt(authentication string)
-
 //        User userLogin = userService.findUserByUserName(adminLoginVM.getUserName());
 //        return ResponseEntity.ok().body(new JWTTokenResponse(jwt, userLogin.getUserName())); //Trả về chuỗi jwt(authentication string)
-
     }
 
     @PostMapping("/send-otp")
@@ -111,8 +122,14 @@ public class AuthenticateController {
     }
 
     @GetMapping("/active")
-    public  ResponseEntity<Object> changePassword(@RequestParam String code) {
-        return ResponseEntity.ok().body(Collections.singletonMap("message", activeService.activeAccount(code)));
+    public ResponseEntity<ResponseDTO> activeAccount(@RequestParam String code) {
+        try {
+            ResponseDTO responseDTO = activeService.activeAccount(code);
+            responseDTO.setStatus(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            return ResponseEntity.ok(new ResponseDTO(HttpStatus.BAD_REQUEST, "Fail"));
+        }
     }
 
 }

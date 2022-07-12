@@ -47,9 +47,9 @@ public class JobMapper implements EntityMapper<JobDTO,Job>{
         entity.setRank(rankRepository.findRankById(dto.getRankId()));
         entity.setStatusJob(statusJobRepository.findStatusJobById(dto.getStatusId()));
         entity.setWorkingForm(workingFormRepository.findWorkingFormById(dto.getWorkingFormId()));
-        entity.setUserContact(userRepository.findUserById(dto.getUserContactId()));
-        entity.setUserCreate(userRepository.findByUserName(dto.getUserCreate()));
-        entity.setUserUpdate(userRepository.findUserById(dto.getUserUpdateId()));
+        entity.setContact(userRepository.findUserById(dto.getUserContactId()));
+        entity.setCreater(userRepository.findByUserName(dto.getUserCreate()));
+        entity.setUpdateUser(userRepository.findUserById(dto.getUserUpdateId()));
         return entity;
     }
 
@@ -66,9 +66,9 @@ public class JobMapper implements EntityMapper<JobDTO,Job>{
         dto.setJobPositionId(entity.getJobPosition().getId());
         dto.setStatusId(entity.getStatusJob().getId());
         dto.setWorkingFormId(entity.getWorkingForm().getId());
-        dto.setUserContactId(entity.getUserContact().getId());
-        dto.setUserCreate(entity.getUserCreate().getUserName());
-        dto.setUserUpdateId(entity.getUserUpdate().getId());
+        dto.setUserContactId(entity.getContact().getId());
+        dto.setUserCreate(entity.getCreater().getUserName());
+        dto.setUserUpdateId(entity.getUpdateUser().getId());
         return dto;
 
     }

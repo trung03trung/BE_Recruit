@@ -1,24 +1,35 @@
 package com.itsol.recruit.entity;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
 @Entity(name = "job_position")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class JobPosition {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_JOBP_ID")
-    @SequenceGenerator(name = "GEN_JOBP_ID", sequenceName = "SEQ_JOBP", allocationSize = 1)
-    private Long id;
-
     @Column(nullable = false)
-    private String code;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "JOB_POSITION_SEQ")
+    @SequenceGenerator(name = "JOB_POSITION_SEQ", sequenceName = "JOB_POSITION_SEQ", allocationSize = 1, initialValue = 1)
+    Long id;
 
-    private String description;
+    @Column(name = "code")
+    String code;
 
-    @Column(name = "is_delete",nullable = false)
-    private boolean isDelete;
+    @Column(name = "description")
+    String description;
+
+    @Column(name = "is_delete ")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private boolean isDelete ;
 
 }

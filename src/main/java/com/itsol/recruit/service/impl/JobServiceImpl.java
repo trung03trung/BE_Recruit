@@ -67,7 +67,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public Job createNewJob(JobDTO jobDTO) {
         Job job=jobMapper.toEntity(jobDTO);
-        job.setCreatedDate(new Date());
+        job.setCreateDate(new Date());
         job.setUpdateDate(new Date());
         return jobRepository.save(job);
     }

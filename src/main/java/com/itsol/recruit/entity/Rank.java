@@ -1,23 +1,34 @@
 package com.itsol.recruit.entity;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "rank")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Rank {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_RANK_ID")
-    @SequenceGenerator(name = "GEN_RANK_ID", sequenceName = "SEQ_RANK", allocationSize = 1)
-    private Long id;
-
     @Column(nullable = false)
-    private String code;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RANK_SEQ")
+    @SequenceGenerator(name = "RANK_SEQ", sequenceName = "RANK_SEQ", allocationSize = 1, initialValue = 1)
+    Long id;
 
-    private String description;
+    @Column(name = "code")
+    String code;
 
-    @Column(name = "is_delete")
-    private boolean isDelete;
+    @Column(name = "description")
+    String description;
+
+    @Column(name = "is_delete ")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private boolean isDelete ;
 
 }
