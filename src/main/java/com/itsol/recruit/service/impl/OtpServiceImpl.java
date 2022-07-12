@@ -25,10 +25,8 @@ public class OtpServiceImpl implements OtpService {
         this.otpRepository = otpRepository;
         this.emailService = emailService;
     }
-
     @Override
     public ResponseDTO sendOTP(String email) {
-
         User user=userRepository.findUserByEmail(email);
         if(user==null) throw new UsernameNotFoundException("");
         OTP otp=new OTP(user);
@@ -42,10 +40,8 @@ public class OtpServiceImpl implements OtpService {
             otpRepository.save(otp);
         }
 
-        String emails=emailService.buildOtpEmail(user.getName(), otp.getCode());
+        String emails=emailService.buildOtpEmail(user.getUserName(), otp.getCode());
         emailService.sendEmail(user.getEmail(),emails);
         return new ResponseDTO("Send sucess");
-
-
     }
 }

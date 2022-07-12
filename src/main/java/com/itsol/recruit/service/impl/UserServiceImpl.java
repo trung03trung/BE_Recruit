@@ -1,17 +1,12 @@
 package com.itsol.recruit.service.impl;
-
-import com.itsol.recruit.dao.UserDaoImpl;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.repository.RoleRepository;
 import com.itsol.recruit.repository.UserRepository;
+import com.itsol.recruit.repository.repoimpl.UserRepositoryImpl;
 import com.itsol.recruit.service.UserService;
-import com.itsol.recruit.web.vm.UserVM;
+import com.itsol.recruit.web.vm.SeachVM;
 import lombok.Getter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,32 +19,21 @@ import java.util.List;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
-    public final UserRepository userRepository;
+    private final UserRepository userRepository;
+    private   final UserRepositoryImpl userRepositoryimpl;
 
     private final RoleRepository roleRepository;
 
-    private final UserDaoImpl userDao;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, UserDaoImpl userDao) {
+    public UserServiceImpl(UserRepository userRepository, UserRepositoryImpl userRepositoryimpl, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.userRepositoryimpl = userRepositoryimpl;
         this.roleRepository = roleRepository;
-        this.userDao = userDao;
     }
 
     @Override
     public List<User> getAllUser() {
         return userRepository.findAll();
-    }
-
-
-    public List<User> getAllUserJe() {
-//        for (int i = 0; i <userDao.getAllUserJe().size(); i++) {
-//            User user = userDao.getAllUserJe().get(i);
-//            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//            encoder.matches(password, user.getPassword());
-//            user.setPassword(enCryptPassword);
-//        }
-        return userDao.getAllUserJe();
     }
 
     @Override
@@ -90,15 +74,8 @@ public class UserServiceImpl implements UserService {
         }
         return userChange;
     }
-
     @Override
-    public UserVM getAllJE(int pageNo, int pageSize, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-        Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
-        Page<User> users = userRepository.findAll(pageable);
-        UserVM userVM =new UserVM(users.getContent(),users.getNumber(),users.getSize(),users.getTotalElements(),
-                users.getTotalPages(),users.isLast());
-        return userVM;
+    public List<User> seachUser(SeachVM seachVM) {
+        return userRepositoryimpl.seachUser(seachVM);
     }
 }

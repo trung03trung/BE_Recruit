@@ -55,8 +55,17 @@ public class AuthenticateController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@Valid @RequestBody UserDTO dto) {
-        return ResponseEntity.ok().body(authenticateService.signup(dto));
+    public ResponseEntity<ResponseDTO> signup(@Valid @RequestBody UserDTO dto) {
+        try {
+
+            ResponseDTO responseDTO = authenticateService.signup(dto);
+            responseDTO.setStatus(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (NullPointerException e) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.NOT_FOUND, "Username exist"));
+        } catch (HandlerException e) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.NO_CONTENT, "Email exist"));
+        }
     }
 
     @PostMapping("/login")
@@ -113,8 +122,14 @@ public class AuthenticateController {
     }
 
     @GetMapping("/active")
-    public  ResponseEntity<Object> changePassword(@RequestParam String code) {
-        return ResponseEntity.ok().body(Collections.singletonMap("message", activeService.activeAccount(code)));
+    public ResponseEntity<ResponseDTO> activeAccount(@RequestParam String code) {
+        try {
+            ResponseDTO responseDTO = activeService.activeAccount(code);
+            responseDTO.setStatus(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            return ResponseEntity.ok(new ResponseDTO(HttpStatus.BAD_REQUEST, "Fail"));
+        }
     }
 
 }

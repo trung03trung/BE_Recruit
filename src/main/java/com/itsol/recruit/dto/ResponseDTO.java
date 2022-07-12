@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 
 @Data
 public class ResponseDTO {
-
     HttpStatus status;
     String code;
 
