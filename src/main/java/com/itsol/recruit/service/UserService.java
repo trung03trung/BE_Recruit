@@ -13,4 +13,8 @@ public interface UserService {
     public Object updateUser(User user);
     public List<User> seachUser(SeachVM seachVM);
 
+    public Object changeThePassWord(User user);
+
+    public Object deactivateUser(User user);
+
 }

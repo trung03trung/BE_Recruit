@@ -27,7 +27,8 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
                 "    ) a\n" +
                 "    WHERE rownum < (("+seachVM.getPageNumber()+" * "+seachVM.getPageSize()+") + 1 )\n" +
                 ")\n" +
-                "WHERE r__ >= ((("+seachVM.getPageNumber()+"-1) * "+seachVM.getPageSize()+") + 1)";
+                "WHERE r__ >= ((("+seachVM.getPageNumber()+"-1) * "+seachVM.getPageSize()+") + 1)"+
+                "ORDER BY "+seachVM.getSortColum()+" "+seachVM.getSortT();
         return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(User.class));
     }
 }

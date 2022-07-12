@@ -1,4 +1,5 @@
 package com.itsol.recruit.service.impl;
+
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.repository.RoleRepository;
@@ -20,7 +21,7 @@ import java.util.List;
 @Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private   final UserRepositoryImpl userRepositoryimpl;
+    private final UserRepositoryImpl userRepositoryimpl;
 
     private final RoleRepository roleRepository;
 
@@ -49,20 +50,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public Object updateUser(User user) {
         User userChange = userRepository.findById(user.getId()).orElse(null);
-        if(userChange == null){
+        if (userChange == null) {
             userRepository.save(user);
             return ResponseEntity.ok().body(
                     new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
         }
         userChange.setEmail("");
         userChange.setUserName("");
-        if(user.getUserName() == userRepository.findAllByUserName(user.getUserName()) ||
-                user.getEmail() == userRepository.findAllByEmail(user.getEmail())){
+        if (user.getUserName() == userRepository.findAllByUserName(user.getUserName()) ||
+                user.getEmail() == userRepository.findAllByEmail(user.getEmail())) {
             userRepository.save(user);
             return ResponseEntity.ok().body(
                     new ResponseDTO(HttpStatus.BAD_REQUEST, "BAD_REQUEST"));
-        }
-        else  {
+        } else {
             userChange.setEmail(user.getEmail());
             userChange.setName(user.getName());
             userChange.setPhoneNumber(user.getPhoneNumber());
@@ -74,8 +74,50 @@ public class UserServiceImpl implements UserService {
         }
         return userChange;
     }
+
     @Override
     public List<User> seachUser(SeachVM seachVM) {
         return userRepositoryimpl.seachUser(seachVM);
+    }
+
+    @Override
+    public Object changeThePassWord(User user) {
+        User changeUserPassW = userRepository.findByUserName(user.getUserName());
+
+        if (changeUserPassW == null) {
+            userRepository.save(user);
+            return ResponseEntity.ok().body(
+                    new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
+        }
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        if (!bCryptPasswordEncoder.matches(user.getPassword(), changeUserPassW.getPassword())) {
+            System.out.println("aaaaaaaaaa");
+            userRepository.save(changeUserPassW);
+            return ResponseEntity.ok().body(
+                    new ResponseDTO(HttpStatus.BAD_REQUEST, "BAD_REQUEST"));
+        } else {
+            BCryptPasswordEncoder bCryptPasswordEncoder1 = new BCryptPasswordEncoder();
+            String encode = bCryptPasswordEncoder1.encode(user.getPassword());
+            changeUserPassW.setPassword(encode);
+            userRepository.save(changeUserPassW);
+        }
+        System.out.println("bbbbbbbbbbb");
+
+        return user;
+    }
+
+    @Override
+    public Object deactivateUser(User user) {
+        User deactivateUser = userRepository.findById(user.getId()).orElse(null);
+        if (deactivateUser == null) {
+            userRepository.save(user);
+            return ResponseEntity.ok().body(
+                    new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
+        } else {
+            deactivateUser.setActive(false);
+            userRepository.save(deactivateUser);
+        }
+        return user;
     }
 }

@@ -15,4 +15,8 @@ public class SeachVM {
     String email;
     @Nullable
     String userName;
+    @Nullable
+    String sortT;
+    @Nullable
+    String sortColum;
 }

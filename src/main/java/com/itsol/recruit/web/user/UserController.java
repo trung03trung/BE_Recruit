@@ -45,4 +45,13 @@ public class UserController {
         return ResponseEntity.ok().body(userService.seachUser(seachVM));
     }
 
+    @PutMapping(value = "changeThePassWord")
+    public ResponseEntity<Object> changThePassWord(@RequestBody User user) {
+        return ResponseEntity.ok().body(userService.changeThePassWord(user));
+    }
+
+    @PutMapping(value = "deactivateUser")
+    public ResponseEntity<Object> deactivateUser(@RequestBody User user) {
+        return ResponseEntity.ok().body(userService.deactivateUser(user));
+    }
 }
