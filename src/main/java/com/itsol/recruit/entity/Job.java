@@ -21,94 +21,90 @@ import java.util.Date;
 public class Job implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_JOB_ID")
+    @SequenceGenerator(name = "GEN_JOB_ID", sequenceName = "SEQ_JOB", allocationSize = 1)
+    private Long id;
+
     @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "JOBS_SEQ")
-    @SequenceGenerator(name = "JOBS_SEQ", sequenceName = "JOBS_SEQ", allocationSize = 1, initialValue = 1)
-    Long id;
-
-    @Column(name = "name")
-    String name;
+    private String name;
 
     @ManyToOne
-    @JoinColumn(name = "job_position_id")
-    JobPosition jobPosition;
+    @JoinColumn(name = "job_position_id",nullable = false)
+    private JobPosition jobPosition;
 
-    @Column(name = "number_experience")
-    Integer numberExperience;
-
-    @ManyToOne
-    @JoinColumn(name = "working_form_id")
-    WorkingForm workingForm;
-
-    @Column(name = "address_work")
-    String addressWork;
+    @Column(name = "number_experience",nullable = false)
+    private String numberExperience;
 
     @ManyToOne
-    @JoinColumn(name = "academic_level_id")
-    AcademicLevel academicLevel ;
+    @JoinColumn(name = "working_form_id",nullable = false)
+    private WorkingForm workingForm;
+
+    @Column(name = "address_work",nullable = false)
+    private String addressWork;
 
     @ManyToOne
-    @JoinColumn(name = "rank_id")
-    Rank rank ;
-
-    @Column(name = "qty_person")
-    Integer qtyPerson;
-
-    @Column(name = "start_recruitment_date")
-    Date startRecruitmentDate ;
-
-    @Column(name = "due_date")
-    Date dueDate;
-
-    @Column(name = "skills")
-    String skills;
-
-    @Column(name = "description")
-    String description;
-
-    @Column(name = "interrest")
-    String interrest;
-
-    @Column(name = "job_requirement")
-    String jobRequirement;
-
-    @Column(name = "salary_max")
-    Integer salaryMax;
-
-    @Column(name = "salary_min")
-    Integer salaryMin;
-
-    @Column(name = "reason")
-    String reason;
+    @JoinColumn(name = "academic_level_id",nullable = false)
+    private AcademicLevel academicLevel;
 
     @ManyToOne
-    @JoinColumn(name = "contact_id")
-    User contact;
+    @JoinColumn(name = "rank_id",nullable = false)
+    private Rank rank;
+
+    @Column(name = "qtyPerson",nullable = false)
+    private int qtyPerson;
+
+    @Column(name = "start_recruitment_date",nullable = false)
+    private Date startDate;
+
+    @Column(name = "due_date",nullable = false)
+    private Date dueDate;
+
+    @Column(nullable = false)
+    private String skills;
+
+    @Column(nullable = false)
+    private String description;
+
+    @Column(nullable = false)
+    private String interest;
+
+    @Column(name = "job_requirement",nullable = false)
+    private String jobRequirement;
+
+    @Column(name = "salary_min",nullable = false)
+    private int salaryMin;
+
+    @Column(name = "salary_max",nullable = false)
+    private int salaryMax;
 
     @ManyToOne
-    @JoinColumn(name = "create_id")
-    User creater;
+    @JoinColumn(name = "contact_id",nullable = false)
+    private User userContact;
 
-    @Column(name = "create_date")
-    Date createDate ;
 
-    @ManyToOne
+    @OneToOne
+    @JoinColumn(name = "create_id",nullable = false)
+    private User  userCreate;
+
+    @Column(name = "create_date",nullable = false)
+    private Date createdDate;
+
+    @ManyToOne()
     @JoinColumn(name = "update_id")
-    User updateUser;
+    private User userUpdate;
 
     @Column(name = "update_date")
-    Date updateDate ;
+    private Date updateDate;
 
     @ManyToOne
-    @JoinColumn(name = "status_id")
-    StatusJob statusJob;
+    @JoinColumn(name = "status_id",nullable = false)
+    private StatusJob statusJob;
 
-    @Column(name = "views")
-    Integer views;
+    @Column(nullable = false)
+    private int views;
 
-    @Column(name = "isDelete ")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
-    boolean isDelete ;
+    @Column(name = "is_delete",nullable = false)
+    private boolean isDelete;
 
 
 }

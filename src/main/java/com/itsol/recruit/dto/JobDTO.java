@@ -14,6 +14,9 @@ import java.util.Date;
 
 @Data
 public class JobDTO {
+
+    Long id;
+
     @NotNull
     Long jobPositionId;
 
@@ -76,9 +79,6 @@ public class JobDTO {
     String userCreate;
 
     Long userUpdateId;
-
-    @NotNull
-    Long statusId;
 
 
 }

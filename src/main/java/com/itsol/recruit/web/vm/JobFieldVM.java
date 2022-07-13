@@ -19,7 +19,5 @@ public class JobFieldVM {
 
     List<WorkingForm> workingForms;
 
-    List<StatusJob> statusJobs;
-
     List<User> users;
 }

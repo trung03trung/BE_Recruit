@@ -1,0 +1,79 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x000000006a56bdcb, pid=13492, tid=0x0000000000005f5c
+#
+# JRE version: Java(TM) SE Runtime Environment (8.0_321-b07) (build 1.8.0_321-b07)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.321-b07 mixed mode windows-amd64 compressed oops)
+# Problematic frame:
+# V  [jvm.dll+0x20bdcb]
+#
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x000001d65cea5800):  JavaThread "http-nio-9090-exec-6" daemon [_thread_in_vm, id=24412, stack(0x000000ab81600000,0x000000ab81700000)]
+
+siginfo: ExceptionCode=0xc0000005, writing address 0x000000ab816f55f0
+
+Registers:
+RAX=0x0000000000000007, RBX=0x0000000000000007, RCX=0x000000ab816f55f0, RDX=0x0000000000006000
+RSP=0x000000ab816fb5f0, RBP=0x000000ab816fb6f0, RSI=0x0000000000000007, RDI=0x000001d6581e8528
+R8 =0x000000000000000f, R9 =0x0000000000000010, R10=0x000001d65f2c41b0, R11=0x000001d6581e8528
+R12=0x000001d65f281290, R13=0x000000ab816fb8d0, R14=0x000000ab816fb9a0, R15=0x000000ab816fb5f0
+RIP=0x000000006a56bdcb, EFLAGS=0x0000000000010202
+
+Top of Stack: (sp=0x000000ab816fb5f0)
+0x000000ab816fb5f0:   000001d65cea5800 0000000000000001
+0x000000ab816fb600:   000001d6581e8528 0000000060d3ff48
+0x000000ab816fb610:   0000000000000000 0000000000000000
+0x000000ab816fb620:   0000000060d2cb60 000000005de38818
+0x000000ab816fb630:   0000000c60d34c01 000001d6581e8528
+0x000000ab816fb640:   000001d65cea5800 000001d644306ea0
+0x000000ab816fb650:   0000000060d2a330 0000000060d44c80
+0x000000ab816fb660:   0000000060c134f0 0000000000000000
+0x000000ab816fb670:   0000000060d42c38 0000000060d43f50
+0x000000ab816fb680:   0000000060d2cb40 0000000000000000
+0x000000ab816fb690:   0000000060d2a430 0000000060d2ca00
+0x000000ab816fb6a0:   0000000060dc7448 0000000060d2af08
+0x000000ab816fb6b0:   0000000060d44c20 0000000060d3ff28
+0x000000ab816fb6c0:   0000000060d34c90 0000000060d2a690
+0x000000ab816fb6d0:   000001d65f281290 0000000060d42c38
+0x000000ab816fb6e0:   000000005bf09c88 000000005d073598 
+
+Instructions: (pc=0x000000006a56bdcb)
+0x000000006a56bdab:   f8 7c 33 48 8b de e8 aa 9f 08 00 48 63 d0 ff c6
+0x000000006a56bdbb:   48 0f af d3 49 8b cf 48 63 c6 48 2b ca 48 ff c3
+0x000000006a56bdcb:   c7 01 00 00 00 00 48 3b 05 e8 07 56 00 7e d7 48
+0x000000006a56bddb:   8b 9d e8 00 00 00 48 8d 54 24 48 48 8d 4d 50 e8 
+
+
+Register to memory mapping:
+
+RAX=0x0000000000000007 is an unknown value
+RBX=0x0000000000000007 is an unknown value
+RCX=0x000000ab816f55f0 is pointing into the stack for thread: 0x000001d65cea5800
+RDX=0x0000000000006000 is an unknown value
+RSP=0x000000ab816fb5f0 is pointing into the stack for thread: 0x000001d65cea5800
+RBP=0x000000ab816fb6f0 is pointing into the stack for thread: 0x000001d65cea5800
+RSI=0x0000000000000007 is an unknown value
+RDI={method} {0x000001d6581e8530} 'run' '()Ljava/lang/Object;' in 'java/net/URLClassLoader$1'
+R8 =0x000000000000000f is an unknown value
+R9 =0x0000000000000010 is an unknown value
+R10=0x000001d65f2c41b0 is an unknown value
+R11={method} {0x000001d6581e8530} 'run' '()Ljava/lang/Object;' in 'java/net/URLClassLoader$1'
+R12=0x000001d65f281290 is an unknown value
+R13=0x000000ab816fb8d0 is pointing into the stack for thread: 0x000001d65cea5800
+R14=0x000000ab816fb9a0 is pointing into the stack for thread: 0x000001d65cea5800
+R15=0x000000ab816fb5f0 is pointing into the stack for thread: 0x000001d65cea5800
+
+
+Stack: [0x000000ab81600000,0x000000ab81700000],  sp=0x000000ab816fb5f0,  free space=1005k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x20bdcb]
+V  [jvm.dll+0x32fb62]
+V  [jvm.dll+0x20b973]

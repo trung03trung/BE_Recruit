@@ -16,4 +16,6 @@ public class JobRepositoryImpl extends BaseRepository {
         List<User> users=getJdbcTemplate().query(sql,new Object[]{role.get(0).getId()},new BeanPropertyRowMapper<>(User.class));
         return users;
     }
+
+
 }

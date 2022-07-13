@@ -22,7 +22,7 @@ public class AcademicLevel {
     Long id;
 
     @Column(name = "code", nullable = false)
-    String name;
+    String code;
 
     @Column(name = "description", nullable = false)
     String description;

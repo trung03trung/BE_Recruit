@@ -1,6 +1,7 @@
 package com.itsol.recruit.service.impl;
 
 import com.itsol.recruit.dto.JobDTO;
+import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.*;
 import com.itsol.recruit.repository.*;
 import com.itsol.recruit.repository.repoimpl.JobRepositoryImpl;
@@ -13,8 +14,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -67,8 +71,10 @@ public class JobServiceImpl implements JobService {
     @Override
     public Job createNewJob(JobDTO jobDTO) {
         Job job=jobMapper.toEntity(jobDTO);
-        job.setCreateDate(new Date());
+        job.setCreatedDate(new Date());
         job.setUpdateDate(new Date());
+        StatusJob statusJob=statusJobRepository.findStatusJobById((long)1);
+        job.setStatusJob(statusJob);
         return jobRepository.save(job);
     }
 
@@ -82,10 +88,18 @@ public class JobServiceImpl implements JobService {
         List<AcademicLevel> academicLevels=academicLevelRepository.findAll();
         List<Rank> ranks=rankRepository.findAll();
         List<JobPosition> jobPositions=jobPositionRepository.findAll();
-        List<StatusJob> statusJobs=statusJobRepository.findAll();
         List<WorkingForm> workingForms=workingFormRepository.findAll();
         List<Role> role=roleRepository.findByCode("ROLE_JE");
         List<User> users=jobRepositoryimpl.getAllByRole(role);
-        return new JobFieldVM(academicLevels,jobPositions,ranks,workingForms,statusJobs,users);
+        return new JobFieldVM(academicLevels,jobPositions,ranks,workingForms,users);
+    }
+
+    @Override
+    public ResponseDTO changeStatus(Long id, String code) {
+        Job job=jobRepository.findJobById(id);
+        StatusJob statusJob=statusJobRepository.findStatusJobByCode(code);
+        job.setStatusJob(statusJob);
+        jobRepository.save(job);
+        return new ResponseDTO("Change status success");
     }
 }

@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface StatusJobRepository extends JpaRepository<StatusJob,Long> {
 
     StatusJob findStatusJobById(Long statusJobId);
+
+    StatusJob findStatusJobByCode(String code);
 }
