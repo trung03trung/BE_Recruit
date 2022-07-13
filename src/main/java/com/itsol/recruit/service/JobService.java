@@ -17,4 +17,6 @@ public interface JobService {
     public Job getJobById(Long id);
 
     public JobFieldVM getAllFieldSelect();
+
+    public ResponseDTO changeStatus(Long id,String code);
 }

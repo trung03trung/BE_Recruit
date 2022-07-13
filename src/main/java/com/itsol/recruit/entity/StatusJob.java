@@ -22,7 +22,7 @@ public class StatusJob {
     Long id;
 
     @Column(name = "code")
-    String name;
+    String code;
 
     @Column(name = "description")
     String description;
