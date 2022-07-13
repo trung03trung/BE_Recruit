@@ -2,6 +2,7 @@ package com.itsol.recruit.web.admin;
 
 import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.dto.JobDTO;
+import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.Job;
 import com.itsol.recruit.service.JobService;
 import com.itsol.recruit.service.impl.PDFGenerator;
@@ -10,6 +11,7 @@ import com.itsol.recruit.web.vm.JobVM;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,6 +70,18 @@ public class JobController {
         return ResponseEntity.ok().headers(headers).contentType
                         (MediaType.APPLICATION_PDF)
                 .body(new InputStreamResource(bis));
+    }
+
+    @PostMapping(value = "/job/{id}")
+    public ResponseEntity<ResponseDTO> changeStatusJob(@PathVariable("id") Long id, @RequestParam("code") String code){
+        try {
+            ResponseDTO responseDTO=jobService.changeStatus(id,code);
+            responseDTO.setStatus(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Sever Error"));
+        }
     }
 
 }

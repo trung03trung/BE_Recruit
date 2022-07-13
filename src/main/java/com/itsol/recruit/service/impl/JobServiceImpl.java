@@ -1,6 +1,7 @@
 package com.itsol.recruit.service.impl;
 
 import com.itsol.recruit.dto.JobDTO;
+import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.*;
 import com.itsol.recruit.repository.*;
 import com.itsol.recruit.repository.repoimpl.JobRepositoryImpl;
@@ -91,5 +92,14 @@ public class JobServiceImpl implements JobService {
         List<Role> role=roleRepository.findByCode("ROLE_JE");
         List<User> users=jobRepositoryimpl.getAllByRole(role);
         return new JobFieldVM(academicLevels,jobPositions,ranks,workingForms,users);
+    }
+
+    @Override
+    public ResponseDTO changeStatus(Long id, String code) {
+        Job job=jobRepository.findJobById(id);
+        StatusJob statusJob=statusJobRepository.findStatusJobByCode(code);
+        job.setStatusJob(statusJob);
+        jobRepository.save(job);
+        return new ResponseDTO("Change status success");
     }
 }
