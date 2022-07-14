@@ -42,7 +42,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("username not found");
         }
 
-        if (!user.isActive()) {
+        if (!user.isActivate()) {
             throw new UserNotActivatedException("User " + username + " was not activated");
         }
 

@@ -25,9 +25,9 @@ public class UserDTO {
 
     String gender;
 
-//    Number activate;
-//
-//    Number is_delete;
+    Number activate;
+
+    Number is_delete;
 
     String newPassword;
 

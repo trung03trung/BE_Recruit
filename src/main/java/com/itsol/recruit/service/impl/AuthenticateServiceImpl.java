@@ -71,9 +71,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         List<Role> roles = roleRepository.findByCode(Constants.Role.USER);
         User user = userMapper.toEntity(dto);
         user.setDelete(false);
-        user.setActive(false);
-        user.setActive(false);
-        user.setDelete(false);
+        user.setActivate(false);
         user.setRoles(roles);
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String enCryptPassword = bCryptPasswordEncoder.encode(dto.getPassword());

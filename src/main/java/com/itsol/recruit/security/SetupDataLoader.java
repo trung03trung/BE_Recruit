@@ -49,7 +49,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             user.setPhoneNumber("0388888888");
             user.setBirthDay(new Date(1999 - 04 - 29));
             user.setPassword(passwordEncoder.encode("admin1"));
-            user.setActive(true);
+            user.setActivate(true);
             user.setDelete(false);
             user.setRoles(adminRole);
             userRepository.save(user);

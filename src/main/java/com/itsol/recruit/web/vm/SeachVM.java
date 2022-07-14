@@ -19,4 +19,6 @@ public class SeachVM {
     String sortT;
     @Nullable
     String sortColum;
+    @Nullable
+    Number phone_number;
 }
