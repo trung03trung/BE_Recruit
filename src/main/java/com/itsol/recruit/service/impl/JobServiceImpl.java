@@ -102,4 +102,26 @@ public class JobServiceImpl implements JobService {
         jobRepository.save(job);
         return new ResponseDTO("Change status success");
     }
+
+    @Override
+    public ResponseDTO rejectStatus(Long id, String code, String reason) {
+        Job job=jobRepository.findJobById(id);
+        StatusJob statusJob=statusJobRepository.findStatusJobByCode(code);
+        job.setStatusJob(statusJob);
+        job.setReason(reason);
+        jobRepository.save(job);
+        return new ResponseDTO("Change status success");
+    }
+    public ResponseDTO deleteJobById(Long id){
+        Job job=jobRepository.findJobById(id);
+        jobRepository.delete(job);
+        return new ResponseDTO("Delete job success");
+    }
+
+    @Override
+    public JobVM searchJob(JobVM jobVM) {
+        List<Job> jobs=jobMapper.toEntity(jobRepositoryimpl.seachUser(jobVM));
+        jobVM.setJobs(jobs);
+        return jobVM;
+    }
 }

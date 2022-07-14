@@ -19,4 +19,10 @@ public interface JobService {
     public JobFieldVM getAllFieldSelect();
 
     public ResponseDTO changeStatus(Long id,String code);
+
+    public ResponseDTO rejectStatus(Long id,String code,String reason);
+
+    public ResponseDTO deleteJobById(Long id);
+
+    public JobVM searchJob(JobVM jobVM);
 }

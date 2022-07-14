@@ -80,5 +80,6 @@ public class JobDTO {
 
     Long userUpdateId;
 
+    Long statusId;
 
 }

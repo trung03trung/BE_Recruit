@@ -49,6 +49,7 @@ public class JobMapper implements EntityMapper<JobDTO,Job>{
         entity.setUserContact(userRepository.findUserById(dto.getUserContactId()));
         entity.setUserCreate(userRepository.findByUserName(dto.getUserCreate()));
         entity.setUserUpdate(userRepository.findUserById(dto.getUserUpdateId()));
+        entity.setStatusJob(statusJobRepository.findStatusJobById(dto.getStatusId()));
         return entity;
     }
 
@@ -67,6 +68,7 @@ public class JobMapper implements EntityMapper<JobDTO,Job>{
         dto.setUserContactId(entity.getUserContact().getId());
         dto.setUserCreate(entity.getUserCreate().getUserName());
         dto.setUserUpdateId(entity.getUserUpdate().getId());
+        dto.setStatusId(entity.getStatusJob().getId());
         return dto;
 
     }
