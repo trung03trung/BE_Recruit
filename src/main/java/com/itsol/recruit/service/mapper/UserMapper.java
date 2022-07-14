@@ -24,6 +24,7 @@ public class UserMapper implements EntityMapper<UserDTO, User> {
         User entity = new User();
         BeanUtils.copyProperties(dto, entity);
 
+
         return entity;
     }
 

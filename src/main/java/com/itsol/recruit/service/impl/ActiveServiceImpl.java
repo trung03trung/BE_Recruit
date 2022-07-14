@@ -6,7 +6,6 @@ import com.itsol.recruit.entity.User;
 import com.itsol.recruit.repository.OTPRepository;
 import com.itsol.recruit.repository.UserRepository;
 import com.itsol.recruit.service.ActiveService;
-import com.itsol.recruit.web.vm.ChangePassVM;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,9 +28,8 @@ public class ActiveServiceImpl implements ActiveService {
     public ResponseDTO activeAccount(String otp) {
         OTP otpdb = otpRepository.findByCode(otp);
         User user = otpdb.getUser();
-        user.setActive(true);
+        user.setActivate(true);
         userRepository.save(user);
         return new ResponseDTO("Active success");
     }
-
 }

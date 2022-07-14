@@ -1,6 +1,5 @@
 package com.itsol.recruit.repository;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;

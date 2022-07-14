@@ -5,7 +5,6 @@ import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.*;
 import com.itsol.recruit.repository.*;
 import com.itsol.recruit.repository.repoimpl.JobRepositoryImpl;
-import com.itsol.recruit.repository.repoimpl.UserRepositoryImpl;
 import com.itsol.recruit.service.JobService;
 import com.itsol.recruit.service.mapper.JobMapper;
 import com.itsol.recruit.web.vm.JobFieldVM;
@@ -14,11 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -112,6 +107,7 @@ public class JobServiceImpl implements JobService {
         jobRepository.save(job);
         return new ResponseDTO("Change status success");
     }
+
     public ResponseDTO deleteJobById(Long id){
         Job job=jobRepository.findJobById(id);
         jobRepository.delete(job);
