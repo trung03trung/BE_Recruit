@@ -10,7 +10,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 
 
-@Entity(name = "job")
+@Entity(name = "profile")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,5 +47,5 @@ public class Profile {
 
     @Column(name = "is_delete ")
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    private boolean isDelete   ;
+    private boolean isDelete;
 }
