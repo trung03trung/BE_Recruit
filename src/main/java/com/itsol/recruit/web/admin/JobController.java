@@ -86,11 +86,4 @@ public class JobController {
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Sever Error"));
         }
     }
-
-    @PostMapping(value = "/statistical")
-    public ResponseEntity<List<StatisticalDTO>> creatNewJob(@Valid @RequestBody StatisticalVm statisticalVm){
-        return ResponseEntity.ok().body(jobService.statistical(statisticalVm));
-    }
-
-
 }

@@ -2,10 +2,12 @@ package com.itsol.recruit.web.user;
 
 import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.dto.ResponseDTO;
+import com.itsol.recruit.dto.StatisticalDTO;
 import com.itsol.recruit.dto.UserDTO;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.service.UserService;
 import com.itsol.recruit.web.vm.SeachVM;
+import com.itsol.recruit.web.vm.StatisticalVm;
 import com.sun.xml.internal.ws.handler.HandlerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,5 +73,9 @@ public class UserController {
         } catch (HandlerException e) {
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.NO_CONTENT, "Email exist"));
         }
+    }
+    @PostMapping(value = "/statistical")
+    public ResponseEntity<List<StatisticalDTO>> creatNewJob(@Valid @RequestBody StatisticalVm statisticalVm){
+        return ResponseEntity.ok().body(userService.statistical(statisticalVm));
     }
 }

@@ -101,8 +101,4 @@ public class JobServiceImpl implements JobService {
         return new ResponseDTO("Change status success");
     }
 
-    @Override
-    public List<StatisticalDTO> statistical(StatisticalVm statisticalVm) {
-        return jobRepositoryimpl.StatisticalData(statisticalVm);
-    }
 }

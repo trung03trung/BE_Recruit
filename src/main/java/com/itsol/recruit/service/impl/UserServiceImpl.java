@@ -2,6 +2,7 @@ package com.itsol.recruit.service.impl;
 
 import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.dto.ResponseDTO;
+import com.itsol.recruit.dto.StatisticalDTO;
 import com.itsol.recruit.dto.UserDTO;
 import com.itsol.recruit.entity.OTP;
 import com.itsol.recruit.entity.Role;
@@ -12,6 +13,7 @@ import com.itsol.recruit.repository.repoimpl.UserRepositoryImpl;
 import com.itsol.recruit.service.UserService;
 import com.itsol.recruit.service.mapper.UserMapper;
 import com.itsol.recruit.web.vm.SeachVM;
+import com.itsol.recruit.web.vm.StatisticalVm;
 import com.sun.xml.internal.ws.handler.HandlerException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -144,5 +146,8 @@ public class UserServiceImpl implements UserService {
         user.setPassword(enCryptPassword);
         userRepository.save(user);
         return new ResponseDTO("Signup success");
+    }
+    public List<StatisticalDTO> statistical(StatisticalVm statisticalVm) {
+        return userRepositoryimpl.StatisticalData(statisticalVm);
     }
 }
