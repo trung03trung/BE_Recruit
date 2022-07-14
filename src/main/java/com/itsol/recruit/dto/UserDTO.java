@@ -1,8 +1,6 @@
 package com.itsol.recruit.dto;
 
 import lombok.Data;
-
-import javax.persistence.Column;
 import java.util.Date;
 
 @Data
@@ -25,9 +23,9 @@ public class UserDTO {
 
     String gender;
 
-//    Number activate;
-//
-//    Number is_delete;
+    Number activate;
+
+    Number is_delete;
 
     String newPassword;
 

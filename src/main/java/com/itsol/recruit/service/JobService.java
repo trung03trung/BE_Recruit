@@ -6,8 +6,6 @@ import com.itsol.recruit.entity.Job;
 import com.itsol.recruit.web.vm.JobFieldVM;
 import com.itsol.recruit.web.vm.JobVM;
 
-import java.util.List;
-
 public interface JobService {
 
     public JobVM getAllJob(int pageNo, int pageSize, String sortBy, String sortDir);

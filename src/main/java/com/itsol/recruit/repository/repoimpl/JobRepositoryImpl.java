@@ -1,14 +1,12 @@
 package com.itsol.recruit.repository.repoimpl;
 
 import com.itsol.recruit.dto.JobDTO;
-import com.itsol.recruit.entity.Job;
 import com.itsol.recruit.entity.Role;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.repository.BaseRepository;
 import com.itsol.recruit.web.vm.JobVM;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
@@ -36,6 +34,4 @@ public class JobRepositoryImpl extends BaseRepository {
                 "ORDER BY " + jobVM.getSortBy() + " " + jobVM.getSortDir();
         return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(JobDTO.class));
     }
-
-
 }

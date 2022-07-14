@@ -1,11 +1,19 @@
 package com.itsol.recruit.web.user;
 
 import com.itsol.recruit.core.Constants;
+import com.itsol.recruit.dto.ResponseDTO;
+import com.itsol.recruit.dto.StatisticalDTO;
+import com.itsol.recruit.dto.UserDTO;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.service.UserService;
+import com.itsol.recruit.web.vm.SeachVM;
+import com.itsol.recruit.web.vm.StatisticalVm;
+import com.sun.xml.internal.ws.handler.HandlerException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -34,14 +42,40 @@ public class UserController {
         return ResponseEntity.ok().body(userService.findUserByUserName(userName));
     }
 
-    @GetMapping(value = "/userje")
-    public ResponseEntity<List<User>> getAllUserJE() {
-        return ResponseEntity.ok().body(userService.getAllUserJe());
-    }
-
     @PutMapping("/updateUser")
     public ResponseEntity<Object> updateUser(@RequestBody User user) {
         return ResponseEntity.ok().body(userService.updateUser(user));
     }
 
+    @PostMapping(value = "userSeach")
+    public ResponseEntity<List<User>> seachUser(@RequestBody SeachVM seachVM) {
+        return ResponseEntity.ok().body(userService.seachUser(seachVM));
+    }
+
+    @PutMapping(value = "changeThePassWord")
+    public ResponseEntity<Object> changThePassWord(@RequestBody UserDTO user) {
+        return ResponseEntity.ok().body(userService.changeThePassWord(user));
+    }
+
+    @PutMapping(value = "deactivateUser")
+    public ResponseEntity<Object> deactivateUser(@RequestBody User user) {
+        return ResponseEntity.ok().body(userService.deactivateUser(user));
+    }
+
+    @PostMapping("/addUserJe")
+    public ResponseEntity<ResponseDTO> addUserJe(@Valid @RequestBody UserDTO dto) {
+        try {
+            ResponseDTO responseDTO = userService.addUserJe(dto);
+            responseDTO.setStatus(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (NullPointerException e) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.NOT_FOUND, "Username exist"));
+        } catch (HandlerException e) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.NO_CONTENT, "Email exist"));
+        }
+    }
+    @PostMapping(value = "/statistical")
+    public ResponseEntity<List<StatisticalDTO>> creatNewJob(@Valid @RequestBody StatisticalVm statisticalVm){
+        return ResponseEntity.ok().body(userService.statistical(statisticalVm));
+    }
 }

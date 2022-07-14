@@ -9,22 +9,15 @@ import com.itsol.recruit.service.impl.PDFGenerator;
 import com.itsol.recruit.web.vm.JobFieldVM;
 import com.itsol.recruit.web.vm.JobVM;
 import com.lowagie.text.DocumentException;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.InputStreamSource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = Constants.Api.Path.ADMIN)
@@ -123,5 +116,4 @@ public class JobController {
     public ResponseEntity<JobVM> searchJob(@RequestBody JobVM jobVM){
         return ResponseEntity.ok().body(jobService.searchJob(jobVM));
     }
-
 }

@@ -23,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Transactional
@@ -71,9 +70,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         List<Role> roles = roleRepository.findByCode(Constants.Role.USER);
         User user = userMapper.toEntity(dto);
         user.setDelete(false);
-        user.setActive(false);
-        user.setActive(false);
-        user.setDelete(false);
+        user.setActivate(false);
         user.setRoles(roles);
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String enCryptPassword = bCryptPasswordEncoder.encode(dto.getPassword());
