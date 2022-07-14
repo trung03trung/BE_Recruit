@@ -8,7 +8,6 @@ import com.itsol.recruit.web.vm.SeachVM;
 import com.itsol.recruit.web.vm.StatisticalVm;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
@@ -34,6 +33,7 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
                 "ORDER BY " + seachVM.getSortColum() + " " + seachVM.getSortT();
         return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(User.class));
     }
+
     public List<StatisticalDTO> StatisticalData(StatisticalVm statisticalDTO){
         String query = "WITH time_filtered_job AS\n" +
                 "  (SELECT *\n" +

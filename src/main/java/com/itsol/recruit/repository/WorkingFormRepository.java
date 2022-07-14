@@ -7,6 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WorkingFormRepository extends JpaRepository<WorkingForm,Long> {
 
-
     WorkingForm findWorkingFormById(Long wokingFormId);
 }
