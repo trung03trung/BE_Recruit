@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok().body(
                     new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
         } else {
-            deactivateUser.setActive(false);
+            deactivateUser.setActivate(false);
             userRepository.save(deactivateUser);
         }
         return user;
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
         if (email != null) throw new HandlerException("email");
         List<Role> roles = roleRepository.findByCode(Constants.Role.JE);
         User user = userMapper.toEntity(dto);
-        user.setActive(true);
+        user.setActivate(true);
         user.setDelete(false);
         user.setRoles(roles);
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();

@@ -29,7 +29,7 @@ public class ActiveServiceImpl implements ActiveService {
     public ResponseDTO activeAccount(String otp) {
         OTP otpdb = otpRepository.findByCode(otp);
         User user = otpdb.getUser();
-        user.setActive(true);
+        user.setActivate(true);
         userRepository.save(user);
         return new ResponseDTO("Active success");
     }

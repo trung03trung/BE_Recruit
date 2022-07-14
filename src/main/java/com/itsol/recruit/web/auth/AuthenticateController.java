@@ -75,7 +75,7 @@ public class AuthenticateController {
                     new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
         }
         User user = userService.findUserByUserName(loginVM.getUserName());
-        if(user.isActive()==false){
+        if(user.isActivate()==false){
             return ResponseEntity.ok().body(
                     new ResponseDTO(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED"));
         }
