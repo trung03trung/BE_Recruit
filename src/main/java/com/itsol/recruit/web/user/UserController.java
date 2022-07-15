@@ -78,4 +78,5 @@ public class UserController {
     public ResponseEntity<List<StatisticalDTO>> creatNewJob(@Valid @RequestBody StatisticalVm statisticalVm){
         return ResponseEntity.ok().body(userService.statistical(statisticalVm));
     }
+
 }

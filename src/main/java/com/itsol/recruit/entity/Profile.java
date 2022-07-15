@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Type;
 import javax.persistence.*;
 
-@Entity(name = "profile")
+@Entity(name = "profiles")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,9 +16,9 @@ import javax.persistence.*;
 public class Profile {
 
     @Id
-    @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PROFILE_SEQ")
-    @SequenceGenerator(name = "PROFILE_SEQ", sequenceName = "PROFILE_SEQ", allocationSize = 1, initialValue = 1)
+    @Column()
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PROFILES_SEQ")
+    @SequenceGenerator(name = "PROFILES_SEQ", sequenceName = "PROFILES_SEQ", allocationSize = 1, initialValue = 1)
     Long id;
 
     @OneToOne()
@@ -41,9 +41,9 @@ public class Profile {
     String desiredWorkingAddress;
 
     @Column(name = "desired_working_form")
-    String desiredWorkingform;
+    String desiredWorkingForm;
 
-    @Column(name = "is_delete ")
+    @Column(name = "is_delete",nullable = false)
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean isDelete;
 }
