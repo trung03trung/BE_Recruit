@@ -99,6 +99,11 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
+    public List<Job> getAllJobPublic() {
+        List<Job> jobList = (List<Job>) jobRepository.findAll();
+        return jobList;
+    }
+
     public ResponseDTO rejectStatus(Long id, String code, String reason) {
         Job job=jobRepository.findJobById(id);
         StatusJob statusJob=statusJobRepository.findStatusJobByCode(code);
