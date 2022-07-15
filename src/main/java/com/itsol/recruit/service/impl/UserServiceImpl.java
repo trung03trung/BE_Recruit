@@ -124,7 +124,12 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok().body(
                     new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
         } else {
-            deactivateUser.setActivate(false);
+            if(deactivateUser.isActivate()){
+                deactivateUser.setActivate(false);
+            }
+            else {
+                deactivateUser.setActivate(true);
+            }
             userRepository.save(deactivateUser);
         }
         return user;

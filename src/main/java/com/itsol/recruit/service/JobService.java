@@ -22,4 +22,6 @@ public interface JobService {
 
     public ResponseDTO changeStatus(Long id,String code);
 
+    public List<Job> getAllJobPublic();
+
 }

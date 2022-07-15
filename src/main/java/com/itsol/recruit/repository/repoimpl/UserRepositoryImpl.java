@@ -9,6 +9,8 @@ import com.itsol.recruit.web.vm.StatisticalVm;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -35,9 +37,17 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
         return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(User.class));
     }
     public List<StatisticalDTO> StatisticalData(StatisticalVm statisticalDTO){
+        Date dateS = statisticalDTO.getDatestart();
+        Date dateE = statisticalDTO.getDateend();
+        SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
+        String strDateS = formatter.format(dateS);
+        String strDateE = formatter.format(dateE);
+        System.out.println(strDateS);
+        System.out.println(strDateE);
+
         String query = "WITH time_filtered_job AS\n" +
                 "  (SELECT *\n" +
-                "   FROM job),\n" +
+                "   FROM job where start_recruitment_date between to_date(20220101, 'YYYYMMDD') and to_date(20220303, 'YYYYMMDD')),\n" +
                 "     all_job AS\n" +
                 "  (SELECT count(j.id) all_job\n" +
                 "   FROM job j\n" +
@@ -78,7 +88,7 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
                 "     waiting_for_interview,\n" +
                 "     interviewing,\n" +
                 "     total_apply,\n" +
-                "     success_recruited_applicant";
+                "     success_recruited_applicant\n";
         return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(StatisticalDTO.class));
     }
 }

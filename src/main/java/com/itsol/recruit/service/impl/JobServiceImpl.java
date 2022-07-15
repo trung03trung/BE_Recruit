@@ -101,4 +101,10 @@ public class JobServiceImpl implements JobService {
         return new ResponseDTO("Change status success");
     }
 
+    @Override
+    public List<Job> getAllJobPublic() {
+        List<Job> jobList = (List<Job>) jobRepository.findAll();
+        return jobList;
+    }
+
 }
