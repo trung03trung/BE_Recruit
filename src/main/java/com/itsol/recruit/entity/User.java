@@ -3,6 +3,7 @@ package com.itsol.recruit.entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -12,7 +13,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User{
+public class User {
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USERS_SEQ")
@@ -46,6 +47,10 @@ public class User{
     @Column(name = "birth_day")
     Date birthDay;
 
+    @Column(name = "activate")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private boolean activate;
+
     @Column(name = "is_delete")
     @Type(type = "org.hibernate.type.NumericBooleanType")
     boolean isDelete;
@@ -58,7 +63,4 @@ public class User{
     )
     private List<Role> roles = new ArrayList<>();
 
-    @Column(name = "activate")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
-    private boolean activate;
 }

@@ -6,6 +6,8 @@ import com.itsol.recruit.entity.Job;
 import com.itsol.recruit.web.vm.JobFieldVM;
 import com.itsol.recruit.web.vm.JobVM;
 
+import java.util.List;
+
 public interface JobService {
 
     public JobVM getAllJob(int pageNo, int pageSize, String sortBy, String sortDir);
@@ -17,6 +19,8 @@ public interface JobService {
     public JobFieldVM getAllFieldSelect();
 
     public ResponseDTO changeStatus(Long id,String code);
+
+    public List<Job> getAllJobPublic();
 
     public ResponseDTO rejectStatus(Long id,String code,String reason);
 
