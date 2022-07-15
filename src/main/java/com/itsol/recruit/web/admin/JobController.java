@@ -3,25 +3,21 @@ package com.itsol.recruit.web.admin;
 import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.dto.JobDTO;
 import com.itsol.recruit.dto.ResponseDTO;
-import com.itsol.recruit.dto.StatisticalDTO;
 import com.itsol.recruit.entity.Job;
 import com.itsol.recruit.service.JobService;
 import com.itsol.recruit.service.impl.PDFGenerator;
 import com.itsol.recruit.web.vm.JobFieldVM;
 import com.itsol.recruit.web.vm.JobVM;
-import com.itsol.recruit.web.vm.StatisticalVm;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.InputStreamSource;
-import org.springframework.http.HttpHeaders;
+import com.lowagie.text.DocumentException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = Constants.Api.Path.ADMIN)
@@ -64,15 +60,18 @@ public class JobController {
         return ResponseEntity.ok().body(jobService.createNewJob(jobDTO));
     }
 
-    @GetMapping(value = "/pdf",produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<InputStreamSource> jobExportPDF(@RequestParam("id") Long id) throws IOException{
-        ByteArrayInputStream bis = pdfGenerator.JobPDFReport(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "inline; filename=job.pdf");
+    @GetMapping(value = "/pdf/{id}")
+    public void exportToPDF(HttpServletResponse response,@PathVariable("id")Long id,
+                            @RequestParam("token")String token) throws DocumentException, IOException {
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=users_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+        response.addHeader("Authorization","Bearer "+token);
+        pdfGenerator.export(response,id);
 
-        return ResponseEntity.ok().headers(headers).contentType
-                        (MediaType.APPLICATION_PDF)
-                .body(new InputStreamResource(bis));
     }
 
     @PostMapping(value = "/job/{id}")
@@ -85,5 +84,36 @@ public class JobController {
             e.printStackTrace();
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Sever Error"));
         }
+    }
+
+    @PostMapping(value = "/job-reject/{id}")
+    public ResponseEntity<ResponseDTO> rejectStatusJob(@PathVariable("id") Long id,
+                                                       @RequestParam("code") String code,
+                                                       @RequestParam("reason") String reason){
+        try {
+            ResponseDTO responseDTO=jobService.rejectStatus(id,code,reason);
+            responseDTO.setStatus(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Sever Error"));
+        }
+    }
+
+    @DeleteMapping(value = "/job/{id}")
+    public ResponseEntity<ResponseDTO> deleteJob(@PathVariable("id") Long id){
+        try {
+            ResponseDTO responseDTO=jobService.deleteJobById(id);
+            responseDTO.setStatus(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Sever Error"));
+        }
+    }
+
+    @PostMapping(value = "/job/search")
+    public ResponseEntity<JobVM> searchJob(@RequestBody JobVM jobVM){
+        return ResponseEntity.ok().body(jobService.searchJob(jobVM));
     }
 }

@@ -2,7 +2,6 @@ package com.itsol.recruit.service.impl;
 
 import com.itsol.recruit.dto.JobDTO;
 import com.itsol.recruit.dto.ResponseDTO;
-import com.itsol.recruit.dto.StatisticalDTO;
 import com.itsol.recruit.entity.*;
 import com.itsol.recruit.repository.*;
 import com.itsol.recruit.repository.repoimpl.JobRepositoryImpl;
@@ -10,13 +9,11 @@ import com.itsol.recruit.service.JobService;
 import com.itsol.recruit.service.mapper.JobMapper;
 import com.itsol.recruit.web.vm.JobFieldVM;
 import com.itsol.recruit.web.vm.JobVM;
-import com.itsol.recruit.web.vm.StatisticalVm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
 
@@ -107,4 +104,25 @@ public class JobServiceImpl implements JobService {
         return jobList;
     }
 
+    public ResponseDTO rejectStatus(Long id, String code, String reason) {
+        Job job=jobRepository.findJobById(id);
+        StatusJob statusJob=statusJobRepository.findStatusJobByCode(code);
+        job.setStatusJob(statusJob);
+        job.setReason(reason);
+        jobRepository.save(job);
+        return new ResponseDTO("Change status success");
+    }
+
+    public ResponseDTO deleteJobById(Long id){
+        Job job=jobRepository.findJobById(id);
+        jobRepository.delete(job);
+        return new ResponseDTO("Delete job success");
+    }
+
+    @Override
+    public JobVM searchJob(JobVM jobVM) {
+        List<Job> jobs=jobMapper.toEntity(jobRepositoryimpl.seachUser(jobVM));
+        jobVM.setJobs(jobs);
+        return jobVM;
+    }
 }

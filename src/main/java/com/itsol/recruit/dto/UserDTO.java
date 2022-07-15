@@ -1,8 +1,6 @@
 package com.itsol.recruit.dto;
 
 import lombok.Data;
-
-import javax.persistence.Column;
 import java.util.Date;
 
 @Data

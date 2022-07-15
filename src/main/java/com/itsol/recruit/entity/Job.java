@@ -5,12 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.Type;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 
 @Entity(name = "job")
@@ -66,7 +62,7 @@ public class Job implements Serializable {
     private String description;
 
     @Column(nullable = false)
-    private String interest;
+    private String interrest;
 
     @Column(name = "job_requirement",nullable = false)
     private String jobRequirement;
@@ -105,6 +101,8 @@ public class Job implements Serializable {
 
     @Column(name = "is_delete",nullable = false)
     private boolean isDelete;
+
+    private String reason;
 
 
 }

@@ -37,7 +37,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.findById(id));
     }
 
-    @GetMapping(value = "/user/{userName}")
+    @GetMapping(value = "/user-profile")
     public ResponseEntity<User> findUserByUserName(@RequestParam("userName") String userName) {
         return ResponseEntity.ok().body(userService.findUserByUserName(userName));
     }
