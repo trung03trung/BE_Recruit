@@ -54,7 +54,7 @@ public class JobDTO {
 
     @NotEmpty
     @Size(max = 2000)
-    String interest;
+    String interrest;
 
     @NotEmpty
     @Size(max = 2000)
