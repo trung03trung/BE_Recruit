@@ -8,25 +8,27 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Type;
 import javax.persistence.*;
 
-@Entity(name = "roles")
+
+@Entity(name = "status_job_register")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Role {
+public class StatusJobRegister {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_ROLE_ID")
-    @SequenceGenerator(name = "GEN_ROLE_ID", sequenceName = "SEQ_ROLE", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "JOB_STATUSREGISTER_SEQ")
+    @SequenceGenerator(name = "JOB_STATUSREGISTER_SEQ", sequenceName = "JOB_STATUSREGISTER_SEQ", allocationSize = 1, initialValue = 1)
     Long id;
 
-    @Column(name = "code", nullable = false)
+    @Column(name = "code")
     String code;
 
     @Column(name = "description")
     String description;
 
-    @Column(name = "is_delete")
+    @Column(name = "is_delete ")
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    boolean isDelete;
+    private  boolean isDelete ;
 }

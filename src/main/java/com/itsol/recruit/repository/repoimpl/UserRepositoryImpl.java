@@ -8,7 +8,6 @@ import com.itsol.recruit.web.vm.SeachVM;
 import com.itsol.recruit.web.vm.StatisticalVm;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -37,12 +36,12 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
         return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(User.class));
     }
 
+
     public List<StatisticalDTO> StatisticalData(StatisticalVm statisticalDTO) {
         String strS = statisticalDTO.getDatestart();
         String strE = statisticalDTO.getDateend();
         System.out.println(statisticalDTO.getDatestart());
         System.out.println(statisticalDTO.getDateend());
-
         String query = "WITH time_filtered_job AS\n" +
                 "  (SELECT *\n" +
                 "   FROM job\n" +

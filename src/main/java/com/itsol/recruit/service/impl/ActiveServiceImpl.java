@@ -6,7 +6,6 @@ import com.itsol.recruit.entity.User;
 import com.itsol.recruit.repository.OTPRepository;
 import com.itsol.recruit.repository.UserRepository;
 import com.itsol.recruit.service.ActiveService;
-import com.itsol.recruit.web.vm.ChangePassVM;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,5 +32,4 @@ public class ActiveServiceImpl implements ActiveService {
         userRepository.save(user);
         return new ResponseDTO("Active success");
     }
-
 }

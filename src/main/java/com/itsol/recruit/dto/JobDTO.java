@@ -1,15 +1,9 @@
 package com.itsol.recruit.dto;
 
-import com.itsol.recruit.entity.JobPosition;
-import com.itsol.recruit.entity.WorkingForm;
 import lombok.Data;
-import lombok.NonNull;
-
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -60,7 +54,7 @@ public class JobDTO {
 
     @NotEmpty
     @Size(max = 2000)
-    String interest;
+    String interrest;
 
     @NotEmpty
     @Size(max = 2000)
@@ -80,5 +74,6 @@ public class JobDTO {
 
     Long userUpdateId;
 
+    Long statusId;
 
 }

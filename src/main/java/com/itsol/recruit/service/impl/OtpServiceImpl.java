@@ -10,8 +10,6 @@ import com.itsol.recruit.service.email.EmailService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.ExecutionException;
-
 @Service
 public class OtpServiceImpl implements OtpService {
     private final UserRepository userRepository;

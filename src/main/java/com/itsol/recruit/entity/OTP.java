@@ -2,7 +2,6 @@ package com.itsol.recruit.entity;
 
 import com.itsol.recruit.core.Constants;
 import lombok.Data;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -35,12 +34,14 @@ public class OTP implements Serializable {
         this.code=String.valueOf(number);
          this.issueAt=new Date();
     }
+
     public OTP(){
         Random r=new Random();
         int number=(10000+r.nextInt(90000));
         this.code=String.valueOf(number);
         this.issueAt=new Date();
     }
+
     public boolean isExpired(){
         return this.issueAt.getTime()+EXPIRED_TIME<new Date().getTime();
     }
