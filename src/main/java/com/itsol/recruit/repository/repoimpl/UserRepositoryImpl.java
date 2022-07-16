@@ -36,18 +36,17 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
                 "ORDER BY " + seachVM.getSortColum() + " " + seachVM.getSortT();
         return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(User.class));
     }
-    public List<StatisticalDTO> StatisticalData(StatisticalVm statisticalDTO){
-        Date dateS = statisticalDTO.getDatestart();
-        Date dateE = statisticalDTO.getDateend();
-        SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
-        String strDateS = formatter.format(dateS);
-        String strDateE = formatter.format(dateE);
-        System.out.println(strDateS);
-        System.out.println(strDateE);
+
+    public List<StatisticalDTO> StatisticalData(StatisticalVm statisticalDTO) {
+        String strS = statisticalDTO.getDatestart();
+        String strE = statisticalDTO.getDateend();
+        System.out.println(statisticalDTO.getDatestart());
+        System.out.println(statisticalDTO.getDateend());
 
         String query = "WITH time_filtered_job AS\n" +
                 "  (SELECT *\n" +
-                "   FROM job where start_recruitment_date between to_date(20220101, 'YYYYMMDD') and to_date(20220303, 'YYYYMMDD')),\n" +
+                "   FROM job\n" +
+                "   WHERE start_recruitment_date BETWEEN to_date("+strS+", 'DDMMYYYY') AND to_date("+strE+", 'DDMMYYYY') ),\n" +
                 "     all_job AS\n" +
                 "  (SELECT count(j.id) all_job\n" +
                 "   FROM job j\n" +
@@ -76,19 +75,27 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
                 "   FROM time_filtered_job j\n" +
                 "   INNER JOIN jobs_register jr ON jr.job_id = j.id\n" +
                 "   INNER JOIN status_job_register ps ON ps.id = jr.status_id\n" +
-                "   AND ps.code = 'P_SUCCESS')\n" +
+                "   AND ps.code = 'P_SUCCESS'),\n" +
+                "     false_applicant AS\n" +
+                "  (SELECT count(jr.job_id) false_applicant\n" +
+                "   FROM time_filtered_job j\n" +
+                "   INNER JOIN jobs_register jr ON jr.job_id = j.id\n" +
+                "   INNER JOIN status_job_register ps ON ps.id = jr.status_id\n" +
+                "   AND ps.code = 'false')\n" +
                 "SELECT all_job,\n" +
                 "       nvl(total_view_job, 0) total_view_job,\n" +
                 "       waiting_for_interview,\n" +
                 "       interviewing,\n" +
                 "       total_apply,\n" +
-                "       success_recruited_applicant\n" +
+                "       success_recruited_applicant,\n" +
+                "       false_applicant\n" +
                 "FROM all_job,\n" +
                 "     total_view_job,\n" +
                 "     waiting_for_interview,\n" +
                 "     interviewing,\n" +
                 "     total_apply,\n" +
-                "     success_recruited_applicant\n";
+                "     success_recruited_applicant,\n" +
+                "     false_applicant";
         return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(StatisticalDTO.class));
     }
 }

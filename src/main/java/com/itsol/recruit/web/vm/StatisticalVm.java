@@ -10,7 +10,7 @@ public class StatisticalVm {
     @Nullable
     Number month;
     @Nullable
-    Date dateend;
+    String dateend;
     @Nullable
-    Date datestart;
+    String datestart;
 }

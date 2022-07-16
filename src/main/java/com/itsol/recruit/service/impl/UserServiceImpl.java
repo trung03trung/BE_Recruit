@@ -78,9 +78,6 @@ public class UserServiceImpl implements UserService {
             userChange.setName(user.getName());
             userChange.setPhoneNumber(user.getPhoneNumber());
             userChange.setUserName(user.getUserName());
-            /*BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-            String enCryptPassword = bCryptPasswordEncoder.encode(user.getPassword());
-            userChange.setPassword(enCryptPassword);*/
             userRepository.save(userChange);
         }
         return ResponseEntity.ok().body(
