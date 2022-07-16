@@ -14,6 +14,7 @@ import com.itsol.recruit.service.UserService;
 import com.itsol.recruit.service.mapper.UserMapper;
 import com.itsol.recruit.web.vm.SeachVM;
 import com.itsol.recruit.web.vm.StatisticalVm;
+import com.itsol.recruit.web.vm.UserProfileVM;
 import com.sun.xml.internal.ws.handler.HandlerException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -155,5 +156,18 @@ public class UserServiceImpl implements UserService {
     }
     public List<StatisticalDTO> statistical(StatisticalVm statisticalVm) {
         return userRepositoryimpl.StatisticalData(statisticalVm);
+    }
+
+    @Override
+    public User saveUser(UserProfileVM userVM) {
+        User user=userRepository.findUserById(userVM.getId());
+        user.setName(userVM.getName());
+        user.setEmail(userVM.getEmail());
+        user.setGender(userVM.getGender());
+        user.setAvatarName(userVM.getAvatarName());
+        user.setBirthDay(userVM.getBirthDay());
+        user.setHomeTown(userVM.getHomeTown());
+        user.setPhoneNumber(userVM.getPhoneNumber());
+        return userRepository.save(user);
     }
 }

@@ -1,6 +1,7 @@
 package com.itsol.recruit.web.admin;
 
 import com.itsol.recruit.core.Constants;
+import com.itsol.recruit.dto.JobsRegisterDTO;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.JobsRegister;
 import com.itsol.recruit.entity.Profile;
@@ -63,6 +64,18 @@ public class JobsRegisterController {
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Sever Error"));
+        }
+    }
+
+    @PostMapping(value = "job-register/interview")
+    public ResponseEntity<ResponseDTO> sendEmailInterview(@RequestBody JobsRegisterDTO jobsRegisterDTO){
+        try{
+            ResponseDTO responseDTO=jobsRegisterService.scheduleInterview(jobsRegisterDTO);
+            responseDTO.setStatus(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (IllegalAccessError e){
+            e.printStackTrace();
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.BAD_REQUEST,"Send email interview fail"));
         }
     }
 }
