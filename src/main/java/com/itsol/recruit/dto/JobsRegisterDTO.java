@@ -11,11 +11,27 @@ import java.util.Date;
 public class JobsRegisterDTO {
     Long id;
 
+    Long jobId;
+
+    Long userId;
+
+    Date dateRegister;
+
     Date dateInterview;
 
     String methodInterview;
 
+    String addressInterview;
+
     String mediaType;
 
+    Long statusId;
+
+    String reason;
+
+    String cvFile;
+
     LocalTime timeInterview;
+
+    boolean isDelete;
 }

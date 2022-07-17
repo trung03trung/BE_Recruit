@@ -14,14 +14,12 @@ import javax.persistence.*;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Image {
-    @Id
-    @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "IMAGE_SEQ")
-    @SequenceGenerator(name = "IMAGE_SEQ", sequenceName = "IMAGE_SEQ", allocationSize = 1, initialValue = 1)
-    Long id;
+
+
 
     private Long userId;
 
+    @Id
     @Column(name = "name")
     private String name;
 

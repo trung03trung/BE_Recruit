@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class JobsRegisterController {
     private final JobsRegisterService jobsRegisterService;
 
+
     public JobsRegisterController(JobsRegisterService jobsRegisterService) {
         this.jobsRegisterService = jobsRegisterService;
     }
@@ -77,5 +78,10 @@ public class JobsRegisterController {
             e.printStackTrace();
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.BAD_REQUEST,"Send email interview fail"));
         }
+    }
+
+    @PostMapping(value = "job-register/search")
+    public ResponseEntity<JobsRegisterVM> searchJobsRegister(@RequestBody JobsRegisterVM jobsRegisterVM){
+        return ResponseEntity.ok().body(jobsRegisterService.searchJobRegister(jobsRegisterVM));
     }
 }

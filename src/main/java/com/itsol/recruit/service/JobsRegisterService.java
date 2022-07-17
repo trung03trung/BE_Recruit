@@ -19,4 +19,6 @@ public interface JobsRegisterService {
     public ResponseDTO rejectStatus(Long id,String code,String reason);
 
     public ResponseDTO scheduleInterview(JobsRegisterDTO jobsRegisterDTO);
+
+    public JobsRegisterVM searchJobRegister(JobsRegisterVM jobsRegisterVM);
 }

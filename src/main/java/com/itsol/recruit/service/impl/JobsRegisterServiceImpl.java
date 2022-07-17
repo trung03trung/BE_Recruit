@@ -3,11 +3,14 @@ package com.itsol.recruit.service.impl;
 import com.itsol.recruit.dto.JobsRegisterDTO;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.*;
+import com.itsol.recruit.repository.JobRepository;
 import com.itsol.recruit.repository.JobsRegisterRepository;
 import com.itsol.recruit.repository.StatusJobRegisterRepository;
+import com.itsol.recruit.repository.repoimpl.JobsRegisterRepositoryImpl;
 import com.itsol.recruit.repository.repoimpl.ProfileRepositoryImpl;
 import com.itsol.recruit.service.JobsRegisterService;
 import com.itsol.recruit.service.email.EmailService;
+import com.itsol.recruit.service.mapper.JobsRegisterMapper;
 import com.itsol.recruit.web.vm.JobsRegisterVM;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 public class JobsRegisterServiceImpl implements JobsRegisterService {
@@ -27,12 +31,21 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
 
     private final StatusJobRegisterRepository statusJobRegisterRepository;
 
+    private final JobRepository jobRepository;
+
+    private final JobsRegisterRepositoryImpl jobsRegisterRepositoryImpl;
+
+    private final JobsRegisterMapper jobsRegisterMapper;
+
     private final EmailService emailService;
 
-    public JobsRegisterServiceImpl(JobsRegisterRepository jobsRegisterRepository, ProfileRepositoryImpl profileRepositoryImpl, StatusJobRegisterRepository statusJobRegisterRepository, EmailService emailService) {
+    public JobsRegisterServiceImpl(JobsRegisterRepository jobsRegisterRepository, ProfileRepositoryImpl profileRepositoryImpl, StatusJobRegisterRepository statusJobRegisterRepository, JobRepository jobRepository, JobsRegisterRepositoryImpl jobsRegisterRepositoryImpl, JobsRegisterMapper jobsRegisterMapper, EmailService emailService) {
         this.jobsRegisterRepository = jobsRegisterRepository;
         this.profileRepositoryImpl = profileRepositoryImpl;
         this.statusJobRegisterRepository = statusJobRegisterRepository;
+        this.jobRepository = jobRepository;
+        this.jobsRegisterRepositoryImpl = jobsRegisterRepositoryImpl;
+        this.jobsRegisterMapper = jobsRegisterMapper;
         this.emailService = emailService;
     }
 
@@ -59,7 +72,7 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     @Override
     public ResponseDTO changeStatus(Long id, String code) {
         JobsRegister jobsRegister=jobsRegisterRepository.findJobsRegisterById(id);
-        StatusJobRegister statusJobRegister=statusJobRegisterRepository.findStatusJobRepositoryByCode(code);
+        StatusJobRegister statusJobRegister=statusJobRegisterRepository.findStatusJobRegisterByCode(code);
         jobsRegister.setStatusJobRegister(statusJobRegister);
         jobsRegisterRepository.save(jobsRegister);
         return new ResponseDTO("Change status success");
@@ -68,9 +81,14 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     @Override
     public ResponseDTO rejectStatus(Long id, String code, String reason) {
         JobsRegister jobsRegister=jobsRegisterRepository.findJobsRegisterById(id);
-        StatusJobRegister statusJobRegister=statusJobRegisterRepository.findStatusJobRepositoryByCode(code);
+        StatusJobRegister statusJobRegister=statusJobRegisterRepository.findStatusJobRegisterByCode(code);
         jobsRegister.setStatusJobRegister(statusJobRegister);
         jobsRegister.setReason(reason);
+        if(jobsRegister.getStatusJobRegister().getCode().equals("Đã tuyển")){
+            Job job=jobRepository.findJobById(jobsRegister.getJob().getId());
+            job.setQtyPerson(job.getQtyPerson()-1);
+            jobRepository.save(job);
+        }
         jobsRegisterRepository.save(jobsRegister);
         return new ResponseDTO("Change status success");
     }
@@ -78,7 +96,7 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     @Override
     public ResponseDTO scheduleInterview(JobsRegisterDTO jobsRegisterDTO) throws IllegalAccessError {
         JobsRegister jobsRegister=jobsRegisterRepository.findJobsRegisterById(jobsRegisterDTO.getId());
-        StatusJobRegister statusJobRegister=statusJobRegisterRepository.findStatusJobRepositoryByCode("Đang phỏng vấn");
+        StatusJobRegister statusJobRegister=statusJobRegisterRepository.findStatusJobRegisterByCode("Đang phỏng vấn");
         jobsRegister.setStatusJobRegister(statusJobRegister);
         jobsRegister.setDateInterview(jobsRegisterDTO.getDateInterview());
         jobsRegister.setMethodInterview(jobsRegisterDTO.getMethodInterview());
@@ -93,5 +111,12 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
         emailService.sendEmail(jobsRegister.getUser().getEmail(),emails);
         jobsRegisterRepository.save(jobsRegister);
         return new ResponseDTO("Send email interview success");
+    }
+
+    @Override
+    public JobsRegisterVM searchJobRegister(JobsRegisterVM jobsRegisterVM) {
+        List<JobsRegister> jobsRegisters=jobsRegisterMapper.toEntity(jobsRegisterRepositoryImpl.seachJobsRegister(jobsRegisterVM));
+        jobsRegisterVM.setJobsRegisters(jobsRegisters);
+        return jobsRegisterVM;
     }
 }
