@@ -1,4 +1,6 @@
 package com.itsol.recruit.web.publicCtl;
+
+import com.itsol.recruit.core.Constants;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -19,23 +21,23 @@ import static java.nio.file.Files.copy;
 import static java.nio.file.Paths.get;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
+
 @RestController
-@RequestMapping("/file")
+@RequestMapping(value =  Constants.Api.Path.PUBLIC)
 public class FileResourceController {
+    // define a location
     public static final String DIRECTORY = System.getProperty("user.home") + "/Downloads/uploads/";
+
     // Define a method to upload files
     @PostMapping("/upload")
     public ResponseEntity<List<String>> uploadFiles(@RequestParam("files")List<MultipartFile> multipartFiles) throws IOException {
         List<String> filenames = new ArrayList<>();
-        try {
-            for (MultipartFile file : multipartFiles) {
-                String filename = StringUtils.cleanPath(file.getOriginalFilename());
-                Path fileStorage = get(DIRECTORY, filename).toAbsolutePath().normalize();
-                copy(file.getInputStream(), fileStorage, REPLACE_EXISTING);
-                filenames.add(filename);
-            }
-        } catch (Exception e) {
-            System.out.println(e);
+        for(MultipartFile file : multipartFiles) {
+            String filename = StringUtils.cleanPath(file.getOriginalFilename());
+            Path fileStorage = get(DIRECTORY, filename).toAbsolutePath().normalize();
+            copy(file.getInputStream(), fileStorage, REPLACE_EXISTING);
+            System.out.println(filename);
+//            filenames.add(filename);
         }
         return ResponseEntity.ok().body(filenames);
     }

@@ -17,8 +17,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.NonUniqueResultException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.Optional;
 
@@ -92,9 +97,9 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
                 return ResponseEntity.ok().body(
                         new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
             }
-        /* if(user.getPhoneNumber() == null || user.getEmail()== null){
-
-        }*/
+            if (ObjectUtils.isEmpty(jobRegisterPublicVM.getPdf()) || jobRegisterPublicVM.getPdf().isEmpty()) {
+                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "BAD_REQUEST"));
+            }
             StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRepositoryByCode("Chờ xét duyệt");
             JobsRegister jobsRegister = new JobsRegister();
             jobsRegister.setJob(job);
@@ -102,10 +107,9 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
             jobsRegister.setDateRegister(new Date());
             jobsRegister.setStatusJobRegister(statusJobRegister);
             jobsRegister.setDelete(false);
-            /*jobsRegister.setDateInterview(new Date());*/
             jobsRegister.setReason(jobRegisterPublicVM.getCode());
             jobsRegister.setMediaType(jobRegisterPublicVM.getMedia_type());
-            jobsRegister.setCvFile(jobRegisterPublicVM.getPdf());
+            jobsRegister.setCvFile("1");
             jobsRegisterRepository.save(jobsRegister);
             return ResponseEntity.ok().body(
                     new ResponseDTO(HttpStatus.OK, "ok"));
@@ -116,5 +120,4 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
             throw new RuntimeException(e);
         }
     }
-
 }

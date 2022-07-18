@@ -14,4 +14,5 @@ import java.util.List;
 @RequestMapping(value = Constants.Api.Path.PUBLIC)
 @CrossOrigin
 public class CompanyController {
+
 }
