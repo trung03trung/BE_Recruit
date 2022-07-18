@@ -17,11 +17,7 @@ import java.util.Set;
 public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryExt, PagingAndSortingRepository<User,Long> {
     User findByUserName(String userName);
 
-    User findByEmail(String email);
-
     User findUserByEmail(String email);
-
-    User findUserByPhoneNumber(String number);
 
     User findUserById(Long id);
 

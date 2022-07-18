@@ -15,8 +15,6 @@ import javax.persistence.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Image {
 
-
-
     private Long userId;
 
     @Id

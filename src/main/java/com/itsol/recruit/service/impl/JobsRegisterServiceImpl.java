@@ -11,16 +11,20 @@ import com.itsol.recruit.repository.repoimpl.ProfileRepositoryImpl;
 import com.itsol.recruit.service.JobsRegisterService;
 import com.itsol.recruit.service.email.EmailService;
 import com.itsol.recruit.service.mapper.JobsRegisterMapper;
+import com.itsol.recruit.repository.UserRepository;
+import com.itsol.recruit.web.vm.JobRegisterPublicVM;
 import com.itsol.recruit.web.vm.JobsRegisterVM;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Date;
 
 @Service
 public class JobsRegisterServiceImpl implements JobsRegisterService {
@@ -39,7 +43,9 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
 
     private final EmailService emailService;
 
-    public JobsRegisterServiceImpl(JobsRegisterRepository jobsRegisterRepository, ProfileRepositoryImpl profileRepositoryImpl, StatusJobRegisterRepository statusJobRegisterRepository, JobRepository jobRepository, JobsRegisterRepositoryImpl jobsRegisterRepositoryImpl, JobsRegisterMapper jobsRegisterMapper, EmailService emailService) {
+    private final UserRepository userRepository;
+
+    public JobsRegisterServiceImpl(JobsRegisterRepository jobsRegisterRepository, ProfileRepositoryImpl profileRepositoryImpl, StatusJobRegisterRepository statusJobRegisterRepository, JobRepository jobRepository, JobsRegisterRepositoryImpl jobsRegisterRepositoryImpl, JobsRegisterMapper jobsRegisterMapper, EmailService emailService, UserRepository userRepository) {
         this.jobsRegisterRepository = jobsRegisterRepository;
         this.profileRepositoryImpl = profileRepositoryImpl;
         this.statusJobRegisterRepository = statusJobRegisterRepository;
@@ -47,16 +53,17 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
         this.jobsRegisterRepositoryImpl = jobsRegisterRepositoryImpl;
         this.jobsRegisterMapper = jobsRegisterMapper;
         this.emailService = emailService;
+        this.userRepository = userRepository;
     }
 
     @Override
     public JobsRegisterVM getAllJobsRegister(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
-        Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
-        Page<JobsRegister> jobsRegisters= jobsRegisterRepository.findAll(pageable);
-        JobsRegisterVM jobsRegisterVM=new JobsRegisterVM(jobsRegisters.getContent(),jobsRegisters.getNumber(),jobsRegisters.getSize(),jobsRegisters.getTotalElements(),
-                jobsRegisters.getTotalPages(),jobsRegisters.isLast());
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<JobsRegister> jobsRegisters = jobsRegisterRepository.findAll(pageable);
+        JobsRegisterVM jobsRegisterVM = new JobsRegisterVM(jobsRegisters.getContent(), jobsRegisters.getNumber(), jobsRegisters.getSize(), jobsRegisters.getTotalElements(),
+                jobsRegisters.getTotalPages(), jobsRegisters.isLast());
         return jobsRegisterVM;
     }
 
@@ -64,8 +71,9 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     public JobsRegister getById(Long id) {
         return jobsRegisterRepository.findJobsRegisterById(id);
     }
-    public Profile getProfileByJobRegister(Long id){
-        JobsRegister jobsRegister=jobsRegisterRepository.findJobsRegisterById(id);
+
+    public Profile getProfileByJobRegister(Long id) {
+        JobsRegister jobsRegister = jobsRegisterRepository.findJobsRegisterById(id);
         return profileRepositoryImpl.getProfileByUser(jobsRegister.getUser());
     }
 
@@ -80,6 +88,7 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
 
     @Override
     public ResponseDTO rejectStatus(Long id, String code, String reason) {
+
         JobsRegister jobsRegister=jobsRegisterRepository.findJobsRegisterById(id);
         StatusJobRegister statusJobRegister=statusJobRegisterRepository.findStatusJobRegisterByCode(code);
         jobsRegister.setStatusJobRegister(statusJobRegister);
@@ -118,5 +127,31 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
         List<JobsRegister> jobsRegisters=jobsRegisterMapper.toEntity(jobsRegisterRepositoryImpl.seachJobsRegister(jobsRegisterVM));
         jobsRegisterVM.setJobsRegisters(jobsRegisters);
         return jobsRegisterVM;
+    }
+
+    public ResponseEntity<ResponseDTO> addJobRegis(JobRegisterPublicVM jobRegisterPublicVM) {
+        Job job = jobRepository.findJobById(jobRegisterPublicVM.getJobId());
+        User user = userRepository.findByUserName(jobRegisterPublicVM.getUserName());
+        if (job == null || user == null) {
+            return ResponseEntity.ok().body(
+                    new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
+        }
+        /* if(user.getPhoneNumber() == null || user.getEmail()== null){
+
+        }*/
+        StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRegisterByCode("Chờ xét duyệt");
+        JobsRegister jobsRegister = new JobsRegister();
+        jobsRegister.setJob(job);
+        jobsRegister.setUser(user);
+        jobsRegister.setDateRegister(new Date());
+        jobsRegister.setStatusJobRegister(statusJobRegister);
+        jobsRegister.setDelete(false);
+        /*jobsRegister.setDateInterview(new Date());*/
+        jobsRegister.setReason(jobRegisterPublicVM.getCode());
+        jobsRegister.setMediaType(jobRegisterPublicVM.getMedia_type());
+        jobsRegister.setCvFile(jobRegisterPublicVM.getPdf());
+        jobsRegisterRepository.save(jobsRegister);
+        return ResponseEntity.ok().body(
+                new ResponseDTO(HttpStatus.OK, "ok"));
     }
 }
