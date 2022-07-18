@@ -1,4 +1,4 @@
-package com.itsol.recruit.web.user;
+package com.itsol.recruit.web.admin;
 
 import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.dto.ResponseDTO;
@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = Constants.Api.Path.PUBLIC)
+@RequestMapping(value = Constants.Api.Path.ADMIN)
 
 public class UserController {
 
@@ -53,8 +53,8 @@ public class UserController {
     }
 
     @PutMapping(value = "changeThePassWord")
-    public ResponseEntity<Object> changThePassWord(@RequestBody UserDTO user) {
-        return ResponseEntity.ok().body(userService.changeThePassWord(user));
+    public ResponseEntity<Object> changThePassWord(@RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok().body(userService.changeThePassWord(userDTO));
     }
 
     @PutMapping(value = "deactivateUser")
@@ -75,7 +75,7 @@ public class UserController {
         }
     }
     @PostMapping(value = "/statistical")
-    public ResponseEntity<List<StatisticalDTO>> creatNewJob(@Valid @RequestBody StatisticalVm statisticalVm){
+    public ResponseEntity<List<StatisticalDTO>> statistical(@Valid @RequestBody StatisticalVm statisticalVm){
         return ResponseEntity.ok().body(userService.statistical(statisticalVm));
     }
 

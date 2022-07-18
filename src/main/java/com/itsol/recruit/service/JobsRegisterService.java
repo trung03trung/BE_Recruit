@@ -3,7 +3,9 @@ package com.itsol.recruit.service;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.JobsRegister;
 import com.itsol.recruit.entity.Profile;
+import com.itsol.recruit.web.vm.JobRegisterPublicVM;
 import com.itsol.recruit.web.vm.JobsRegisterVM;
+import org.springframework.http.ResponseEntity;
 
 public interface JobsRegisterService {
 
@@ -16,4 +18,6 @@ public interface JobsRegisterService {
     public ResponseDTO changeStatus(Long id,String code);
 
     public ResponseDTO rejectStatus(Long id,String code,String reason);
+
+    public ResponseEntity<ResponseDTO> addJobRegis(JobRegisterPublicVM jobRegisterPublicVM);
 }
