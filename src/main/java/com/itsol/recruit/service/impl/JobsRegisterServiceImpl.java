@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class JobsRegisterServiceImpl implements JobsRegisterService {
@@ -45,10 +46,10 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     public JobsRegisterVM getAllJobsRegister(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
-        Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
-        Page<JobsRegister> jobsRegisters= jobsRegisterRepository.findAll(pageable);
-        JobsRegisterVM jobsRegisterVM=new JobsRegisterVM(jobsRegisters.getContent(),jobsRegisters.getNumber(),jobsRegisters.getSize(),jobsRegisters.getTotalElements(),
-                jobsRegisters.getTotalPages(),jobsRegisters.isLast());
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<JobsRegister> jobsRegisters = jobsRegisterRepository.findAll(pageable);
+        JobsRegisterVM jobsRegisterVM = new JobsRegisterVM(jobsRegisters.getContent(), jobsRegisters.getNumber(), jobsRegisters.getSize(), jobsRegisters.getTotalElements(),
+                jobsRegisters.getTotalPages(), jobsRegisters.isLast());
         return jobsRegisterVM;
     }
 
@@ -56,15 +57,16 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     public JobsRegister getById(Long id) {
         return jobsRegisterRepository.findJobsRegisterById(id);
     }
-    public Profile getProfileByJobRegister(Long id){
-        JobsRegister jobsRegister=jobsRegisterRepository.findJobsRegisterById(id);
+
+    public Profile getProfileByJobRegister(Long id) {
+        JobsRegister jobsRegister = jobsRegisterRepository.findJobsRegisterById(id);
         return profileRepositoryImpl.getProfileByUser(jobsRegister.getUser());
     }
 
     @Override
     public ResponseDTO changeStatus(Long id, String code) {
-        JobsRegister jobsRegister=jobsRegisterRepository.findJobsRegisterById(id);
-        StatusJobRegister statusJobRegister=statusJobRegisterRepository.findStatusJobRepositoryByCode(code);
+        JobsRegister jobsRegister = jobsRegisterRepository.findJobsRegisterById(id);
+        StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRepositoryByCode(code);
         jobsRegister.setStatusJobRegister(statusJobRegister);
         jobsRegisterRepository.save(jobsRegister);
         return new ResponseDTO("Change status success");
@@ -72,8 +74,8 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
 
     @Override
     public ResponseDTO rejectStatus(Long id, String code, String reason) {
-        JobsRegister jobsRegister=jobsRegisterRepository.findJobsRegisterById(id);
-        StatusJobRegister statusJobRegister=statusJobRegisterRepository.findStatusJobRepositoryByCode(code);
+        JobsRegister jobsRegister = jobsRegisterRepository.findJobsRegisterById(id);
+        StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRepositoryByCode(code);
         jobsRegister.setStatusJobRegister(statusJobRegister);
         jobsRegister.setReason(reason);
         jobsRegisterRepository.save(jobsRegister);
@@ -82,23 +84,29 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
 
     @Override
     public ResponseEntity<ResponseDTO> addJobRegis(JobRegisterPublicVM jobRegisterPublicVM) {
-        Job job =  jobRepository.findJobById(jobRegisterPublicVM.getJobId());
+        Job job = jobRepository.findJobById(jobRegisterPublicVM.getJobId());
         User user = userRepository.findByUserName(jobRegisterPublicVM.getUserName());
-        if(job == null || user == null){
+        if (job == null || user == null) {
             return ResponseEntity.ok().body(
                     new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
         }
+        /* if(user.getPhoneNumber() == null || user.getEmail()== null){
+
+        }*/
+        StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRepositoryByCode("Chờ xét duyệt");
         JobsRegister jobsRegister = new JobsRegister();
         jobsRegister.setJob(job);
         jobsRegister.setUser(user);
         jobsRegister.setDateRegister(new Date());
-        jobsRegister.setDateInterview(new Date());
+        jobsRegister.setStatusJobRegister(statusJobRegister);
         jobsRegister.setDelete(false);
-
-
+        /*jobsRegister.setDateInterview(new Date());*/
+        jobsRegister.setReason(jobRegisterPublicVM.getCode());
+        jobsRegister.setMediaType(jobRegisterPublicVM.getMedia_type());
+        jobsRegister.setCvFile(jobRegisterPublicVM.getPdf());
         jobsRegisterRepository.save(jobsRegister);
-
         return ResponseEntity.ok().body(
                 new ResponseDTO(HttpStatus.OK, "ok"));
     }
+
 }
