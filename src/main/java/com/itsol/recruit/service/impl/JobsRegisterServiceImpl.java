@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NonUniqueResultException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -84,29 +85,36 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
 
     @Override
     public ResponseEntity<ResponseDTO> addJobRegis(JobRegisterPublicVM jobRegisterPublicVM) {
-        Job job = jobRepository.findJobById(jobRegisterPublicVM.getJobId());
-        User user = userRepository.findByUserName(jobRegisterPublicVM.getUserName());
-        if (job == null || user == null) {
-            return ResponseEntity.ok().body(
-                    new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
-        }
+        try {
+            Job job = jobRepository.findJobById(jobRegisterPublicVM.getJobId());
+            User user = userRepository.findByUserName(jobRegisterPublicVM.getUserName());
+            if (job == null || user == null) {
+                return ResponseEntity.ok().body(
+                        new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
+            }
         /* if(user.getPhoneNumber() == null || user.getEmail()== null){
 
         }*/
-        StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRepositoryByCode("Chờ xét duyệt");
-        JobsRegister jobsRegister = new JobsRegister();
-        jobsRegister.setJob(job);
-        jobsRegister.setUser(user);
-        jobsRegister.setDateRegister(new Date());
-        jobsRegister.setStatusJobRegister(statusJobRegister);
-        jobsRegister.setDelete(false);
-        /*jobsRegister.setDateInterview(new Date());*/
-        jobsRegister.setReason(jobRegisterPublicVM.getCode());
-        jobsRegister.setMediaType(jobRegisterPublicVM.getMedia_type());
-        jobsRegister.setCvFile(jobRegisterPublicVM.getPdf());
-        jobsRegisterRepository.save(jobsRegister);
-        return ResponseEntity.ok().body(
-                new ResponseDTO(HttpStatus.OK, "ok"));
+            StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRepositoryByCode("Chờ xét duyệt");
+            JobsRegister jobsRegister = new JobsRegister();
+            jobsRegister.setJob(job);
+            jobsRegister.setUser(user);
+            jobsRegister.setDateRegister(new Date());
+            jobsRegister.setStatusJobRegister(statusJobRegister);
+            jobsRegister.setDelete(false);
+            /*jobsRegister.setDateInterview(new Date());*/
+            jobsRegister.setReason(jobRegisterPublicVM.getCode());
+            jobsRegister.setMediaType(jobRegisterPublicVM.getMedia_type());
+            jobsRegister.setCvFile(jobRegisterPublicVM.getPdf());
+            jobsRegisterRepository.save(jobsRegister);
+            return ResponseEntity.ok().body(
+                    new ResponseDTO(HttpStatus.OK, "ok"));
+        } catch (NonUniqueResultException e) {
+            return ResponseEntity.ok().body(
+                    new ResponseDTO(HttpStatus.BAD_REQUEST, "BAD_REQUEST"));
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
 }
