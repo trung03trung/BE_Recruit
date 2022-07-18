@@ -4,7 +4,9 @@ import com.itsol.recruit.dto.JobsRegisterDTO;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.JobsRegister;
 import com.itsol.recruit.entity.Profile;
+import com.itsol.recruit.web.vm.JobRegisterPublicVM;
 import com.itsol.recruit.web.vm.JobsRegisterVM;
+import org.springframework.http.ResponseEntity;
 
 public interface JobsRegisterService {
 
@@ -21,4 +23,6 @@ public interface JobsRegisterService {
     public ResponseDTO scheduleInterview(JobsRegisterDTO jobsRegisterDTO);
 
     public JobsRegisterVM searchJobRegister(JobsRegisterVM jobsRegisterVM);
+
+    public ResponseEntity<ResponseDTO> addJobRegis(JobRegisterPublicVM jobRegisterPublicVM);
 }
