@@ -25,7 +25,8 @@ public class JobRepositoryImpl extends BaseRepository {
                 "    SELECT a.*, rownum r__\n" +
                 "    FROM\n" +
                 "    (\n" +
-                "        SELECT * FROM JOB J JOIN JOB_POSITION JB ON J.job_position_id=JB.id  WHERE UPPER(J.name) LIKE '%" + jobVM.getName().toUpperCase() + "%' or UPPER(J.address_work) LIKE '%" + jobVM.getName().toUpperCase() + "%'\n" +
+                "        SELECT * FROM JOB J JOIN JOB_POSITION JB ON J.job_position_id=JB.id JOIN STATUS_JOB S ON S.ID=J.status_id  WHERE UPPER(J.name) LIKE '%" + jobVM.getName().toUpperCase() + "%' " +
+                " or UPPER(S.code) LIKE '%" + jobVM.getName().toUpperCase() + "%'\n" +
                 "         OR UPPER(JB.code)  LIKE '%" + jobVM.getName().toUpperCase() + "%' ORDER BY j.id DESC \n" +
                 "    ) a\n" +
                 "    WHERE rownum < (((" + jobVM.getPageNo() + "+1) * " + jobVM.getPageSize() + ") + 1 )\n" +

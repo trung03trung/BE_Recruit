@@ -6,6 +6,7 @@ import com.itsol.recruit.dto.UserDTO;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.web.vm.SeachVM;
 import com.itsol.recruit.web.vm.StatisticalVm;
+import com.itsol.recruit.web.vm.UserProfileVM;
 
 import java.util.List;
 
@@ -20,4 +21,5 @@ public interface UserService {
     public ResponseDTO addUserJe(UserDTO dto);
     public List<StatisticalDTO> statistical(StatisticalVm statisticalVm);
 
+    public User saveUser(UserProfileVM user);
 }

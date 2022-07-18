@@ -43,4 +43,20 @@ public class EmailService {
                 "<a href=\" " + link + "\">Click vào đây để kích hoạt tài khoản</a>";
 
     }
+
+    public String buildMailInterview(String jobName,String time,
+                                     String date,String mediatype,
+                                     String jeName,String jePhone,
+                                     String userName){
+        return "<p>Dear anh/chị "+userName+" <p><br>"
+                +"<p>Công ty ITSOL rất vui và vinh hạnh khi nhận được hồ sơ ứng tuyển của anh/chị vào vị trí "
+                +jobName+". Chúng tôi đã nhận được CV của anh/chị và mong muốn có một cuộc phỏng vấn để trao "
+                +"đổi trực tiếp về kiến thức cũng như công việc mà anh/chị đã ứng tuyển.</p><br>"
+                +"<p>Thời gian phỏng vấn dự kiến vào lúc "+time+" ngày "+date+" qua công cụ "+mediatype
+                +"(chúng tôi sẽ gửi lại link sau khi anh/chị xác nhận đồng ý phỏng vấn bằng các reply lại mail này).</p><br>"
+                +"<p>Chúng tôi rất hy vọng anh/chị sớm phản hồi và mong rằng chúng ta sẽ được hợp tác cùng nhau trong tương lai.</p><br>"
+                +"<p>Mọi thắc mắc xin vui lòng liên hệ tới anh "+jeName+", SĐT: "+jePhone+" trong giờ hành chính để được giải đáp.</p><br>"
+                +"<p>Thanks & best regards,</p><br><p>ITSOL JSC</p><br><p>Head office: Tầng 3, tòa nhà 3A, ngõ 82, phố Duy Tân, phường Dịch Vọng Hậu,quận Cầu Giấy, Hà Nội</p><br>"
+                +"<p>Hotline: 0123456789</p>";
+    }
 }
