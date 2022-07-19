@@ -109,7 +109,7 @@ public class UserController {
         }
     }
 
-    @PutMapping(value = "/user/update")
+    @PostMapping(value = "/user/update")
     public ResponseEntity<User> updateUserProfile(@RequestBody UserProfileVM userVM){
         return ResponseEntity.ok().body(userService.saveUser(userVM));
     }
