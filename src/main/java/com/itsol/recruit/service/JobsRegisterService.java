@@ -10,6 +10,8 @@ import com.itsol.recruit.web.vm.JobsRegisterVM;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 public interface JobsRegisterService {
 
     public JobsRegisterVM getAllJobsRegister(int pageNo, int pageSize, String sortBy, String sortDir);
@@ -26,5 +28,5 @@ public interface JobsRegisterService {
 
     public JobsRegisterVM searchJobRegister(JobsRegisterVM jobsRegisterVM);
 
-    public ResponseEntity<ResponseDTO> addJobRegister(JobRegisterPublicVM jobRegisterPublicVM);
+    public ResponseEntity<ResponseDTO> addJobRegister(JobRegisterPublicVM jobRegisterPublicVM)  ;
 }

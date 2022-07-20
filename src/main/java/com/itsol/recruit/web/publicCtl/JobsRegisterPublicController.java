@@ -30,9 +30,7 @@ public class JobsRegisterPublicController {
     }
 
     @PostMapping("/register-job-public")
-    public ResponseEntity<ResponseEntity<ResponseDTO>> registerJobPublic(@RequestBody JobRegisterPublicVM jobRegisterPublic){
+    public ResponseEntity<ResponseEntity<ResponseDTO>> registerJobPublic(@RequestBody JobRegisterPublicVM jobRegisterPublic) throws IOException {
         return ResponseEntity.ok().body(jobsRegisterService.addJobRegister(jobRegisterPublic));
     }
-
-
 }

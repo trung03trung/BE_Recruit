@@ -70,4 +70,9 @@ public class UserPublicController {
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.NOT_FOUND,"Fail upload file"));
         }
     }
+    @GetMapping(value = "/number-user-je")
+    public ResponseEntity<Integer> getCountUserJe(){
+        return ResponseEntity.ok().body(userService.getNumberUserJe());
+    }
+
 }

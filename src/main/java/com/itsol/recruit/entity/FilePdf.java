@@ -4,6 +4,7 @@ package com.itsol.recruit.entity;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 @Table(name="file_pdf")
@@ -12,12 +13,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class FilePdf {
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FILE_PDF_SEQ")
-    @SequenceGenerator(name = "FILE_PDF_SEQ", sequenceName = "FILE_PDF_SEQ", allocationSize = 1, initialValue = 1)
-    Long id;
-
     @Id
     @Column(name = "file_name")
     String file_name;
@@ -28,6 +24,7 @@ public class FilePdf {
     @Column(name = "size_url", nullable = false)
     Long size_url;
 
+    @Nullable
     @Lob
     @Column(length = 1000000)
     private byte[] data;

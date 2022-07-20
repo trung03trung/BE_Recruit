@@ -3,11 +3,9 @@ package com.itsol.recruit.service.impl;
 import com.itsol.recruit.dto.JobsRegisterDTO;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.*;
-import com.itsol.recruit.file_util.FileUploadUtil;
 import com.itsol.recruit.repository.*;
 import com.itsol.recruit.repository.repoimpl.ProfileRepositoryImpl;
 import com.itsol.recruit.service.JobsRegisterService;
-import com.itsol.recruit.web.vm.FilePdfVM;
 import com.itsol.recruit.web.vm.JobRegisterPublicVM;
 import com.itsol.recruit.web.vm.JobsRegisterVM;
 import org.springframework.data.domain.Page;
@@ -18,10 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.NonUniqueResultException;
+import java.io.IOException;
 import java.util.Date;
 
 @Service
@@ -98,7 +94,7 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     }
 
     @Override
-    public ResponseEntity<ResponseDTO> addJobRegister(JobRegisterPublicVM jobRegisterPublicVM) {
+    public ResponseEntity<ResponseDTO> addJobRegister(JobRegisterPublicVM jobRegisterPublicVM)  {
         Job job = jobRepository.findJobById(jobRegisterPublicVM.getJobId());
         User user = userRepository.findByUserName(jobRegisterPublicVM.getUserName());
         System.out.println(job);
@@ -110,6 +106,12 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
         if (ObjectUtils.isEmpty(jobRegisterPublicVM.getPdf()) || jobRegisterPublicVM.getPdf().isEmpty()) {
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "BAD_REQUEST"));
         }
+        FilePdf filePdf = new FilePdf();
+        filePdf.setFile_name(jobRegisterPublicVM.getPdf());
+        filePdf.setSize_url(10L);
+        filePdf.setDownload_uri("");
+        filePdfRepository.save(filePdf);
+
         StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRegisterByCode("Chờ duyệt");
         JobsRegister jobsRegister = new JobsRegister();
         jobsRegister.setJob(job);
@@ -119,7 +121,9 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
         jobsRegister.setDelete(false);
         jobsRegister.setReason("Lý Do");
         jobsRegister.setMediaType("Trực tiếp");
+        jobsRegister.setCv_file(filePdf);
         jobsRegisterRepository.save(jobsRegister);
+
         return ResponseEntity.ok().body(
                 new ResponseDTO(HttpStatus.OK, "ok"));
     }

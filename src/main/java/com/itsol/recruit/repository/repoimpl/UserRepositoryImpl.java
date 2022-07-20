@@ -6,6 +6,7 @@ import com.itsol.recruit.repository.BaseRepository;
 import com.itsol.recruit.repository.repoext.UserRepositoryExt;
 import com.itsol.recruit.web.vm.SeachVM;
 import com.itsol.recruit.web.vm.StatisticalVm;
+import io.swagger.models.auth.In;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
 import java.text.SimpleDateFormat;
@@ -96,6 +97,14 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
                 "     success_recruited_applicant,\n" +
                 "     false_applicant";
         return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(StatisticalDTO.class));
+    }
+    public int geNumberUserJe(){
+        String query = "SELECT count(*) as countId\n" +
+                "FROM USERS\n" +
+                "JOIN PERMISSTION ON USERS.ID = PERMISSTION.USER_ID\n" +
+                "JOIN ROLES ON ROLES.ID = PERMISSTION.ROLE_ID\n" +
+                "WHERE ROLES.ID = 2";
+        return getJdbcTemplate().queryForObject(query,Integer.class);
     }
 }
 
