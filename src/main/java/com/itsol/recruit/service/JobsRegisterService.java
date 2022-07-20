@@ -7,6 +7,7 @@ import com.itsol.recruit.entity.Profile;
 import com.itsol.recruit.web.vm.JobRegisterPublicVM;
 import com.itsol.recruit.web.vm.JobsRegisterVM;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface JobsRegisterService {
 
@@ -24,5 +25,5 @@ public interface JobsRegisterService {
 
     public JobsRegisterVM searchJobRegister(JobsRegisterVM jobsRegisterVM);
 
-    public ResponseEntity<ResponseDTO> addJobRegis(JobRegisterPublicVM jobRegisterPublicVM);
+    public ResponseEntity<ResponseDTO> addJobRegis(JobRegisterPublicVM jobRegisterPublicVM, MultipartFile multipartFile);
 }
