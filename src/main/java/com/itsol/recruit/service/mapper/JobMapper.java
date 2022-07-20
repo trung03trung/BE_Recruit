@@ -6,6 +6,7 @@ import com.itsol.recruit.repository.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,7 +71,6 @@ public class JobMapper implements EntityMapper<JobDTO,Job>{
         dto.setUserUpdateId(entity.getUserUpdate().getId());
         dto.setStatusId(entity.getStatusJob().getId());
         return dto;
-
     }
 
     @Override

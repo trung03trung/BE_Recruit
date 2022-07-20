@@ -48,8 +48,8 @@ public class JobsRegister {
     String reason;
 
     @OneToOne
-    @JoinColumn(name="cv_file", nullable = false)
-    private FilePdf cv_file;
+    @JoinColumn(name="cv_file")
+    FilePdf cv_file;
 
     @Column(name = "media_type",nullable = false)
     String mediaType;
