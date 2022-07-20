@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.NonUniqueResultException;
+import java.io.IOException;
 import java.util.Date;
 
 @Service
@@ -106,9 +107,14 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
             filePdfVM.setDownload_uri("/downloadFile/" + filecode);
             filePdfVM.setSize_url(size);
             filePdfVM.setData(multipartFile.getBytes());
-//            filePdfService.addFilePdf(filePdfVM);
 
             FilePdf filePdf = new FilePdf();
+            filePdf.setFile_name(filePdfVM.getFile_name());
+            filePdf.setDownload_uri(filePdfVM.getDownload_uri());
+            filePdf.setSize_url(filePdfVM.getSize_url());
+            filePdf.setData(filePdfVM.getData());
+            filePdfRepository.save(filePdf);
+
             filePdf.setFile_name(jobRegisterPublicVM.getUserName());
             StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRepositoryByCode("Chờ duyệt");
             JobsRegister jobsRegister = new JobsRegister();
