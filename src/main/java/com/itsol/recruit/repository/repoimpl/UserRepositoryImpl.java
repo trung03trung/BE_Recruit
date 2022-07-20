@@ -26,22 +26,23 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
                 "    FROM\n" +
                 "    (\n" +
                 "        SELECT USERS.ID, USERS.NAME, USERS.USER_NAME, USERS.EMAIL, USERS.HOME_TOWN, USERS.GENDER, USERS.BIRTH_DAY, USERS.ACTIVATE, USERS.IS_DELETE, USERS.PHONE_NUMBER,USERS.AVATAR FROM USERS JOIN PERMISSTION ON USERS.ID = PERMISSTION.USER_ID\n" +
-                "                  JOIN ROLES ON ROLES.ID = PERMISSTION.ROLE_ID WHERE ROLES.ID = 2 and name LIKE '%" + seachVM.getName() + "%' and user_name LIKE '%" + seachVM.getUserName() + "%' and email LIKE '%" + seachVM.getEmail() + "%'\n" +
+                "                  JOIN ROLES ON ROLES.ID = PERMISSTION.ROLE_ID WHERE ROLES.ID = 3 and name LIKE '%" + seachVM.getName() + "%' and user_name LIKE '%" + seachVM.getUserName() + "%' and email LIKE '%" + seachVM.getEmail() + "%'\n" +
                 "        ORDER BY id DESC\n" +
                 "    ) a\n" +
                 "    WHERE rownum < ((" + seachVM.getPageNumber() + " * " + seachVM.getPageSize() + ") + 1 )\n" +
                 ")\n" +
                 "WHERE r__ >= (((" + seachVM.getPageNumber() + "-1) * " + seachVM.getPageSize() + ") + 1)" +
                 "ORDER BY " + seachVM.getSortColum() + " " + seachVM.getSortT();
+        System.out.println(getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(User.class)));
         return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(User.class));
     }
 
 
-    public List<StatisticalDTO> StatisticalData(StatisticalVm statisticalDTO) {
-        String strS = statisticalDTO.getDatestart();
-        String strE = statisticalDTO.getDateend();
-        System.out.println(statisticalDTO.getDatestart());
-        System.out.println(statisticalDTO.getDateend());
+    public List<StatisticalDTO> StatisticalData(StatisticalVm statisticalVm) {
+        String strS = statisticalVm.getDatestart();
+        String strE = statisticalVm.getDateend();
+        System.out.println(statisticalVm.getDatestart());
+        System.out.println(statisticalVm.getDateend());
         String query = "WITH time_filtered_job AS\n" +
                 "  (SELECT *\n" +
                 "   FROM job\n" +
@@ -58,13 +59,13 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
                 "   FROM time_filtered_job j\n" +
                 "   INNER JOIN jobs_register jr ON jr.job_id = j.id\n" +
                 "   INNER JOIN status_job_register ps ON ps.id = jr.status_id\n" +
-                "   AND ps.code = 'P_INTERVIEW'),\n" +
+                "   AND ps.code = 'Chờ phỏng vấn'),\n" +
                 "     interviewing AS\n" +
                 "  (SELECT count(jr.job_id) interviewing\n" +
                 "   FROM time_filtered_job j\n" +
                 "   INNER JOIN jobs_register jr ON jr.job_id = j.id\n" +
                 "   INNER JOIN status_job_register ps ON ps.id = jr.status_id\n" +
-                "   AND ps.code = 'P_APPROVED'),\n" +
+                "   AND ps.code = 'Đang phỏng vấn'),\n" +
                 "     total_apply AS\n" +
                 "  (SELECT count(*) total_apply\n" +
                 "   FROM time_filtered_job j\n" +
@@ -74,13 +75,13 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
                 "   FROM time_filtered_job j\n" +
                 "   INNER JOIN jobs_register jr ON jr.job_id = j.id\n" +
                 "   INNER JOIN status_job_register ps ON ps.id = jr.status_id\n" +
-                "   AND ps.code = 'P_SUCCESS'),\n" +
+                "   AND ps.code = 'Đã tuyển'),\n" +
                 "     false_applicant AS\n" +
                 "  (SELECT count(jr.job_id) false_applicant\n" +
                 "   FROM time_filtered_job j\n" +
                 "   INNER JOIN jobs_register jr ON jr.job_id = j.id\n" +
                 "   INNER JOIN status_job_register ps ON ps.id = jr.status_id\n" +
-                "   AND ps.code = 'false')\n" +
+                "   AND ps.code = 'Ứng viên bị từ chối')\n" +
                 "SELECT all_job,\n" +
                 "       nvl(total_view_job, 0) total_view_job,\n" +
                 "       waiting_for_interview,\n" +

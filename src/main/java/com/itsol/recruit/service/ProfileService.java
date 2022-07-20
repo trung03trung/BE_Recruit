@@ -12,5 +12,7 @@ public class ProfileService {
         this.academicLevelRepository = academicLevelRepository;
     }
 
-//    public List<AcademicLevel> getAll(){}
+    public List<AcademicLevel> getAll(){
+        return academicLevelRepository.findAll();
+    }
 }

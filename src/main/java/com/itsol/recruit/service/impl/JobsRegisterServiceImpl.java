@@ -3,12 +3,15 @@ package com.itsol.recruit.service.impl;
 import com.itsol.recruit.dto.JobsRegisterDTO;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.*;
+import com.itsol.recruit.file_util.FileUploadUtil;
+import com.itsol.recruit.repository.*;
+import com.itsol.recruit.repository.repoimpl.ProfileRepositoryImpl;
+import com.itsol.recruit.service.JobsRegisterService;
+import com.itsol.recruit.web.vm.FilePdfVM;
 import com.itsol.recruit.repository.JobRepository;
 import com.itsol.recruit.repository.JobsRegisterRepository;
 import com.itsol.recruit.repository.StatusJobRegisterRepository;
 import com.itsol.recruit.repository.repoimpl.JobsRegisterRepositoryImpl;
-import com.itsol.recruit.repository.repoimpl.ProfileRepositoryImpl;
-import com.itsol.recruit.service.JobsRegisterService;
 import com.itsol.recruit.service.email.EmailService;
 import com.itsol.recruit.service.mapper.JobsRegisterMapper;
 import com.itsol.recruit.repository.UserRepository;
@@ -21,6 +24,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.NonUniqueResultException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -36,6 +44,7 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     private final StatusJobRegisterRepository statusJobRegisterRepository;
 
     private final JobRepository jobRepository;
+    private final FilePdfRepository filePdfRepository;
 
     private final JobsRegisterRepositoryImpl jobsRegisterRepositoryImpl;
 
@@ -45,11 +54,21 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
 
     private final UserRepository userRepository;
 
-    public JobsRegisterServiceImpl(JobsRegisterRepository jobsRegisterRepository, ProfileRepositoryImpl profileRepositoryImpl, StatusJobRegisterRepository statusJobRegisterRepository, JobRepository jobRepository, JobsRegisterRepositoryImpl jobsRegisterRepositoryImpl, JobsRegisterMapper jobsRegisterMapper, EmailService emailService, UserRepository userRepository) {
+    public JobsRegisterServiceImpl(JobsRegisterRepository jobsRegisterRepository,
+                                   ProfileRepositoryImpl profileRepositoryImpl,
+                                   StatusJobRegisterRepository statusJobRegisterRepository,
+                                   JobRepository jobRepository,
+                                   JobsRegisterRepositoryImpl jobsRegisterRepositoryImpl,
+                                   FilePdfRepository filePdfRepository,
+                                   JobsRegisterMapper jobsRegisterMapper,
+                                   EmailService emailService,
+                                   UserRepository userRepository) {
+
         this.jobsRegisterRepository = jobsRegisterRepository;
         this.profileRepositoryImpl = profileRepositoryImpl;
         this.statusJobRegisterRepository = statusJobRegisterRepository;
         this.jobRepository = jobRepository;
+        this.filePdfRepository = filePdfRepository;
         this.jobsRegisterRepositoryImpl = jobsRegisterRepositoryImpl;
         this.jobsRegisterMapper = jobsRegisterMapper;
         this.emailService = emailService;
@@ -66,7 +85,6 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
                 jobsRegisters.getTotalPages(), jobsRegisters.isLast());
         return jobsRegisterVM;
     }
-
     @Override
     public JobsRegister getById(Long id) {
         return jobsRegisterRepository.findJobsRegisterById(id);
@@ -103,6 +121,51 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     }
 
     @Override
+    public ResponseEntity<ResponseDTO> addJobRegis(JobRegisterPublicVM jobRegisterPublicVM, MultipartFile multipartFile) {
+        try {
+            Job job = jobRepository.findJobById(jobRegisterPublicVM.getJobId());
+            User user = userRepository.findByUserName(jobRegisterPublicVM.getUserName());
+            if (job == null || user == null) {
+                return ResponseEntity.ok().body(
+                        new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
+            }
+            if (ObjectUtils.isEmpty(jobRegisterPublicVM.getPdf()) || jobRegisterPublicVM.getPdf().isEmpty()) {
+                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "BAD_REQUEST"));
+            }
+
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            long size = multipartFile.getSize();
+            String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
+            FilePdfVM filePdfVM = new FilePdfVM();
+            filePdfVM.setFile_name(fileName);
+            filePdfVM.setDownload_uri("/downloadFile/" + filecode);
+            filePdfVM.setSize_url(size);
+            filePdfVM.setData(multipartFile.getBytes());
+//            filePdfService.addFilePdf(filePdfVM);
+
+            FilePdf filePdf = new FilePdf();
+            filePdf.setFile_name(jobRegisterPublicVM.getUserName());
+            StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRegisterByCode("Chờ duyệt");
+            JobsRegister jobsRegister = new JobsRegister();
+            jobsRegister.setJob(job);
+            jobsRegister.setUser(user);
+            jobsRegister.setDateRegister(new Date());
+            jobsRegister.setStatusJobRegister(statusJobRegister);
+            jobsRegister.setDelete(false);
+            jobsRegister.setReason("Lý Do");
+            jobsRegister.setMediaType("Trực tiếp");
+            jobsRegister.setCv_file(filePdf);
+            jobsRegisterRepository.save(jobsRegister);
+            return ResponseEntity.ok().body(
+                    new ResponseDTO(HttpStatus.OK, "ok"));
+        } catch (NonUniqueResultException e) {
+            return ResponseEntity.ok().body(
+                    new ResponseDTO(HttpStatus.BAD_REQUEST, "BAD_REQUEST"));
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
     public ResponseDTO scheduleInterview(JobsRegisterDTO jobsRegisterDTO) throws IllegalAccessError {
         JobsRegister jobsRegister=jobsRegisterRepository.findJobsRegisterById(jobsRegisterDTO.getId());
         StatusJobRegister statusJobRegister=statusJobRegisterRepository.findStatusJobRegisterByCode("Đang phỏng vấn");
@@ -129,29 +192,4 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
         return jobsRegisterVM;
     }
 
-    public ResponseEntity<ResponseDTO> addJobRegis(JobRegisterPublicVM jobRegisterPublicVM) {
-        Job job = jobRepository.findJobById(jobRegisterPublicVM.getJobId());
-        User user = userRepository.findByUserName(jobRegisterPublicVM.getUserName());
-        if (job == null || user == null) {
-            return ResponseEntity.ok().body(
-                    new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
-        }
-        /* if(user.getPhoneNumber() == null || user.getEmail()== null){
-
-        }*/
-        StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRegisterByCode("Chờ xét duyệt");
-        JobsRegister jobsRegister = new JobsRegister();
-        jobsRegister.setJob(job);
-        jobsRegister.setUser(user);
-        jobsRegister.setDateRegister(new Date());
-        jobsRegister.setStatusJobRegister(statusJobRegister);
-        jobsRegister.setDelete(false);
-        /*jobsRegister.setDateInterview(new Date());*/
-        jobsRegister.setReason(jobRegisterPublicVM.getCode());
-        jobsRegister.setMediaType(jobRegisterPublicVM.getMedia_type());
-        jobsRegister.setCvFile(jobRegisterPublicVM.getPdf());
-        jobsRegisterRepository.save(jobsRegister);
-        return ResponseEntity.ok().body(
-                new ResponseDTO(HttpStatus.OK, "ok"));
-    }
 }

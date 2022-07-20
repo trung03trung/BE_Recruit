@@ -15,10 +15,8 @@ public class JobPublicController {
 
     private final JobService jobService;
 
-    private final PDFGenerator pdfGenerator;
     public JobPublicController(JobService jobService, PDFGenerator pdfGenerator) {
         this.jobService = jobService;
-        this.pdfGenerator = pdfGenerator;
     }
 
     @GetMapping(value = "/job/{id}")
