@@ -27,13 +27,14 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
                 "    FROM\n" +
                 "    (\n" +
                 "        SELECT USERS.ID, USERS.NAME, USERS.USER_NAME, USERS.EMAIL, USERS.HOME_TOWN, USERS.GENDER, USERS.BIRTH_DAY, USERS.ACTIVATE, USERS.IS_DELETE, USERS.PHONE_NUMBER,USERS.AVATAR FROM USERS JOIN PERMISSTION ON USERS.ID = PERMISSTION.USER_ID\n" +
-                "                  JOIN ROLES ON ROLES.ID = PERMISSTION.ROLE_ID WHERE ROLES.ID = 2 and name LIKE '%" + seachVM.getName() + "%' and user_name LIKE '%" + seachVM.getUserName() + "%' and email LIKE '%" + seachVM.getEmail() + "%'\n" +
+                "                  JOIN ROLES ON ROLES.ID = PERMISSTION.ROLE_ID WHERE ROLES.ID = 3 and name LIKE '%" + seachVM.getName() + "%' and user_name LIKE '%" + seachVM.getUserName() + "%' and email LIKE '%" + seachVM.getEmail() + "%'\n" +
                 "        ORDER BY id DESC\n" +
                 "    ) a\n" +
                 "    WHERE rownum < ((" + seachVM.getPageNumber() + " * " + seachVM.getPageSize() + ") + 1 )\n" +
                 ")\n" +
                 "WHERE r__ >= (((" + seachVM.getPageNumber() + "-1) * " + seachVM.getPageSize() + ") + 1)" +
                 "ORDER BY " + seachVM.getSortColum() + " " + seachVM.getSortT();
+        System.out.println(getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(User.class)));
         return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(User.class));
     }
 
