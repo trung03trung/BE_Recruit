@@ -1,5 +1,6 @@
 package com.itsol.recruit.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Type;
@@ -29,6 +30,7 @@ public class Company {
     @Column(name = "hotline", nullable = false)
     String hotLine;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date_incoporation", nullable = false)
     Date dateIncoporation;
@@ -36,6 +38,7 @@ public class Company {
     @Column(name = "tax_code", nullable = false)
     String taxCode;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "tax_date", nullable = false)
     Date taxDate;

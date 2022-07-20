@@ -55,8 +55,8 @@ public class UserPublicController {
     }
 
     @PutMapping(value = "changeThePassWord")
-    public ResponseEntity<Object> changThePassWord(@RequestBody UserDTO user) {
-        return ResponseEntity.ok().body(userService.changeThePassWord(user));
+    public ResponseEntity<Object> changThePassWord(@RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok().body(userService.changeThePassWord(userDTO));
     }
 
     @PostMapping(value = "/upload/image")
