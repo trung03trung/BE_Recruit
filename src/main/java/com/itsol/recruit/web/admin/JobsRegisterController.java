@@ -1,6 +1,7 @@
 package com.itsol.recruit.web.admin;
 
 import com.itsol.recruit.core.Constants;
+import com.itsol.recruit.dto.JobsRegisterDTO;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.JobsRegister;
 import com.itsol.recruit.entity.Profile;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = Constants.Api.Path.ADMIN)
 public class JobsRegisterController {
     private final JobsRegisterService jobsRegisterService;
+
 
     public JobsRegisterController(JobsRegisterService jobsRegisterService) {
         this.jobsRegisterService = jobsRegisterService;
@@ -64,5 +66,22 @@ public class JobsRegisterController {
             e.printStackTrace();
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"Sever Error"));
         }
+    }
+
+    @PostMapping(value = "job-register/interview")
+    public ResponseEntity<ResponseDTO> sendEmailInterview(@RequestBody JobsRegisterDTO jobsRegisterDTO){
+        try{
+            ResponseDTO responseDTO=jobsRegisterService.scheduleInterview(jobsRegisterDTO);
+            responseDTO.setStatus(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (IllegalAccessError e){
+            e.printStackTrace();
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.BAD_REQUEST,"Send email interview fail"));
+        }
+    }
+
+    @PostMapping(value = "job-register/search")
+    public ResponseEntity<JobsRegisterVM> searchJobsRegister(@RequestBody JobsRegisterVM jobsRegisterVM){
+        return ResponseEntity.ok().body(jobsRegisterService.searchJobRegister(jobsRegisterVM));
     }
 }
