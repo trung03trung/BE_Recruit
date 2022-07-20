@@ -19,12 +19,11 @@ public class JobsRegisterRepositoryImpl extends BaseRepository {
                 "    (\n" +
                 "     SELECT * FROM JOBS_REGISTER JR JOIN JOB J ON JR.job_id=J.id JOIN USERS U ON U.id=JR.user_id JOIN STATUS_JOB_REGISTER S ON S.id=JR.status_id " +
                 "WHERE UPPER(J.name) LIKE '%" + jobsRegisterVM.getName().toUpperCase() + "%' or UPPER(U.user_name) LIKE '%" + jobsRegisterVM.getName().toUpperCase() + "%'\n" +
-                "         OR UPPER(S.code)  LIKE '%" + jobsRegisterVM.getName().toUpperCase() + "%' ORDER BY JR.id DESC \n" +
+                "         OR UPPER(S.code)  LIKE '%" + jobsRegisterVM.getName().toUpperCase() + "%' ORDER BY " + jobsRegisterVM.getSortBy() + " " + jobsRegisterVM.getSortDir()+" \n"+
                 "    ) a\n" +
                 "    WHERE rownum < (((" + jobsRegisterVM.getPageNo() + "+1) * " + jobsRegisterVM.getPageSize() + ") + 1 )\n" +
                 ")\n" +
-                "WHERE r__ >= ((" + jobsRegisterVM.getPageNo() + " * " + jobsRegisterVM.getPageSize() + ") + 1)" +
-                "ORDER BY " + jobsRegisterVM.getSortBy() + " " + jobsRegisterVM.getSortDir();
+                "WHERE r__ >= ((" + jobsRegisterVM.getPageNo() + " * " + jobsRegisterVM.getPageSize() + ") + 1)";
         return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(JobsRegisterDTO.class));
     }
 }

@@ -15,17 +15,15 @@ import javax.persistence.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Image {
 
-
-
-    private Long userId;
+    Long userId;
 
     @Id
     @Column(name = "name")
-    private String name;
+    String name;
 
     @Column(name = "type")
-    private String type;
+    String type;
 
     @Column(name = "image", unique = false, nullable = false, length = 100000)
-    private byte[] image;
+    byte[] image;
 }

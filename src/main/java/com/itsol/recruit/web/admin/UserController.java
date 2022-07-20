@@ -23,7 +23,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = Constants.Api.Path.ADMIN)
-
 public class UserController {
 
     public final UserService userService;
@@ -110,7 +109,7 @@ public class UserController {
         }
     }
 
-    @PutMapping(value = "/user/update")
+    @PostMapping(value = "/user/update")
     public ResponseEntity<User> updateUserProfile(@RequestBody UserProfileVM userVM){
         return ResponseEntity.ok().body(userService.saveUser(userVM));
     }

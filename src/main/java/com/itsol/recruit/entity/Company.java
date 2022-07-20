@@ -28,7 +28,7 @@ public class Company {
     @Column(name = "email", nullable = false)
     String email;
 
-    @Column(name = "hot_line", nullable = false)
+    @Column(name = "hotline", nullable = false)
     String hotLine;
 
     @Temporal(TemporalType.TIMESTAMP)
