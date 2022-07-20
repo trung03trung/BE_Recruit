@@ -1,0 +1,5 @@
+REM INSERTING into GROUP3.ACADEMIC_LEVEL
+SET DEFINE OFF;
+Insert into GROUP3.ACADEMIC_LEVEL (CODE,DESCRIPTION,IS_DELETE) values ('Đại học','Trình đọ đại học',0);
+Insert into GROUP3.ACADEMIC_LEVEL (CODE,DESCRIPTION,IS_DELETE) values ('Cao đẳng','Trình độ cao đẳng',0);
+Insert into GROUP3.ACADEMIC_LEVEL (CODE,DESCRIPTION,IS_DELETE) values ('Trên đại học','Trình độ trên đại học',0);

@@ -20,6 +20,6 @@ public interface UserService {
     public Object deactivateUser(User user);
     public ResponseDTO addUserJe(UserDTO dto);
     public List<StatisticalDTO> statistical(StatisticalVm statisticalVm);
-
     public User saveUser(UserProfileVM user);
+    public int getNumberUserJe();
 }

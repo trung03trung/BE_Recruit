@@ -33,6 +33,7 @@ public class FileUploadController {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         long size = multipartFile.getSize();
         String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
+
         FilePdfVM filePdfVM = new FilePdfVM();
         filePdfVM.setFile_name(fileName);
         filePdfVM.setDownload_uri("/downloadFile/" + filecode);

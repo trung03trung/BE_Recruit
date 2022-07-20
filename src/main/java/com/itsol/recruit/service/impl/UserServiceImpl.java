@@ -167,4 +167,8 @@ public class UserServiceImpl implements UserService {
         user.setPhoneNumber(userVM.getPhoneNumber());
         return userRepository.save(user);
     }
+    @Override
+    public int getNumberUserJe(){
+        return userRepositoryimpl.geNumberUserJe();
+    }
 }

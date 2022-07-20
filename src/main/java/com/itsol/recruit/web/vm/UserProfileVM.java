@@ -24,6 +24,5 @@ public class UserProfileVM {
 
     //Number is_delete;
 
-
     Date birthDay;
 }

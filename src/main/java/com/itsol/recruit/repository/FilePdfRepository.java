@@ -7,6 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FilePdfRepository extends JpaRepository<FilePdf, Long> {
-    FilePdf findFilePdfById(String namefile);
-
 }

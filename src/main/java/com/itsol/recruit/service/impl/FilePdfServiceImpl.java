@@ -19,11 +19,6 @@ public class FilePdfServiceImpl implements FilePdfService {
     }
 
     @Override
-    public FilePdf findById(Long id) {
-        return null;
-    }
-
-    @Override
     public ResponseEntity<ResponseDTO> addFilePdf(FilePdfVM filePdfvm) {
         try {
             FilePdf filePdf = new FilePdf();
