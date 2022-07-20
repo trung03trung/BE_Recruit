@@ -14,7 +14,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FilePdf {
-    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FILE_PDF_SEQ")
     @SequenceGenerator(name = "FILE_PDF_SEQ", sequenceName = "FILE_PDF_SEQ", allocationSize = 1, initialValue = 1)
     Long id;

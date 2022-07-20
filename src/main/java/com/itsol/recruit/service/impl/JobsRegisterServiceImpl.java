@@ -1,5 +1,6 @@
 package com.itsol.recruit.service.impl;
 
+import com.itsol.recruit.dto.JobsRegisterDTO;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.*;
 import com.itsol.recruit.file_util.FileUploadUtil;
@@ -21,7 +22,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.NonUniqueResultException;
-import java.io.IOException;
 import java.util.Date;
 
 @Service
@@ -57,6 +57,7 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
                 jobsRegisters.getTotalPages(), jobsRegisters.isLast());
         return jobsRegisterVM;
     }
+
     @Override
     public JobsRegister getById(Long id) {
         return jobsRegisterRepository.findJobsRegisterById(id);
@@ -70,7 +71,7 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     @Override
     public ResponseDTO changeStatus(Long id, String code) {
         JobsRegister jobsRegister = jobsRegisterRepository.findJobsRegisterById(id);
-        StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRepositoryByCode(code);
+        StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRegisterByCode(code);
         jobsRegister.setStatusJobRegister(statusJobRegister);
         jobsRegisterRepository.save(jobsRegister);
         return new ResponseDTO("Change status success");
@@ -79,7 +80,7 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     @Override
     public ResponseDTO rejectStatus(Long id, String code, String reason) {
         JobsRegister jobsRegister = jobsRegisterRepository.findJobsRegisterById(id);
-        StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRepositoryByCode(code);
+        StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRegisterByCode(code);
         jobsRegister.setStatusJobRegister(statusJobRegister);
         jobsRegister.setReason(reason);
         jobsRegisterRepository.save(jobsRegister);
@@ -87,53 +88,39 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     }
 
     @Override
-    public ResponseEntity<ResponseDTO> addJobRegis(JobRegisterPublicVM jobRegisterPublicVM, MultipartFile multipartFile) {
-        try {
-            Job job = jobRepository.findJobById(jobRegisterPublicVM.getJobId());
-            User user = userRepository.findByUserName(jobRegisterPublicVM.getUserName());
-            if (job == null || user == null) {
-                return ResponseEntity.ok().body(
-                        new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
-            }
-            if (ObjectUtils.isEmpty(jobRegisterPublicVM.getPdf()) || jobRegisterPublicVM.getPdf().isEmpty()) {
-                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "BAD_REQUEST"));
-            }
+    public ResponseDTO scheduleInterview(JobsRegisterDTO jobsRegisterDTO) {
+        return null;
+    }
 
-            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-            long size = multipartFile.getSize();
-            String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
-            FilePdfVM filePdfVM = new FilePdfVM();
-            filePdfVM.setFile_name(fileName);
-            filePdfVM.setDownload_uri("/downloadFile/" + filecode);
-            filePdfVM.setSize_url(size);
-            filePdfVM.setData(multipartFile.getBytes());
+    @Override
+    public JobsRegisterVM searchJobRegister(JobsRegisterVM jobsRegisterVM) {
+        return null;
+    }
 
-            FilePdf filePdf = new FilePdf();
-            filePdf.setFile_name(filePdfVM.getFile_name());
-            filePdf.setDownload_uri(filePdfVM.getDownload_uri());
-            filePdf.setSize_url(filePdfVM.getSize_url());
-            filePdf.setData(filePdfVM.getData());
-            filePdfRepository.save(filePdf);
-
-            filePdf.setFile_name(jobRegisterPublicVM.getUserName());
-            StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRepositoryByCode("Chờ duyệt");
-            JobsRegister jobsRegister = new JobsRegister();
-            jobsRegister.setJob(job);
-            jobsRegister.setUser(user);
-            jobsRegister.setDateRegister(new Date());
-            jobsRegister.setStatusJobRegister(statusJobRegister);
-            jobsRegister.setDelete(false);
-            jobsRegister.setReason("Lý Do");
-            jobsRegister.setMediaType("Trực tiếp");
-            jobsRegister.setCv_file(filePdf);
-            jobsRegisterRepository.save(jobsRegister);
+    @Override
+    public ResponseEntity<ResponseDTO> addJobRegister(JobRegisterPublicVM jobRegisterPublicVM) {
+        Job job = jobRepository.findJobById(jobRegisterPublicVM.getJobId());
+        User user = userRepository.findByUserName(jobRegisterPublicVM.getUserName());
+        System.out.println(job);
+        System.out.println(user);
+        if (job == null || user == null) {
             return ResponseEntity.ok().body(
-                    new ResponseDTO(HttpStatus.OK, "ok"));
-        } catch (NonUniqueResultException e) {
-            return ResponseEntity.ok().body(
-                    new ResponseDTO(HttpStatus.BAD_REQUEST, "BAD_REQUEST"));
-        }catch (Exception e){
-            throw new RuntimeException(e);
+                    new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
         }
+        if (ObjectUtils.isEmpty(jobRegisterPublicVM.getPdf()) || jobRegisterPublicVM.getPdf().isEmpty()) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "BAD_REQUEST"));
+        }
+        StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRegisterByCode("Chờ duyệt");
+        JobsRegister jobsRegister = new JobsRegister();
+        jobsRegister.setJob(job);
+        jobsRegister.setUser(user);
+        jobsRegister.setDateRegister(new Date());
+        jobsRegister.setStatusJobRegister(statusJobRegister);
+        jobsRegister.setDelete(false);
+        jobsRegister.setReason("Lý Do");
+        jobsRegister.setMediaType("Trực tiếp");
+        jobsRegisterRepository.save(jobsRegister);
+        return ResponseEntity.ok().body(
+                new ResponseDTO(HttpStatus.OK, "ok"));
     }
 }

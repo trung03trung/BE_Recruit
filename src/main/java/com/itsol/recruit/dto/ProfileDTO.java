@@ -23,4 +23,9 @@ public class ProfileDTO {
 
     String desiredWorkingForm;
 
+    String hometown;
+
+    String gender;
+
+    String birthDay;
 }
