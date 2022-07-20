@@ -2,12 +2,11 @@ package com.itsol.recruit.service.impl;
 
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.entity.*;
-import com.itsol.recruit.repository.JobRepository;
-import com.itsol.recruit.repository.JobsRegisterRepository;
-import com.itsol.recruit.repository.StatusJobRegisterRepository;
-import com.itsol.recruit.repository.UserRepository;
+import com.itsol.recruit.file_util.FileUploadUtil;
+import com.itsol.recruit.repository.*;
 import com.itsol.recruit.repository.repoimpl.ProfileRepositoryImpl;
 import com.itsol.recruit.service.JobsRegisterService;
+import com.itsol.recruit.web.vm.FilePdfVM;
 import com.itsol.recruit.web.vm.JobRegisterPublicVM;
 import com.itsol.recruit.web.vm.JobsRegisterVM;
 import org.springframework.data.domain.Page;
@@ -18,14 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.NonUniqueResultException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 public class JobsRegisterServiceImpl implements JobsRegisterService {
@@ -39,13 +35,15 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     private final UserRepository userRepository;
 
     private final JobRepository jobRepository;
+    private final FilePdfRepository filePdfRepository;
 
-    public JobsRegisterServiceImpl(JobsRegisterRepository jobsRegisterRepository, ProfileRepositoryImpl profileRepositoryImpl, StatusJobRegisterRepository statusJobRegisterRepository, UserRepository userRepository, JobRepository jobRepository) {
+    public JobsRegisterServiceImpl(JobsRegisterRepository jobsRegisterRepository, ProfileRepositoryImpl profileRepositoryImpl, StatusJobRegisterRepository statusJobRegisterRepository, UserRepository userRepository, JobRepository jobRepository, FilePdfRepository filePdfRepository) {
         this.jobsRegisterRepository = jobsRegisterRepository;
         this.profileRepositoryImpl = profileRepositoryImpl;
         this.statusJobRegisterRepository = statusJobRegisterRepository;
         this.userRepository = userRepository;
         this.jobRepository = jobRepository;
+        this.filePdfRepository = filePdfRepository;
     }
 
     @Override
@@ -58,7 +56,6 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
                 jobsRegisters.getTotalPages(), jobsRegisters.isLast());
         return jobsRegisterVM;
     }
-
     @Override
     public JobsRegister getById(Long id) {
         return jobsRegisterRepository.findJobsRegisterById(id);
@@ -89,7 +86,7 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     }
 
     @Override
-    public ResponseEntity<ResponseDTO> addJobRegis(JobRegisterPublicVM jobRegisterPublicVM) {
+    public ResponseEntity<ResponseDTO> addJobRegis(JobRegisterPublicVM jobRegisterPublicVM, MultipartFile multipartFile) {
         try {
             Job job = jobRepository.findJobById(jobRegisterPublicVM.getJobId());
             User user = userRepository.findByUserName(jobRegisterPublicVM.getUserName());
@@ -100,16 +97,29 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
             if (ObjectUtils.isEmpty(jobRegisterPublicVM.getPdf()) || jobRegisterPublicVM.getPdf().isEmpty()) {
                 return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "BAD_REQUEST"));
             }
-            StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRepositoryByCode("Chờ xét duyệt");
+
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            long size = multipartFile.getSize();
+            String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
+            FilePdfVM filePdfVM = new FilePdfVM();
+            filePdfVM.setFile_name(fileName);
+            filePdfVM.setDownload_uri("/downloadFile/" + filecode);
+            filePdfVM.setSize_url(size);
+            filePdfVM.setData(multipartFile.getBytes());
+//            filePdfService.addFilePdf(filePdfVM);
+
+            FilePdf filePdf = new FilePdf();
+            filePdf.setFile_name(jobRegisterPublicVM.getUserName());
+            StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRepositoryByCode("Chờ duyệt");
             JobsRegister jobsRegister = new JobsRegister();
             jobsRegister.setJob(job);
             jobsRegister.setUser(user);
             jobsRegister.setDateRegister(new Date());
             jobsRegister.setStatusJobRegister(statusJobRegister);
             jobsRegister.setDelete(false);
-            jobsRegister.setReason(jobRegisterPublicVM.getCode());
-            jobsRegister.setMediaType(jobRegisterPublicVM.getMedia_type());
-            jobsRegister.setCvFile("1");
+            jobsRegister.setReason("Lý Do");
+            jobsRegister.setMediaType("Trực tiếp");
+            jobsRegister.setCv_file(filePdf);
             jobsRegisterRepository.save(jobsRegister);
             return ResponseEntity.ok().body(
                     new ResponseDTO(HttpStatus.OK, "ok"));

@@ -1,9 +1,6 @@
 package com.itsol.recruit.entity;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Type;
 
@@ -14,6 +11,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Company {
     @Id
@@ -28,7 +26,7 @@ public class Company {
     @Column(name = "email", nullable = false)
     String email;
 
-    @Column(name = "hot_line", nullable = false)
+    @Column(name = "hotline", nullable = false)
     String hotLine;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -66,5 +64,4 @@ public class Company {
     @Column(name = "is_delete")
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean isDelete;
-
 }

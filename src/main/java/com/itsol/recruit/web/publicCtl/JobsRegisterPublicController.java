@@ -25,13 +25,10 @@ public class JobsRegisterPublicController {
         this.jobsRegisterService = jobsRegisterService;
     }
 
-//    @PostMapping(value = "userSeach")
-//    public ResponseEntity<List<User>> seachUser(@RequestBody SeachVM seachVM) {
-//        return ResponseEntity.ok().body(userService.seachUser(seachVM));
-//    }
-
     @PostMapping("/register-job-public")
-    public ResponseEntity<ResponseEntity<ResponseDTO>> registerJobPublic(@RequestBody JobRegisterPublicVM jobRegisterPublic) {
-        return ResponseEntity.ok().body(jobsRegisterService.addJobRegis(jobRegisterPublic));
+    public ResponseEntity<ResponseEntity<ResponseDTO>> registerJobPublic(@RequestBody JobRegisterPublicVM jobRegisterPublic,  @RequestParam("file") MultipartFile multipartFile) {
+        return ResponseEntity.ok().body(jobsRegisterService.addJobRegis(jobRegisterPublic,multipartFile));
     }
+
+
 }

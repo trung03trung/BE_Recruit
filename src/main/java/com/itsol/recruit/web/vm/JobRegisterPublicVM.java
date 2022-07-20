@@ -9,11 +9,7 @@ public class JobRegisterPublicVM {
     @Nullable
     private String userName;
     @Nullable
-    private MultipartFile pdf;
+    private String pdf;
     @Nullable
     private Long jobId;
-    @Nullable
-    private String code;
-    @Nullable
-    private String media_type;
 }

@@ -18,4 +18,6 @@ public class StatisticalDTO {
     Number total_apply;
     @Nullable
     Number success_recruited_applicant;
+    @Nullable
+    Number false_applicant;
 }
