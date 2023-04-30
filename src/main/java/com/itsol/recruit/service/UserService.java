@@ -3,6 +3,8 @@ package com.itsol.recruit.service;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.dto.StatisticalDTO;
 import com.itsol.recruit.dto.UserDTO;
+import com.itsol.recruit.dto.respone.ColumnChartResponse;
+import com.itsol.recruit.dto.respone.LineChartDataResponse;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.web.vm.SeachVM;
 import com.itsol.recruit.web.vm.StatisticalVm;
@@ -22,4 +24,7 @@ public interface UserService {
     public List<StatisticalDTO> statistical(StatisticalVm statisticalVm);
     public User saveUser(UserProfileVM user);
     public int getNumberUserJe();
+
+    public LineChartDataResponse getDataLineChart();
+    public ColumnChartResponse getDataColumnChart();
 }

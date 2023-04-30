@@ -1,20 +1,27 @@
 package com.itsol.recruit.repository.repoimpl;
 
 import com.itsol.recruit.dto.StatisticalDTO;
+import com.itsol.recruit.dto.respone.ColumnChartResponse;
+import com.itsol.recruit.dto.respone.LineChartDataResponse;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.repository.BaseRepository;
 import com.itsol.recruit.repository.repoext.UserRepositoryExt;
 import com.itsol.recruit.web.vm.SeachVM;
 import com.itsol.recruit.web.vm.StatisticalVm;
-import io.swagger.models.auth.In;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
 public class UserRepositoryImpl extends BaseRepository implements UserRepositoryExt {
+
+    private final Logger log = LoggerFactory.getLogger(UserRepositoryImpl.class);
     @Override
     public User getAllUser() {
         return null;
@@ -106,6 +113,67 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
                 "JOIN ROLES ON ROLES.ID = PERMISSTION.ROLE_ID\n" +
                 "WHERE ROLES.ID = 2";
         return getJdbcTemplate().queryForObject(query,Integer.class);
+    }
+
+    public LineChartDataResponse getDataLineChart(){
+        log.info("start ====> query find all category");
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT extract(month from j.start_recruitment_date) as month, ");
+        sql.append(" SUM(j.Qty_Person) as numberRecruit, ");
+        sql.append(" COALESCE(SUM(CASE WHEN jr.status_id = 4 THEN 1 ELSE 0 END), 0) as successJob ");
+        sql.append(" from job j  left join jobs_register jr on j.id=jr.job_id ");
+        sql.append(" group by extract(month from j.start_recruitment_date) ORDER BY month");
+        List<Integer> month = getJdbcTemplate().query(sql.toString(), new RowMapper<Integer>() {
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("month");
+            }
+        });
+        List<Integer> numberRecruit = getJdbcTemplate().query(sql.toString(), new RowMapper<Integer>() {
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("numberRecruit");
+            }
+        });
+        List<Integer> numberSuccessJob = getJdbcTemplate().query(sql.toString(), new RowMapper<Integer>() {
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("successJob");
+            }
+        });
+        LineChartDataResponse result = new LineChartDataResponse();
+        result.setMonth(month);
+        result.setNumberRecruit(numberRecruit);
+        result.setNumberSuccessJob(numberSuccessJob);
+        return result;
+    }
+
+    public ColumnChartResponse getDataColumnChart(){
+        log.info("start ====> query find all category");
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT REGEXP_SUBSTR(j.skills, '[^ ]+', 1, level) AS languages, ");
+        sql.append(" sum(j.qty_person) as totalRecruit, count(jr.id) as numberApply ");
+        sql.append("   FROM job j left join jobs_register jr on jr.job_id = j.id ");
+        sql.append("   CONNECT BY REGEXP_SUBSTR(j.skills, '[^ ]+', 1, level) IS NOT NULL ");
+        sql.append("  AND PRIOR j.rowid = j.rowid ");
+        sql.append(" AND PRIOR SYS_GUID() IS NOT NULL group by REGEXP_SUBSTR(j.skills, '[^ ]+', 1, level) ");
+        List<String> languages = getJdbcTemplate().query(sql.toString(), new RowMapper<String>() {
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("languages");
+            }
+        });
+        List<Integer> totalRecruit = getJdbcTemplate().query(sql.toString(), new RowMapper<Integer>() {
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("totalRecruit");
+            }
+        });
+        List<Integer> numberApply = getJdbcTemplate().query(sql.toString(), new RowMapper<Integer>() {
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("numberApply");
+            }
+        });
+        ColumnChartResponse result = new ColumnChartResponse();
+        result.setLanguages(languages);
+        result.setTotalRecruit(totalRecruit);
+        result.setNumberApply(numberApply);
+        return result;
     }
 }
 

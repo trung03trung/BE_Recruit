@@ -4,6 +4,8 @@ import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.dto.StatisticalDTO;
 import com.itsol.recruit.dto.UserDTO;
+import com.itsol.recruit.dto.respone.ColumnChartResponse;
+import com.itsol.recruit.dto.respone.LineChartDataResponse;
 import com.itsol.recruit.entity.Image;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.service.UserService;
@@ -112,6 +114,16 @@ public class UserController {
     @PostMapping(value = "/user/update")
     public ResponseEntity<User> updateUserProfile(@RequestBody UserProfileVM userVM){
         return ResponseEntity.ok().body(userService.saveUser(userVM));
+    }
+
+    @GetMapping(value = "/line-chart")
+    public ResponseEntity<LineChartDataResponse> getDataLineChart(){
+        return ResponseEntity.ok().body(userService.getDataLineChart());
+    }
+
+    @GetMapping(value = "/column-chart")
+    public ResponseEntity<ColumnChartResponse> getDataColumnChart(){
+        return ResponseEntity.ok().body(userService.getDataColumnChart());
     }
 
 }

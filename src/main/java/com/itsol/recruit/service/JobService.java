@@ -6,6 +6,7 @@ import com.itsol.recruit.entity.Job;
 import com.itsol.recruit.web.vm.JobFieldVM;
 import com.itsol.recruit.web.vm.JobVM;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface JobService {
@@ -27,4 +28,6 @@ public interface JobService {
     public ResponseDTO deleteJobById(Long id);
 
     public JobVM searchJob(JobVM jobVM);
+
+    public byte[] exportData() throws IOException;
 }

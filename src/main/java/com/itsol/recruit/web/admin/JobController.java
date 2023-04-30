@@ -9,7 +9,10 @@ import com.itsol.recruit.service.impl.PDFGenerator;
 import com.itsol.recruit.web.vm.JobFieldVM;
 import com.itsol.recruit.web.vm.JobVM;
 import com.lowagie.text.DocumentException;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +24,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping(value = Constants.Api.Path.ADMIN)
+@CrossOrigin("*")
 public class JobController {
 
     private final JobService jobService;
@@ -115,5 +119,16 @@ public class JobController {
     @PostMapping(value = "/job/search")
     public ResponseEntity<JobVM> searchJob(@RequestBody JobVM jobVM){
         return ResponseEntity.ok().body(jobService.searchJob(jobVM));
+    }
+
+    @GetMapping(value = "/job/export-data")
+    public ResponseEntity<byte[]> exportData() throws IOException {
+        byte[] result= jobService.exportData();
+        String contentDisposition = "attachment; filename=" + "FILE_EXPORT_JOB";
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .contentLength(result.length)
+                .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                .body(result);
     }
 }

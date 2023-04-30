@@ -4,6 +4,8 @@ import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.dto.StatisticalDTO;
 import com.itsol.recruit.dto.UserDTO;
+import com.itsol.recruit.dto.respone.ColumnChartResponse;
+import com.itsol.recruit.dto.respone.LineChartDataResponse;
 import com.itsol.recruit.entity.OTP;
 import com.itsol.recruit.entity.Role;
 import com.itsol.recruit.entity.User;
@@ -170,5 +172,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public int getNumberUserJe(){
         return userRepositoryimpl.geNumberUserJe();
+    }
+
+    @Override
+    public LineChartDataResponse getDataLineChart(){
+        return userRepositoryimpl.getDataLineChart();
+    }
+
+    @Override
+    public ColumnChartResponse getDataColumnChart() {
+        return userRepositoryimpl.getDataColumnChart();
     }
 }

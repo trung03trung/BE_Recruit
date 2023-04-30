@@ -19,7 +19,7 @@ public class LoginVM {
 
     //    @Schema(description = "Password of the User.", example = Constants.Api.FieldExample.PASSWORD, required = true)
     @NotNull
-    @Size(min = 6, max = 32, message = Constants.ValidationMessage.INVALID_SIZE_VALUE)
+    @Size(min = 4, max = 32, message = Constants.ValidationMessage.INVALID_SIZE_VALUE)
     @Pattern(regexp = "^[\\w\\d$&+,:;=?@#|'<>.^*()%!-]*", message = Constants.ValidationMessage.INVALID_PASSWORD)
     private String password;
 

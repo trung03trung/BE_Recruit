@@ -6,14 +6,14 @@ Create table rank(
              is_delete INTEGER NOT NULL
 );
 
--- status_job (Trạng thái job: chờ xét duyệt, đã từ chối, đang tuyển..)
+-- status_job (Trạng thái job: ch�? xét duyệt, đã từ chối, đang tuyển..)
 Create table status_job(
             id NUMBER(4) primary key,
             code nvarchar2(50),
             description nvarchar2(50),
             is_delete INTEGER NOT NULL
 );
--- trạng thái(đang phỏng vấn, đã tuyển)
+-- trạng thái(đang ph�?ng vấn, đã tuyển)
 Create table status_job_register(
             id NUMBER(4) primary key,
             code nvarchar2(50),
@@ -21,10 +21,10 @@ Create table status_job_register(
             is_delete INTEGER NOT NULL
 );
 
--- academic level (trình độ học vấn)----
+-- academic level (trình độ h�?c vấn)----
 Create table academic_level(
             id NUMBER(4) primary key,
-            code nvarchar2(50),         -- trình độ học vấn---
+            code nvarchar2(50),         -- trình độ h�?c vấn---
             description nvarchar2(50),
             is_delete INTEGER NOT NULL
 );
@@ -59,12 +59,12 @@ Create table otp(
             user_id  NUMBER(4)  NOT NULL,
             CONSTRAINT fk_user_otp FOREIGN KEY(user_id) REFERENCES users(id)
 );
-----file (Thông tin về kinh nghiệm, Thông tin về mong muốn)----
+----file (Thông tin v�? kinh nghiệm, Thông tin v�? mong muốn)----
 Create table profiles(
             user_id  NUMBER(4) PRIMARY KEY,
             skill varchar(50),                     -- Kĩ năng (là 1 tập các kĩ năng, ví dụ: Java, SQL, Docker, ….)
             number_years_experience NUMBER(4),     -- số năm kinh nghiệm
-            academic_name_id number(4),            -- academic level (trình độ học vấn)
+            academic_name_id number(4),            -- academic level (trình độ h�?c vấn)
             desired_salary varchar(50),            -- mức lương mong muốn
             desired_working_address varchar(50),   -- địa chỉ làm việc mong muốn
             desired_working_form varchar(50),      -- hình thức làm việc mong muốn
@@ -103,22 +103,22 @@ CREATE TABLE job(
             number_experience VARCHAR(100) NOT NULL,  -- số năm kinh nghiệm
             working_form_id  NUMBER(4) NOT NULL,      -- hình thức làm việc
             address_work VARCHAR(100) NOT NULL,
-            academic_level_id NUMBER(4) NOT NULL,     -- trình độ học vấn
+            academic_level_id NUMBER(4) NOT NULL,     -- trình độ h�?c vấn
             rank_id NUMBER(4) NOT NULL,               -- level id--
-            qty_person INTEGER NOT NULL,              -- số lượng người tuyển
+            qty_person INTEGER NOT NULL,              -- số lượng ngư�?i tuyển
             start_recruitment_date DATE NOT NULL,     -- ngày bắt đầu tuyển dụng
             due_date DATE NOT NULL,                   -- ngày kết thúc
             skills VARCHAR(100) NOT NULL,             -- kỹ năng
             description VARCHAR(2000) NOT NULL,
-            interest VARCHAR(2000) NOT NULL,          -- quyền lợi
+            interest VARCHAR(2000) NOT NULL,          -- quy�?n lợi
             job_requirement VARCHAR(2000) NOT NULL,   -- yêu cầu công việc
             salary_max INTEGER NOT NULL,              -- mức lương tối đa
-            salary_min INTEGER NOT NULL,              -- mức lương nhỏ nhất
+            salary_min INTEGER NOT NULL,              -- mức lương nh�? nhất
             contact_id NUMBER(4) NOT NULL,            -- liên hệ
             create_id  NUMBER(4) NOT NULL,
             create_date DATE NOT NULL,
             update_id  NUMBER(4) NOT NULL,
-            update_date DATE NOT NULL,                -- thời gian update mới nhất
+            update_date DATE NOT NULL,                -- th�?i gian update mới nhất
             status_id NUMBER(4) NOT NULL,             -- trạng thái
             views  INTEGER ,
             is_delete INTEGER NOT NULL,
@@ -136,12 +136,12 @@ CREATE TABLE job(
 CREATE TABLE jobs_register(
             job_id NUMBER NOT NULL,
             user_id NUMBER NOT NULL,
-            date_register DATE NOT NULL ,     -- Đặt lịch phỏng vấn
-            date_interview DATE,              -- ngày phỏng vấn
-            method_interview VARCHAR(50),     -- Hình thức phỏng vấn: online, offline
+            date_register DATE NOT NULL ,     -- �?ặt lịch ph�?ng vấn
+            date_interview DATE,              -- ngày ph�?ng vấn
+            method_interview VARCHAR(50),     -- Hình thức ph�?ng vấn: online, offline
             address_interview VARCHAR(50),
             status_id NUMBER NOT NULL,
-            reason VARCHAR(50),               -- Lý do (chỉ có giá trị khi trạng thái là “Ứng viên bị từ chối” hoặc “Ứng viên đã hủy ứng tuyển”)
+            reason VARCHAR(50),               -- Lý do (chỉ có giá trị khi trạng thái là “Ứng viên bị từ chối�? hoặc “Ứng viên đã hủy ứng tuyển�?)
             cv_file VARCHAR(50) NOT NULL,
             media_type VARCHAR(50)NOT NULL,
             is_delete INTEGER NOT NULL,
@@ -157,6 +157,7 @@ Create table type_notifications(
              code nvarchar2(50),
              description nvarchar2(50),
              is_delete INTEGER NOT NULL
+             )
 
 Create table job_position(
             id NUMBER(4) primary key,
@@ -175,7 +176,7 @@ CREATE TABLE notifications(
             type_id NUMBER NOT NULL,
             is_delete INTEGER NOT NULL,
             PRIMARY KEY(id ) ,
-            CONSTRAINT fk_type FOREIGN KEY (type_id)  REFERENCES type (id),
+            CONSTRAINT fk_type FOREIGN KEY (type_id)  REFERENCES type_notifications (id),
             CONSTRAINT fk_sender_id  FOREIGN KEY (sender_id)   REFERENCES users (id),
             CONSTRAINT fk_receiver_id   FOREIGN KEY (receiver_id)    REFERENCES users (id)
 );
