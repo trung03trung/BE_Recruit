@@ -6,6 +6,7 @@ import com.itsol.recruit.entity.*;
 import com.itsol.recruit.repository.*;
 import com.itsol.recruit.repository.repoimpl.ProfileRepositoryImpl;
 import com.itsol.recruit.service.JobsRegisterService;
+import com.itsol.recruit.service.email.EmailService;
 import com.itsol.recruit.web.vm.JobRegisterPublicVM;
 import com.itsol.recruit.web.vm.JobsRegisterVM;
 import org.springframework.data.domain.Page;
@@ -34,13 +35,16 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     private final JobRepository jobRepository;
     private final FilePdfRepository filePdfRepository;
 
-    public JobsRegisterServiceImpl(JobsRegisterRepository jobsRegisterRepository, ProfileRepositoryImpl profileRepositoryImpl, StatusJobRegisterRepository statusJobRegisterRepository, UserRepository userRepository, JobRepository jobRepository, FilePdfRepository filePdfRepository) {
+    private final EmailService emailService;
+
+    public JobsRegisterServiceImpl(JobsRegisterRepository jobsRegisterRepository, ProfileRepositoryImpl profileRepositoryImpl, StatusJobRegisterRepository statusJobRegisterRepository, UserRepository userRepository, JobRepository jobRepository, FilePdfRepository filePdfRepository,EmailService emailService) {
         this.jobsRegisterRepository = jobsRegisterRepository;
         this.profileRepositoryImpl = profileRepositoryImpl;
         this.statusJobRegisterRepository = statusJobRegisterRepository;
         this.userRepository = userRepository;
         this.jobRepository = jobRepository;
         this.filePdfRepository = filePdfRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -85,7 +89,17 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
 
     @Override
     public ResponseDTO scheduleInterview(JobsRegisterDTO jobsRegisterDTO) {
-        return null;
+        JobsRegister jobsRegister = jobsRegisterRepository.findJobsRegisterById(jobsRegisterDTO.getId());
+        jobsRegister.setStatusJobRegister(statusJobRegisterRepository.findStatusJobRegisterByCode("Đang phỏng vấn"));
+        jobsRegister.setMethodInterview(jobsRegister.getMethodInterview());
+        jobsRegister.setDateInterview(jobsRegister.getDateInterview());
+        Job job = jobRepository.findJobById(jobsRegister.getJob().getId());
+        String email = emailService.buildMailInterview(job.getName(),jobsRegisterDTO.getTimeInterview().toString(),jobsRegisterDTO.getDateInterview().toString(),
+                jobsRegisterDTO.getMethodInterview(),job.getUserContact().getName(),job.getUserContact().getPhoneNumber(),jobsRegister.getUser().getUserName());
+        jobsRegisterRepository.save(jobsRegister);
+        ResponseDTO response = new ResponseDTO();
+        response.setCode("Success");
+        return response;
     }
 
     @Override

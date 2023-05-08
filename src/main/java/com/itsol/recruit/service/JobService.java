@@ -1,7 +1,10 @@
 package com.itsol.recruit.service;
 
 import com.itsol.recruit.dto.JobDTO;
+import com.itsol.recruit.dto.PageExtDTO;
 import com.itsol.recruit.dto.ResponseDTO;
+import com.itsol.recruit.dto.request.JobSearchRequest;
+import com.itsol.recruit.dto.respone.JobSearchResponse;
 import com.itsol.recruit.entity.Job;
 import com.itsol.recruit.web.vm.JobFieldVM;
 import com.itsol.recruit.web.vm.JobVM;
@@ -30,4 +33,5 @@ public interface JobService {
     public JobVM searchJob(JobVM jobVM);
 
     public byte[] exportData() throws IOException;
+
 }

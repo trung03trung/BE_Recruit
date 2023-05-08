@@ -31,6 +31,9 @@ public class JobVM {
 
     private String name;
 
+    private String statusJob;
+    private String jobPosition;
+
     public JobVM(List<Job> jobs, int pageNo, int pageSize, long totalElements, int totalPages, boolean last) {
         this.jobs = jobs;
         this.pageNo = pageNo;

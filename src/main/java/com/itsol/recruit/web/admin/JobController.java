@@ -2,7 +2,10 @@ package com.itsol.recruit.web.admin;
 
 import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.dto.JobDTO;
+import com.itsol.recruit.dto.PageExtDTO;
 import com.itsol.recruit.dto.ResponseDTO;
+import com.itsol.recruit.dto.request.JobSearchRequest;
+import com.itsol.recruit.dto.respone.JobSearchResponse;
 import com.itsol.recruit.entity.Job;
 import com.itsol.recruit.service.JobService;
 import com.itsol.recruit.service.impl.PDFGenerator;
@@ -10,6 +13,8 @@ import com.itsol.recruit.web.vm.JobFieldVM;
 import com.itsol.recruit.web.vm.JobVM;
 import com.lowagie.text.DocumentException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,7 +25,9 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = Constants.Api.Path.ADMIN)
@@ -122,13 +129,19 @@ public class JobController {
     }
 
     @GetMapping(value = "/job/export-data")
-    public ResponseEntity<byte[]> exportData() throws IOException {
-        byte[] result= jobService.exportData();
-        String contentDisposition = "attachment; filename=" + "FILE_EXPORT_JOB";
+    public ResponseEntity<Resource> exportData() throws IOException {
+        ByteArrayResource byteArrayResource = new ByteArrayResource(jobService.exportData());
+        HttpHeaders headers = new HttpHeaders();
+        List<String> customHeaders = new ArrayList<>();
+        customHeaders.add("Content-Disposition");
+        customHeaders.add("Content-Response");
+        headers.setAccessControlExposeHeaders(customHeaders);
+        headers.set("Content-Disposition", "attachment;filename=" + "FILE_EXPORT.xlsx");
+        headers.set("Content-Response", "FILE_EXPORT.xlsx");
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-                .contentLength(result.length)
-                .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
-                .body(result);
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(byteArrayResource);
     }
 }

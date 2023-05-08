@@ -1,7 +1,10 @@
 package com.itsol.recruit.service.impl;
 
 import com.itsol.recruit.dto.JobDTO;
+import com.itsol.recruit.dto.PageExtDTO;
 import com.itsol.recruit.dto.ResponseDTO;
+import com.itsol.recruit.dto.request.JobSearchRequest;
+import com.itsol.recruit.dto.respone.JobSearchResponse;
 import com.itsol.recruit.entity.*;
 import com.itsol.recruit.repository.*;
 import com.itsol.recruit.repository.repoimpl.JobRepositoryImpl;
@@ -15,6 +18,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Page;
@@ -23,9 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -71,22 +73,22 @@ public class JobServiceImpl implements JobService {
 
 
     @Override
-    public  JobVM getAllJob(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public JobVM getAllJob(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
-        Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
-        Page<Job> jobs=jobRepository.findAll(pageable);
-        JobVM jobVM=new JobVM(jobs.getContent(),jobs.getNumber(),jobs.getSize(),jobs.getTotalElements(),
-                jobs.getTotalPages(),jobs.isLast());
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Job> jobs = jobRepository.findAll(pageable);
+        JobVM jobVM = new JobVM(jobs.getContent(), jobs.getNumber(), jobs.getSize(), jobs.getTotalElements(),
+                jobs.getTotalPages(), jobs.isLast());
         return jobVM;
     }
 
     @Override
     public Job createNewJob(JobDTO jobDTO) {
-        Job job=jobMapper.toEntity(jobDTO);
+        Job job = jobMapper.toEntity(jobDTO);
         job.setCreatedDate(new Date());
         job.setUpdateDate(new Date());
-        StatusJob statusJob=statusJobRepository.findStatusJobById((long)1);
+        StatusJob statusJob = statusJobRepository.findStatusJobById((long) 1);
         job.setStatusJob(statusJob);
         return jobRepository.save(job);
     }
@@ -98,19 +100,19 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public JobFieldVM getAllFieldSelect() {
-        List<AcademicLevel> academicLevels=academicLevelRepository.findAll();
-        List<Rank> ranks=rankRepository.findAll();
-        List<JobPosition> jobPositions=jobPositionRepository.findAll();
-        List<WorkingForm> workingForms=workingFormRepository.findAll();
-        List<Role> role=roleRepository.findByCode("ROLE_JE");
-        List<User> users=jobRepositoryimpl.getAllByRole(role);
-        return new JobFieldVM(academicLevels,jobPositions,ranks,workingForms,users);
+        List<AcademicLevel> academicLevels = academicLevelRepository.findAll();
+        List<Rank> ranks = rankRepository.findAll();
+        List<JobPosition> jobPositions = jobPositionRepository.findAll();
+        List<WorkingForm> workingForms = workingFormRepository.findAll();
+        List<Role> role = roleRepository.findByCode("ROLE_JE");
+        List<User> users = jobRepositoryimpl.getAllByRole(role);
+        return new JobFieldVM(academicLevels, jobPositions, ranks, workingForms, users);
     }
 
     @Override
     public ResponseDTO changeStatus(Long id, String code) {
-        Job job=jobRepository.findJobById(id);
-        StatusJob statusJob=statusJobRepository.findStatusJobByCode(code);
+        Job job = jobRepository.findJobById(id);
+        StatusJob statusJob = statusJobRepository.findStatusJobByCode(code);
         job.setStatusJob(statusJob);
         jobRepository.save(job);
         return new ResponseDTO("Change status success");
@@ -123,23 +125,23 @@ public class JobServiceImpl implements JobService {
     }
 
     public ResponseDTO rejectStatus(Long id, String code, String reason) {
-        Job job=jobRepository.findJobById(id);
-        StatusJob statusJob=statusJobRepository.findStatusJobByCode(code);
+        Job job = jobRepository.findJobById(id);
+        StatusJob statusJob = statusJobRepository.findStatusJobByCode(code);
         job.setStatusJob(statusJob);
         job.setReason(reason);
         jobRepository.save(job);
         return new ResponseDTO("Change status success");
     }
 
-    public ResponseDTO deleteJobById(Long id){
-        Job job=jobRepository.findJobById(id);
+    public ResponseDTO deleteJobById(Long id) {
+        Job job = jobRepository.findJobById(id);
         jobRepository.delete(job);
         return new ResponseDTO("Delete job success");
     }
 
     @Override
     public JobVM searchJob(JobVM jobVM) {
-        List<Job> jobs=jobMapper.toEntity(jobRepositoryimpl.seachUser(jobVM));
+        List<Job> jobs = jobMapper.toEntity(jobRepositoryimpl.seachUser(jobVM));
         jobVM.setJobs(jobs);
         return jobVM;
     }
@@ -147,23 +149,23 @@ public class JobServiceImpl implements JobService {
     @Override
     public byte[] exportData() throws IOException {
         log.info("Request to exportData : {}");
-        List<Job> lstDataExport = jobRepository.findAll(PageRequest.of(0,100)).getContent();
+        List<Job> lstDataExport = jobRepository.findAll(PageRequest.of(0, 100)).getContent();
         return exportFile(lstDataExport, true, "FILE_EXPORT_JOB");
     }
 
     private byte[] exportFile(List<Job> jobs, boolean export, String fileName) throws IOException {
-        Resource resource = resourceLoader.getResource("classpath:templates/Template_Job.xlsx");
-        Workbook workBook = null;
-        InputStream inputStreamResource = null;
+        Resource resource = new ClassPathResource("templates/Template_Jobs.xlsx");
+//        Resource resource = resourceLoader.getResource("classpath:templates/Template_Jobs.xlsx");
+        Workbook workBook = WorkbookFactory.create(resource.getInputStream());
+        ;
         try {
             Date date = new Date();
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
-            inputStreamResource = resource.getInputStream();
-            if (resource != null && inputStreamResource != null) {
-                workBook = WorkbookFactory.create(inputStreamResource);
-                Sheet sheet = workBook.getSheetAt(0);
-                int i = 2;
+
+
+            Sheet sheet = workBook.getSheetAt(0);
+            int i = 2;
                 if (jobs != null && jobs.size() > 0) {
                     for (Job data : jobs) {
                         createCell(sheet, 0, i, String.valueOf(i-1));
@@ -178,14 +180,15 @@ public class JobServiceImpl implements JobService {
                         i++;
                     }
                     }
-                }
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                workBook.write(out);
-                return out.toByteArray();
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            workBook.write(out);
+            out.close();
+            return out.toByteArray();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         } finally {
-            if (null != workBook || inputStreamResource != null)
+            if (null != workBook)
                 workBook.close();
         }
         return null;
@@ -211,4 +214,5 @@ public class JobServiceImpl implements JobService {
         cell.setCellStyle(style);
         return cell;
     }
+
 }
