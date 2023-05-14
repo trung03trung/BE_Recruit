@@ -8,6 +8,7 @@ import com.itsol.recruit.dto.respone.JobSearchResponse;
 import com.itsol.recruit.entity.Job;
 import com.itsol.recruit.web.vm.JobFieldVM;
 import com.itsol.recruit.web.vm.JobVM;
+import com.itsol.recruit.web.vm.StatisticalVm;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,5 +34,7 @@ public interface JobService {
     public JobVM searchJob(JobVM jobVM);
 
     public byte[] exportData() throws IOException;
+
+    public byte[] exportDataDashboard(StatisticalVm statisticalVm) throws IOException;
 
 }

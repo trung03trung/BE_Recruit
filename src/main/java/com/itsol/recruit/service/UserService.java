@@ -25,6 +25,6 @@ public interface UserService {
     public User saveUser(UserProfileVM user);
     public int getNumberUserJe();
 
-    public LineChartDataResponse getDataLineChart();
-    public ColumnChartResponse getDataColumnChart();
+    public LineChartDataResponse getDataLineChart(StatisticalVm statisticalVm);
+    public ColumnChartResponse getDataColumnChart(StatisticalVm statisticalVm);
 }

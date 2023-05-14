@@ -7,17 +7,17 @@ import java.util.Date;
 @Data
 public class StatisticalDTO {
     @Nullable
-    Number all_job;
+    Integer all_job;
     @Nullable
-    Number total_view_job;
+    Integer total_view_job;
     @Nullable
-    Number waiting_for_interview;
+    Integer waiting_for_interview;
     @Nullable
-    Number interviewing;
+    Integer interviewing;
     @Nullable
-    Number total_apply;
+    Integer total_apply;
     @Nullable
-    Number success_recruited_applicant;
+    Integer success_recruited_applicant;
     @Nullable
-    Number false_applicant;
+    Integer false_applicant;
 }

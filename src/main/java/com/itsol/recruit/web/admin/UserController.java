@@ -116,14 +116,14 @@ public class UserController {
         return ResponseEntity.ok().body(userService.saveUser(userVM));
     }
 
-    @GetMapping(value = "/line-chart")
-    public ResponseEntity<LineChartDataResponse> getDataLineChart(){
-        return ResponseEntity.ok().body(userService.getDataLineChart());
+    @PostMapping(value = "/line-chart")
+    public ResponseEntity<LineChartDataResponse> getDataLineChart(@RequestBody StatisticalVm request){
+        return ResponseEntity.ok().body(userService.getDataLineChart(request));
     }
 
-    @GetMapping(value = "/column-chart")
-    public ResponseEntity<ColumnChartResponse> getDataColumnChart(){
-        return ResponseEntity.ok().body(userService.getDataColumnChart());
+    @PostMapping(value = "/column-chart")
+    public ResponseEntity<ColumnChartResponse> getDataColumnChart(@RequestBody StatisticalVm request){
+        return ResponseEntity.ok().body(userService.getDataColumnChart(request));
     }
 
 }

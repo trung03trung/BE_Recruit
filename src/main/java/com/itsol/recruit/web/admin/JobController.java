@@ -11,6 +11,7 @@ import com.itsol.recruit.service.JobService;
 import com.itsol.recruit.service.impl.PDFGenerator;
 import com.itsol.recruit.web.vm.JobFieldVM;
 import com.itsol.recruit.web.vm.JobVM;
+import com.itsol.recruit.web.vm.StatisticalVm;
 import com.lowagie.text.DocumentException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ByteArrayResource;
@@ -138,6 +139,23 @@ public class JobController {
         headers.setAccessControlExposeHeaders(customHeaders);
         headers.set("Content-Disposition", "attachment;filename=" + "FILE_EXPORT.xlsx");
         headers.set("Content-Response", "FILE_EXPORT.xlsx");
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(byteArrayResource);
+    }
+
+    @PostMapping(value = "/job/export-dashboard")
+    public ResponseEntity<Resource> exportDataDashboard(@RequestBody StatisticalVm request) throws IOException {
+        ByteArrayResource byteArrayResource = new ByteArrayResource(jobService.exportDataDashboard(request));
+        HttpHeaders headers = new HttpHeaders();
+        List<String> customHeaders = new ArrayList<>();
+        customHeaders.add("Content-Disposition");
+        customHeaders.add("Content-Response");
+        headers.setAccessControlExposeHeaders(customHeaders);
+        headers.set("Content-Disposition", "attachment;filename=" + "FILE_EXPORT_DASHBOARD.xlsx");
+        headers.set("Content-Response", "FILE_EXPORT_DASHBOARD.xlsx");
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         return ResponseEntity.ok()
                 .headers(headers)

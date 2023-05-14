@@ -1,10 +1,10 @@
 package com.itsol.recruit.service.impl;
 
 import com.itsol.recruit.dto.JobDTO;
-import com.itsol.recruit.dto.PageExtDTO;
 import com.itsol.recruit.dto.ResponseDTO;
-import com.itsol.recruit.dto.request.JobSearchRequest;
-import com.itsol.recruit.dto.respone.JobSearchResponse;
+import com.itsol.recruit.dto.StatisticalDTO;
+import com.itsol.recruit.dto.respone.ColumnChartResponse;
+import com.itsol.recruit.dto.respone.LineChartDataResponse;
 import com.itsol.recruit.entity.*;
 import com.itsol.recruit.repository.*;
 import com.itsol.recruit.repository.repoimpl.JobRepositoryImpl;
@@ -13,6 +13,7 @@ import com.itsol.recruit.service.JobService;
 import com.itsol.recruit.service.mapper.JobMapper;
 import com.itsol.recruit.web.vm.JobFieldVM;
 import com.itsol.recruit.web.vm.JobVM;
+import com.itsol.recruit.web.vm.StatisticalVm;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
@@ -54,12 +55,14 @@ public class JobServiceImpl implements JobService {
 
     private final JobRepositoryImpl jobRepositoryimpl;
 
+    private final UserRepositoryImpl userRepositoryImpl;
+
     private final Logger log = LoggerFactory.getLogger(JobServiceImpl.class);
 
     @Autowired
     private ResourceLoader resourceLoader;
 
-    public JobServiceImpl(JobRepository jobRepository, JobMapper jobMapper, JobPositionRepository jobPositionRepository, RankRepository rankRepository, StatusJobRepository statusJobRepository, WorkingFormRepository workingFormRepository, AcademicLevelRepository academicLevelRepository, RoleRepository roleRepository, RoleRepository roleRepository1, JobRepositoryImpl jobRepositoryimpl) {
+    public JobServiceImpl(JobRepository jobRepository, JobMapper jobMapper, JobPositionRepository jobPositionRepository, RankRepository rankRepository, StatusJobRepository statusJobRepository, WorkingFormRepository workingFormRepository, AcademicLevelRepository academicLevelRepository, RoleRepository roleRepository, RoleRepository roleRepository1, JobRepositoryImpl jobRepositoryimpl, UserRepositoryImpl userRepositoryImpl) {
         this.jobRepository = jobRepository;
         this.jobMapper = jobMapper;
         this.jobPositionRepository = jobPositionRepository;
@@ -69,6 +72,7 @@ public class JobServiceImpl implements JobService {
         this.academicLevelRepository = academicLevelRepository;
         this.roleRepository = roleRepository1;
         this.jobRepositoryimpl = jobRepositoryimpl;
+        this.userRepositoryImpl = userRepositoryImpl;
     }
 
 
@@ -153,11 +157,70 @@ public class JobServiceImpl implements JobService {
         return exportFile(lstDataExport, true, "FILE_EXPORT_JOB");
     }
 
+    @Override
+    public byte[] exportDataDashboard(StatisticalVm statisticalVm) throws IOException {
+        log.info("Request to exportDataDashboard : {}",statisticalVm);
+        Resource resource = new ClassPathResource("templates/Template_Dashboard.xlsx");
+        Workbook workBook = WorkbookFactory.create(resource.getInputStream());
+        try {
+            List<StatisticalDTO> statisticalDTOS = userRepositoryImpl.StatisticalData(statisticalVm);
+            Sheet sheet = workBook.getSheetAt(0);
+            CellStyle cellSt0 = sheet.getRow(2).getCell(1).getCellStyle();
+            createCell(sheet,1,2,"Từ "+statisticalVm.getDatestart()+" đến "+statisticalVm.getDateend(),cellSt0);
+            CellStyle cellSt1 = sheet.getRow(6).getCell(1).getCellStyle();
+            createCell(sheet, 1, 6, Integer.toString(statisticalDTOS.get(0).getAll_job()),cellSt1);
+            createCell(sheet, 2, 6,Integer.toString(statisticalDTOS.get(0).getTotal_apply()),cellSt1);
+            createCell(sheet, 3, 6, Integer.toString(statisticalDTOS.get(0).getInterviewing()),cellSt1);
+            createCell(sheet, 4, 6, Integer.toString(statisticalDTOS.get(0).getSuccess_recruited_applicant()),cellSt1);
+            createCell(sheet, 5, 6, Integer.toString(statisticalDTOS.get(0).getFalse_applicant()),cellSt1);
+            LineChartDataResponse dataLineChart = userRepositoryImpl.getDataLineChart(statisticalVm);
+            CellStyle cellSt2 = sheet.getRow(13).getCell(1).getCellStyle();
+            int i=2,j=2,k=2;
+            for(Integer month: dataLineChart.getMonth()) {
+                createCell(sheet, i, 13, "Tháng " + Integer.toString(month), cellSt2);
+                i++;
+            }
+            CellStyle cellSt3 = sheet.getRow(15).getCell(2).getCellStyle();
+            for(Integer data: dataLineChart.getNumberRecruit()) {
+                createCell(sheet, j, 14, data, cellSt3);
+                j++;
+            }
+            for(Integer data: dataLineChart.getNumberSuccessJob()) {
+                createCell(sheet, k, 15, data, cellSt3);
+                k++;
+            }
+            i=19;j=19;k=19;
+            CellStyle cellSt4 = sheet.getRow(19).getCell(1).getCellStyle();
+            ColumnChartResponse columnChartResponse = userRepositoryImpl.getDataColumnChart(statisticalVm);
+            for(String data:columnChartResponse.getLanguages()){
+                createCell(sheet,1,i,data,cellSt4);
+                i++;
+            }
+            CellStyle cellSt5 = sheet.getRow(19).getCell(4).getCellStyle();
+            for(Integer data:columnChartResponse.getNumberApply()){
+                createCell(sheet,4,j,data,cellSt5);
+                j++;
+            }
+            for(Integer data:columnChartResponse.getTotalRecruit()){
+                createCell(sheet,5,k,data,cellSt5);
+                k++;
+            }
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            workBook.write(out);
+            out.close();
+            return out.toByteArray();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            if (null != workBook)
+                workBook.close();
+        }
+        return null;
+    }
+
     private byte[] exportFile(List<Job> jobs, boolean export, String fileName) throws IOException {
         Resource resource = new ClassPathResource("templates/Template_Jobs.xlsx");
-//        Resource resource = resourceLoader.getResource("classpath:templates/Template_Jobs.xlsx");
         Workbook workBook = WorkbookFactory.create(resource.getInputStream());
-        ;
         try {
             Date date = new Date();
             Calendar calendar = Calendar.getInstance();
@@ -205,6 +268,17 @@ public class JobServiceImpl implements JobService {
     }
 
     public Cell createCell(Sheet sheet, int c, int r, String cellValue, CellStyle style) {
+        Row row = sheet.getRow(r);
+        if (row == null) {
+            row = sheet.createRow(r);
+        }
+        Cell cell = row.createCell(c);
+        cell.setCellValue(cellValue);
+        cell.setCellStyle(style);
+        return cell;
+    }
+
+    public Cell createCell(Sheet sheet, int c, int r, Integer cellValue, CellStyle style) {
         Row row = sheet.getRow(r);
         if (row == null) {
             row = sheet.createRow(r);

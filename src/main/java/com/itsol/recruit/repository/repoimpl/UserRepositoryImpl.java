@@ -54,7 +54,7 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
         String query = "WITH time_filtered_job AS\n" +
                 "  (SELECT *\n" +
                 "   FROM job\n" +
-                "   WHERE start_recruitment_date BETWEEN to_date("+strS+", 'DDMMYYYY') AND to_date("+strE+", 'DDMMYYYY') ),\n" +
+                "   WHERE start_recruitment_date BETWEEN to_date('"+strS+"', 'YYYY-MM-DD') AND to_date('"+strE+"', 'YYYY-MM-DD') ),\n" +
                 "     all_job AS\n" +
                 "  (SELECT count(j.id) all_job\n" +
                 "   FROM job j\n" +
@@ -115,25 +115,28 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
         return getJdbcTemplate().queryForObject(query,Integer.class);
     }
 
-    public LineChartDataResponse getDataLineChart(){
+    public LineChartDataResponse getDataLineChart(StatisticalVm statisticalVm){
         log.info("start ====> query find all category");
+        String strS = statisticalVm.getDatestart();
+        String strE = statisticalVm.getDateend();
         StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT extract(month from j.start_recruitment_date) as month, ");
-        sql.append(" SUM(j.Qty_Person) as numberRecruit, ");
-        sql.append(" COALESCE(SUM(CASE WHEN jr.status_id = 4 THEN 1 ELSE 0 END), 0) as successJob ");
-        sql.append(" from job j  left join jobs_register jr on j.id=jr.job_id ");
-        sql.append(" group by extract(month from j.start_recruitment_date) ORDER BY month");
-        List<Integer> month = getJdbcTemplate().query(sql.toString(), new RowMapper<Integer>() {
+        String query = "SELECT extract(month from j.start_recruitment_date) as month, " +
+                " SUM(j.Qty_Person) as numberRecruit, " +
+                " COALESCE(SUM(CASE WHEN jr.status_id = 4 THEN 1 ELSE 0 END), 0) as successJob " +
+                " from job j  left join jobs_register jr on j.id=jr.job_id " +
+                " where j.start_recruitment_date BETWEEN to_date('"+strS+"', 'YYYY-MM-DD') AND to_date('"+strE+"', 'YYYY-MM-DD') " +
+                " group by extract(month from j.start_recruitment_date) ORDER BY month ";
+        List<Integer> month = getJdbcTemplate().query(query, new RowMapper<Integer>() {
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getInt("month");
             }
         });
-        List<Integer> numberRecruit = getJdbcTemplate().query(sql.toString(), new RowMapper<Integer>() {
+        List<Integer> numberRecruit = getJdbcTemplate().query(query, new RowMapper<Integer>() {
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getInt("numberRecruit");
             }
         });
-        List<Integer> numberSuccessJob = getJdbcTemplate().query(sql.toString(), new RowMapper<Integer>() {
+        List<Integer> numberSuccessJob = getJdbcTemplate().query(query, new RowMapper<Integer>() {
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getInt("successJob");
             }
@@ -145,26 +148,28 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
         return result;
     }
 
-    public ColumnChartResponse getDataColumnChart(){
+    public ColumnChartResponse getDataColumnChart(StatisticalVm statisticalVm){
         log.info("start ====> query find all category");
-        StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT REGEXP_SUBSTR(j.skills, '[^ ]+', 1, level) AS languages, ");
-        sql.append(" sum(j.qty_person) as totalRecruit, count(jr.id) as numberApply ");
-        sql.append("   FROM job j left join jobs_register jr on jr.job_id = j.id ");
-        sql.append("   CONNECT BY REGEXP_SUBSTR(j.skills, '[^ ]+', 1, level) IS NOT NULL ");
-        sql.append("  AND PRIOR j.rowid = j.rowid ");
-        sql.append(" AND PRIOR SYS_GUID() IS NOT NULL group by REGEXP_SUBSTR(j.skills, '[^ ]+', 1, level) ");
-        List<String> languages = getJdbcTemplate().query(sql.toString(), new RowMapper<String>() {
+        String strS = statisticalVm.getDatestart();
+        String strE = statisticalVm.getDateend();
+        String query =" SELECT REGEXP_SUBSTR(j.skills, '[^ ]+', 1, level) AS languages, "+
+                " sum(j.qty_person) as totalRecruit, count(jr.id) as numberApply " +
+                "   FROM job j left join jobs_register jr on jr.job_id = j.id " +
+                " where j.start_recruitment_date BETWEEN to_date('"+strS+"', 'YYYY-MM-DD') AND to_date('"+strE+"', 'YYYY-MM-DD') " +
+                "   CONNECT BY REGEXP_SUBSTR(j.skills, '[^ ]+', 1, level) IS NOT NULL " +
+                "  AND PRIOR j.rowid = j.rowid "+
+                " AND PRIOR SYS_GUID() IS NOT NULL group by REGEXP_SUBSTR(j.skills, '[^ ]+', 1, level) ";
+        List<String> languages = getJdbcTemplate().query(query, new RowMapper<String>() {
             public String mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getString("languages");
             }
         });
-        List<Integer> totalRecruit = getJdbcTemplate().query(sql.toString(), new RowMapper<Integer>() {
+        List<Integer> totalRecruit = getJdbcTemplate().query(query, new RowMapper<Integer>() {
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getInt("totalRecruit");
             }
         });
-        List<Integer> numberApply = getJdbcTemplate().query(sql.toString(), new RowMapper<Integer>() {
+        List<Integer> numberApply = getJdbcTemplate().query(query, new RowMapper<Integer>() {
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getInt("numberApply");
             }

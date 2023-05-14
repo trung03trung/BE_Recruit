@@ -175,12 +175,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public LineChartDataResponse getDataLineChart(){
-        return userRepositoryimpl.getDataLineChart();
+    public LineChartDataResponse getDataLineChart(StatisticalVm statisticalVm){
+        return userRepositoryimpl.getDataLineChart(statisticalVm);
     }
 
     @Override
-    public ColumnChartResponse getDataColumnChart() {
-        return userRepositoryimpl.getDataColumnChart();
+    public ColumnChartResponse getDataColumnChart(StatisticalVm statisticalVm) {
+        return userRepositoryimpl.getDataColumnChart(statisticalVm);
     }
 }
