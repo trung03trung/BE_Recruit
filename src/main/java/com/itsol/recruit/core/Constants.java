@@ -22,6 +22,10 @@ public final class Constants {
         public static final String APPROVED = "approved";
     }
 
+    public static final class TypeJob{
+        public static final String FEATURED = "FEATURED";
+        public static final String  NEWEST= "NEWEST";
+    }
 
     // Regex for acceptable logins
     public static final String LOGIN_REGEX = "^(?>[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*)|(?>[_.@A-Za-z0-9-]+)$";
@@ -107,6 +111,10 @@ public final class Constants {
         public static final String INVALID_MAX_VALUE = "validation.invalidMaxValue";
         public static final String INVALID_SIZE_VALUE = "validation.invalidSizeValue";
         public static final String NOT_CONTAIN_WHITE_SPACE = "validation.notContainWhiteSpace";
+
+        public static final String FEATURED = "FEATURED";
+
+        public static final String NEWEST = "NEWEST";
 
     }
 

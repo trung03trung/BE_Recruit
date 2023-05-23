@@ -35,17 +35,6 @@ public class Company {
     @Column(name = "date_incoporation", nullable = false)
     Date dateIncoporation;
 
-    @Column(name = "tax_code", nullable = false)
-    String taxCode;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "tax_date", nullable = false)
-    Date taxDate;
-
-    @Column(name = "tax_place", nullable = false)
-    String taxPlace;
-
     @Column(name = "head_office", nullable = false)
     String headOffice;
 
@@ -59,7 +48,7 @@ public class Company {
     String  description ;
 
     @Column(name = "avatar", nullable = false)
-    String  avatar ;
+    String  avatar;
 
     @Column(name = "backdrop_img", nullable = false)
     String  backdropImg ;

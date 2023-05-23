@@ -112,7 +112,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/user/update")
-    public ResponseEntity<User> updateUserProfile(@RequestBody UserProfileVM userVM){
+    public ResponseEntity<User> updateUserProfile(UserProfileVM userVM) throws IOException{
         return ResponseEntity.ok().body(userService.saveUser(userVM));
     }
 

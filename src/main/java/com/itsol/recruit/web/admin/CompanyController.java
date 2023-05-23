@@ -2,6 +2,7 @@ package com.itsol.recruit.web.admin;
 
 import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.dto.CompanyDTO;
+import com.itsol.recruit.dto.request.CompanyRequest;
 import com.itsol.recruit.entity.Company;
 import com.itsol.recruit.entity.Job;
 import com.itsol.recruit.entity.User;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -32,9 +34,8 @@ public class CompanyController {
     public ResponseEntity<Company> getCompanyByName(@PathVariable("name") String name){
         return ResponseEntity.ok().body(companyService.findCompanyByName(name));
     }
-    @PutMapping("/update-company")
-    public ResponseEntity<Object> updateCompany(@RequestBody Company company) {
-        System.out.println(company);
-        return ResponseEntity.ok().body(companyService.updateCompany(company));
+    @PostMapping("/company")
+    public ResponseEntity<Object> createCompany(CompanyRequest request) throws IOException {
+        return ResponseEntity.ok().body(companyService.createCompany(request));
     }
 }

@@ -19,6 +19,7 @@ import com.itsol.recruit.web.vm.StatisticalVm;
 import com.itsol.recruit.web.vm.UserProfileVM;
 import com.sun.xml.internal.ws.handler.HandlerException;
 import lombok.Getter;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 
 @Getter
@@ -158,12 +160,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User saveUser(UserProfileVM userVM) {
+    public User saveUser(UserProfileVM userVM) throws IOException {
         User user=userRepository.findUserById(userVM.getId());
         user.setName(userVM.getName());
         user.setEmail(userVM.getEmail());
         user.setGender(userVM.getGender());
-        user.setAvatarName(userVM.getAvatarName());
+        if (userVM.getAvatarName() != null) {
+            byte[] imageArr = userVM.getAvatarName().getBytes();
+            String imageAsString = Base64.encodeBase64String(imageArr);
+            user.setAvatarName(imageAsString);
+        }
         user.setBirthDay(userVM.getBirthDay());
         user.setHomeTown(userVM.getHomeTown());
         user.setPhoneNumber(userVM.getPhoneNumber());

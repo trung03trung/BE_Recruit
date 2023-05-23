@@ -4,6 +4,7 @@ import com.itsol.recruit.dto.JobDTO;
 import com.itsol.recruit.dto.PageExtDTO;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.dto.request.JobSearchRequest;
+import com.itsol.recruit.dto.respone.JobDetailResponse;
 import com.itsol.recruit.dto.respone.JobSearchResponse;
 import com.itsol.recruit.entity.Job;
 import com.itsol.recruit.web.vm.JobFieldVM;
@@ -21,11 +22,13 @@ public interface JobService {
 
     public Job getJobById(Long id);
 
+    public JobDetailResponse getJobDetailById(Long id);
+
     public JobFieldVM getAllFieldSelect();
 
     public ResponseDTO changeStatus(Long id,String code);
 
-    public List<Job> getAllJobPublic();
+    public List<Job> getJobPublic(String type);
 
     public ResponseDTO rejectStatus(Long id,String code,String reason);
 

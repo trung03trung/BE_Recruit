@@ -1,6 +1,7 @@
 package com.itsol.recruit.web.publicCtl;
 
 import com.itsol.recruit.core.Constants;
+import com.itsol.recruit.dto.respone.JobDetailResponse;
 import com.itsol.recruit.entity.Job;
 import com.itsol.recruit.service.JobService;
 import com.itsol.recruit.service.impl.PDFGenerator;
@@ -20,12 +21,12 @@ public class JobPublicController {
     }
 
     @GetMapping(value = "/job/{id}")
-    public ResponseEntity<Job> getJobById(@PathVariable("id") Long id){
-        return ResponseEntity.ok().body(jobService.getJobById(id));
+    public ResponseEntity<JobDetailResponse> getJobById(@PathVariable("id") Long id){
+        return ResponseEntity.ok().body(jobService.getJobDetailById(id));
     }
 
-    @GetMapping(value = "/get-all-job-publick")
-    public ResponseEntity<List<Job>> getAllJobPublic(){
-        return ResponseEntity.ok().body(jobService.getAllJobPublic());
+    @GetMapping(value = "/get-job")
+    public ResponseEntity<List<Job>> getAllJobPublic(@RequestParam(name = "type") String type){
+        return ResponseEntity.ok().body(jobService.getJobPublic(type));
     }
 }

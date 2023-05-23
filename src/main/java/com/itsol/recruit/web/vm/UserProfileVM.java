@@ -1,7 +1,7 @@
 package com.itsol.recruit.web.vm;
 
 import lombok.Data;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 
 @Data
@@ -16,7 +16,7 @@ public class UserProfileVM {
 
     String homeTown;
 
-    String avatarName;
+    MultipartFile avatarName;
 
     String gender;
 

@@ -76,4 +76,7 @@ public class JobDTO {
 
     Long statusId;
 
+    @NotNull
+    Long companyId;
+
 }

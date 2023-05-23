@@ -1,9 +1,11 @@
 package com.itsol.recruit.service.impl;
 
+import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.dto.JobDTO;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.dto.StatisticalDTO;
 import com.itsol.recruit.dto.respone.ColumnChartResponse;
+import com.itsol.recruit.dto.respone.JobDetailResponse;
 import com.itsol.recruit.dto.respone.LineChartDataResponse;
 import com.itsol.recruit.entity.*;
 import com.itsol.recruit.repository.*;
@@ -18,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -29,9 +32,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class JobServiceImpl implements JobService {
@@ -57,12 +58,13 @@ public class JobServiceImpl implements JobService {
 
     private final UserRepositoryImpl userRepositoryImpl;
 
+    private final CompanyRepository companyRepository;
     private final Logger log = LoggerFactory.getLogger(JobServiceImpl.class);
 
     @Autowired
     private ResourceLoader resourceLoader;
 
-    public JobServiceImpl(JobRepository jobRepository, JobMapper jobMapper, JobPositionRepository jobPositionRepository, RankRepository rankRepository, StatusJobRepository statusJobRepository, WorkingFormRepository workingFormRepository, AcademicLevelRepository academicLevelRepository, RoleRepository roleRepository, RoleRepository roleRepository1, JobRepositoryImpl jobRepositoryimpl, UserRepositoryImpl userRepositoryImpl) {
+    public JobServiceImpl(JobRepository jobRepository, JobMapper jobMapper, JobPositionRepository jobPositionRepository, RankRepository rankRepository, StatusJobRepository statusJobRepository, WorkingFormRepository workingFormRepository, AcademicLevelRepository academicLevelRepository, RoleRepository roleRepository, RoleRepository roleRepository1, JobRepositoryImpl jobRepositoryimpl, UserRepositoryImpl userRepositoryImpl, CompanyRepository companyRepository) {
         this.jobRepository = jobRepository;
         this.jobMapper = jobMapper;
         this.jobPositionRepository = jobPositionRepository;
@@ -73,6 +75,7 @@ public class JobServiceImpl implements JobService {
         this.roleRepository = roleRepository1;
         this.jobRepositoryimpl = jobRepositoryimpl;
         this.userRepositoryImpl = userRepositoryImpl;
+        this.companyRepository = companyRepository;
     }
 
 
@@ -103,6 +106,20 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
+    public JobDetailResponse getJobDetailById(Long id) {
+        Job job = jobRepository.findJobById(id);
+        JobDetailResponse response = new JobDetailResponse();
+        BeanUtils.copyProperties(job,response);
+        String[] descriptions = job.getDescription().split("\\s*-\\s*");
+        String[] interrests = job.getInterrest().split("-");
+        String[] requirements = job.getJobRequirement().split("\\s*-\\s*");
+        response.setDescription(new ArrayList<>(Arrays.asList(descriptions)));
+        response.setInterrest(new ArrayList<>(Arrays.asList(interrests)));
+        response.setJobRequirement(new ArrayList<>(Arrays.asList(requirements)));
+        return response;
+    }
+
+    @Override
     public JobFieldVM getAllFieldSelect() {
         List<AcademicLevel> academicLevels = academicLevelRepository.findAll();
         List<Rank> ranks = rankRepository.findAll();
@@ -110,7 +127,8 @@ public class JobServiceImpl implements JobService {
         List<WorkingForm> workingForms = workingFormRepository.findAll();
         List<Role> role = roleRepository.findByCode("ROLE_JE");
         List<User> users = jobRepositoryimpl.getAllByRole(role);
-        return new JobFieldVM(academicLevels, jobPositions, ranks, workingForms, users);
+        List<Company> companies = companyRepository.findAll();
+        return new JobFieldVM(academicLevels, jobPositions, ranks, workingForms, users,companies);
     }
 
     @Override
@@ -123,9 +141,16 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<Job> getAllJobPublic() {
-        List<Job> jobList = (List<Job>) jobRepository.findAll();
-        return jobList;
+    public List<Job> getJobPublic(String type) {
+        List<Job> jobList =new ArrayList<>();
+        if(type.equals(Constants.TypeJob.FEATURED)){
+            Page<Job> page = jobRepository.findAll(
+                    PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "views")));
+            return page.getContent();
+        }
+        Page<Job> page = jobRepository.findAll(
+                PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdDate")));
+        return page.getContent();
     }
 
     public ResponseDTO rejectStatus(Long id, String code, String reason) {

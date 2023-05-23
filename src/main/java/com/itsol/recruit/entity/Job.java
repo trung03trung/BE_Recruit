@@ -104,5 +104,8 @@ public class Job implements Serializable {
 
     private String reason;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
 }

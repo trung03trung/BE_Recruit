@@ -1,18 +1,21 @@
 package com.itsol.recruit.service.impl;
 
-import com.itsol.recruit.dto.CompanyDTO;
-import com.itsol.recruit.dto.ReasonCompanyDTO;
+
 import com.itsol.recruit.dto.ResponseDTO;
+import com.itsol.recruit.dto.request.CompanyRequest;
 import com.itsol.recruit.entity.Company;
 import com.itsol.recruit.repository.CompanyRepository;
 import com.itsol.recruit.service.CompanyService;
-import com.itsol.recruit.web.vm.PageVM;
 
-import org.springframework.data.domain.Page;
+
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.beans.BeanUtils;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -34,14 +37,17 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public ResponseEntity<ResponseDTO> updateCompany(Company company) {
-        Optional<Company> findCompany = companyRepository.findById(company.getId());
-        if(findCompany !=null) {
-            companyRepository.save(company);
-            return ResponseEntity.ok().body(
-                    new ResponseDTO(HttpStatus.OK, "OK"));
+    public ResponseEntity<ResponseDTO> createCompany(CompanyRequest request) throws IOException {
+        Company company = new Company();
+        BeanUtils.copyProperties(request, company);
+        if (request.getAvatar() != null) {
+            byte[] imageArr = request.getAvatar().getBytes();
+            String imageAsString = Base64.encodeBase64String(imageArr);
+            company.setAvatar(imageAsString);
         }
+        companyRepository.save(company);
+
         return ResponseEntity.ok().body(
-                new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
+                new ResponseDTO(HttpStatus.OK, "OK"));
     }
 }

@@ -20,4 +20,6 @@ public class JobFieldVM {
     List<WorkingForm> workingForms;
 
     List<User> users;
+
+    List<Company> companies;
 }

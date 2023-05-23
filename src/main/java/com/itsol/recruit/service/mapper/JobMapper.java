@@ -6,7 +6,6 @@ import com.itsol.recruit.repository.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,14 +24,17 @@ public class JobMapper implements EntityMapper<JobDTO,Job>{
 
     private final UserRepository userRepository;
 
+    private final CompanyRepository companyRepository;
 
-    public JobMapper(JobPositionRepository jobPositionRepository, RankRepository rankRepository, StatusJobRepository statusJobRepository, WorkingFormRepository workingFormRepository, AcademicLevelRepository academicLevelRepository, UserRepository userRepository) {
+
+    public JobMapper(JobPositionRepository jobPositionRepository, RankRepository rankRepository, StatusJobRepository statusJobRepository, WorkingFormRepository workingFormRepository, AcademicLevelRepository academicLevelRepository, UserRepository userRepository, CompanyRepository companyRepository) {
         this.jobPositionRepository = jobPositionRepository;
         this.rankRepository = rankRepository;
         this.statusJobRepository = statusJobRepository;
         this.workingFormRepository = workingFormRepository;
         this.academicLevelRepository = academicLevelRepository;
         this.userRepository = userRepository;
+        this.companyRepository = companyRepository;
     }
 
     @Override
@@ -51,6 +53,7 @@ public class JobMapper implements EntityMapper<JobDTO,Job>{
         entity.setUserCreate(userRepository.findByUserName(dto.getUserCreate()));
         entity.setUserUpdate(userRepository.findUserById(dto.getUserUpdateId()));
         entity.setStatusJob(statusJobRepository.findStatusJobById(dto.getStatusId()));
+        entity.setCompany(companyRepository.findById(dto.getCompanyId()).get());
         return entity;
     }
 
