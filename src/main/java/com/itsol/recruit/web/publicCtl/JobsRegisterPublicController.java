@@ -5,6 +5,7 @@ import com.itsol.recruit.core.Constants;
 
 import com.itsol.recruit.dto.ResponseDTO;
 
+import com.itsol.recruit.dto.request.JobRegisterRequest;
 import com.itsol.recruit.file_util.FileUploadUtil;
 import com.itsol.recruit.service.FilePdfService;
 import com.itsol.recruit.service.JobsRegisterService;
@@ -30,7 +31,8 @@ public class JobsRegisterPublicController {
     }
 
     @PostMapping("/register-job-public")
-    public ResponseEntity<ResponseEntity<ResponseDTO>> registerJobPublic(@RequestBody JobRegisterPublicVM jobRegisterPublic) throws IOException {
-        return ResponseEntity.ok().body(jobsRegisterService.addJobRegister(jobRegisterPublic));
+    public ResponseEntity<ResponseDTO> registerJobPublic(JobRegisterRequest request) throws IOException {
+        return ResponseEntity.ok().body(jobsRegisterService.addJobRegister(request));
     }
+
 }

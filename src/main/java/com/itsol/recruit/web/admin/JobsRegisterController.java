@@ -8,6 +8,8 @@ import com.itsol.recruit.entity.Profile;
 import com.itsol.recruit.service.JobsRegisterService;
 import com.itsol.recruit.web.vm.JobVM;
 import com.itsol.recruit.web.vm.JobsRegisterVM;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -83,5 +85,11 @@ public class JobsRegisterController {
     @PostMapping(value = "job-register/search")
     public ResponseEntity<JobsRegisterVM> searchJobsRegister(@RequestBody JobsRegisterVM jobsRegisterVM){
         return ResponseEntity.ok().body(jobsRegisterService.searchJobRegister(jobsRegisterVM));
+    }
+    @GetMapping("/job-register/download-cv/{filename:.+}")
+    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+        Resource file = jobsRegisterService.downloadCv(filename);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
 }

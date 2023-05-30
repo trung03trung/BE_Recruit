@@ -17,8 +17,8 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class JobsRegister {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_JOBSREGISTER_ID")
-    @SequenceGenerator(name = "GEN_JOBSREGISTER_ID", sequenceName = "SEQ_JOBSREGISTER", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_JOBSREGISTERS_ID")
+    @SequenceGenerator(name = "GEN_JOBSREGISTERS_ID", sequenceName = "SEQ_JOBSREGISTERS", initialValue = 11,allocationSize = 1)
     Long id;
 
     @ManyToOne
@@ -47,9 +47,8 @@ public class JobsRegister {
 
     String reason;
 
-    @OneToOne
-    @JoinColumn(name="cv_file")
-    FilePdf cv_file;
+    @Column(name = "cv_file")
+    String cvFile;
 
     @Column(name = "media_type",nullable = false)
     String mediaType;

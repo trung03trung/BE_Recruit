@@ -2,11 +2,13 @@ package com.itsol.recruit.service;
 
 import com.itsol.recruit.dto.JobsRegisterDTO;
 import com.itsol.recruit.dto.ResponseDTO;
+import com.itsol.recruit.dto.request.JobRegisterRequest;
 import com.itsol.recruit.entity.JobsRegister;
 import com.itsol.recruit.entity.Profile;
 import com.itsol.recruit.web.vm.FilePdfVM;
 import com.itsol.recruit.web.vm.JobRegisterPublicVM;
 import com.itsol.recruit.web.vm.JobsRegisterVM;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,5 +30,7 @@ public interface JobsRegisterService {
 
     public JobsRegisterVM searchJobRegister(JobsRegisterVM jobsRegisterVM);
 
-    public ResponseEntity<ResponseDTO> addJobRegister(JobRegisterPublicVM jobRegisterPublicVM)  ;
+    public ResponseDTO addJobRegister(JobRegisterRequest request);
+
+    public Resource downloadCv(String filename);
 }

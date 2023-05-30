@@ -2,13 +2,17 @@ package com.itsol.recruit.service.impl;
 
 import com.itsol.recruit.dto.JobsRegisterDTO;
 import com.itsol.recruit.dto.ResponseDTO;
+import com.itsol.recruit.dto.request.JobRegisterRequest;
 import com.itsol.recruit.entity.*;
 import com.itsol.recruit.repository.*;
 import com.itsol.recruit.repository.repoimpl.ProfileRepositoryImpl;
 import com.itsol.recruit.service.JobsRegisterService;
 import com.itsol.recruit.service.email.EmailService;
+import com.itsol.recruit.utils.SecurityUtil;
 import com.itsol.recruit.web.vm.JobRegisterPublicVM;
 import com.itsol.recruit.web.vm.JobsRegisterVM;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 
 @Service
@@ -108,23 +117,20 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
     }
 
     @Override
-    public ResponseEntity<ResponseDTO> addJobRegister(JobRegisterPublicVM jobRegisterPublicVM)  {
-        Job job = jobRepository.findJobById(jobRegisterPublicVM.getJobId());
-        User user = userRepository.findByUserName(jobRegisterPublicVM.getUserName());
-        System.out.println(job);
-        System.out.println(user);
-        if (job == null || user == null) {
-            return ResponseEntity.ok().body(
-                    new ResponseDTO(HttpStatus.NOT_FOUND, "NOT_FOUND"));
+    public ResponseDTO addJobRegister(JobRegisterRequest request) {
+        Job job = jobRepository.findJobById(request.getJobId());
+        String username = SecurityUtil.getCurrentUserLogin().get();
+        User user = userRepository.findByUserName(username);
+        Path root = Paths.get("Files-Upload");
+        try {
+            Files.copy(request.getCvFile().getInputStream(), root.resolve(request.getCvFile().getOriginalFilename()));
+        } catch (Exception e) {
+            if (e instanceof FileAlreadyExistsException) {
+                return new ResponseDTO(HttpStatus.BAD_REQUEST, "A file of that name already exists.");
+            }
+
+            return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
         }
-        if (ObjectUtils.isEmpty(jobRegisterPublicVM.getPdf()) || jobRegisterPublicVM.getPdf().isEmpty()) {
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "BAD_REQUEST"));
-        }
-        FilePdf filePdf = new FilePdf();
-        filePdf.setFile_name(jobRegisterPublicVM.getPdf());
-        filePdf.setSize_url(10L);
-        filePdf.setDownload_uri("");
-        filePdfRepository.save(filePdf);
 
         StatusJobRegister statusJobRegister = statusJobRegisterRepository.findStatusJobRegisterByCode("Chờ duyệt");
         JobsRegister jobsRegister = new JobsRegister();
@@ -133,12 +139,26 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
         jobsRegister.setDateRegister(new Date());
         jobsRegister.setStatusJobRegister(statusJobRegister);
         jobsRegister.setDelete(false);
-        jobsRegister.setReason("Lý Do");
-        jobsRegister.setMediaType("Trực tiếp");
-        jobsRegister.setCv_file(filePdf);
+        jobsRegister.setCvFile(request.getCvFile().getOriginalFilename());
         jobsRegisterRepository.save(jobsRegister);
 
-        return ResponseEntity.ok().body(
-                new ResponseDTO(HttpStatus.OK, "ok"));
+        return new ResponseDTO(HttpStatus.OK,"Apply success");
+    }
+
+    @Override
+    public Resource downloadCv(String filename) {
+        Path root = Paths.get("Files-Upload");
+        try {
+            Path file = root.resolve(filename);
+            Resource resource = new UrlResource(file.toUri());
+
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            } else {
+                throw new RuntimeException("Could not read the file!");
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
     }
 }
