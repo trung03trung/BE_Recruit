@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 
 public interface JobsRegisterService {
 
@@ -33,4 +34,6 @@ public interface JobsRegisterService {
     public ResponseDTO addJobRegister(JobRegisterRequest request);
 
     public Resource downloadCv(String filename);
+
+    Long getByDateAndStatus(Date currentDate, Long id);
 }

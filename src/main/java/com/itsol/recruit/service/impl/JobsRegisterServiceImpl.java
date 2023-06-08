@@ -9,7 +9,6 @@ import com.itsol.recruit.repository.repoimpl.ProfileRepositoryImpl;
 import com.itsol.recruit.service.JobsRegisterService;
 import com.itsol.recruit.service.email.EmailService;
 import com.itsol.recruit.utils.SecurityUtil;
-import com.itsol.recruit.web.vm.JobRegisterPublicVM;
 import com.itsol.recruit.web.vm.JobsRegisterVM;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -18,11 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -160,5 +156,10 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Error: " + e.getMessage());
         }
+    }
+
+    @Override
+    public Long getByDateAndStatus(Date currentDate, Long id) {
+        return jobsRegisterRepository.findByDateAndStatus(currentDate, id);
     }
 }

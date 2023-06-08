@@ -314,4 +314,14 @@ public class JobServiceImpl implements JobService {
         return cell;
     }
 
+    @Override
+    public Long getTotalJobDueDate(){
+        Date dt = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        c.add(Calendar.DATE, -7);
+        dt = c.getTime();
+
+        return jobRepository.findTotalJobDueDate(dt);
+    }
 }

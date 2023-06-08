@@ -24,6 +24,9 @@ public class JobsRegisterRepositoryImpl extends BaseRepository {
                 "    WHERE rownum < (((" + jobsRegisterVM.getPageNo() + "+1) * " + jobsRegisterVM.getPageSize() + ") + 1 )\n" +
                 ")\n" +
                 "WHERE r__ >= ((" + jobsRegisterVM.getPageNo() + " * " + jobsRegisterVM.getPageSize() + ") + 1)";
+//        String queryTotal= "SELECT count(R.id) FROM  tbl_control_method R WHERE UPPER(R.code) LIKE '%" + .getCode().toUpperCase().trim() + "%' " +
+//                " AND UPPER(R.name) LIKE '%" + controlMethodVM.getName().toUpperCase().trim() + "%'\n" +
+//                "         AND UPPER(R.status)  LIKE '" + controlMethodVM.getStatus().toUpperCase() + "%'";
         return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(JobsRegisterDTO.class));
     }
 }

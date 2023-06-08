@@ -40,4 +40,5 @@ public interface JobService {
 
     public byte[] exportDataDashboard(StatisticalVm statisticalVm) throws IOException;
 
+    Long getTotalJobDueDate();
 }
