@@ -3,6 +3,7 @@ package com.itsol.recruit.web.auth;
 import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.dto.UserDTO;
+import com.itsol.recruit.dto.respone.TokenResponse;
 import com.itsol.recruit.entity.User;
 import com.itsol.recruit.security.jwt.JWTFilter;
 import com.itsol.recruit.security.jwt.TokenProvider;
@@ -14,6 +15,7 @@ import com.itsol.recruit.web.vm.ChangePassVM;
 import com.itsol.recruit.web.vm.LoginVM;
 import com.sun.xml.internal.ws.handler.HandlerException;
 import io.swagger.annotations.Api;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,16 +81,10 @@ public class AuthenticateController {
             return ResponseEntity.ok().body(
                     new ResponseDTO(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED"));
         }
-        UsernamePasswordAuthenticationToken authenticationString = new UsernamePasswordAuthenticationToken(
-                loginVM.getUserName(),
-                loginVM.getPassword()
-        );
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationString);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.createToken(authentication, loginVM.getRememberMe());
+        TokenResponse tokenResponse = authenticateService.getToken(loginVM);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, String.format("Bearer %s", jwt));
-        return new ResponseEntity<>(Collections.singletonMap("token", jwt), httpHeaders, HttpStatus.OK); //Trả về chuỗi jwt(authentication string)
+        httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, String.format("Bearer %s", tokenResponse.getToken()));
+        return ResponseEntity.ok().body(tokenResponse); //Trả về chuỗi jwt(authentication string)
 //        User userLogin = userService.findUserByUserName(adminLoginVM.getUserName());
 //        return ResponseEntity.ok().body(new JWTTokenResponse(jwt, userLogin.getUserName())); //Trả về chuỗi jwt(authentication string)
     }

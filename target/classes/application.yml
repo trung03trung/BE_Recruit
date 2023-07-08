@@ -26,9 +26,17 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.dialect.OracleDialect
 
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 60
+
 application:
   security:
     jwt:
       secretKey: de6aaeabadeccc598160172044da9c566242ae3b
       tokenValidityMilliseconds: 86400000
       rememberMeTokenValiditySeconds: 25920000000
+

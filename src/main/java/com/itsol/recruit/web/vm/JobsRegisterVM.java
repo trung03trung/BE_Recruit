@@ -31,7 +31,9 @@ public class JobsRegisterVM {
 
     private String sortDir;
 
-    private String name;
+    private String jobName;
+    private String applyName;
+    private String status;
 
     public JobsRegisterVM(List<JobsRegister> jobsRegisters, int pageNo, int pageSize, long totalElements, int totalPages, boolean last) {
         this.jobsRegisters = jobsRegisters;

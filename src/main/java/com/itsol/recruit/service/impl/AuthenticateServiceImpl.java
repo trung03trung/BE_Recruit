@@ -3,6 +3,7 @@ package com.itsol.recruit.service.impl;
 import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.dto.UserDTO;
+import com.itsol.recruit.dto.respone.TokenResponse;
 import com.itsol.recruit.entity.OTP;
 import com.itsol.recruit.entity.Role;
 import com.itsol.recruit.entity.User;
@@ -15,9 +16,14 @@ import com.itsol.recruit.service.AuthenticateService;
 import com.itsol.recruit.service.email.EmailService;
 import com.itsol.recruit.service.mapper.UserMapper;
 import com.itsol.recruit.web.vm.ChangePassVM;
+import com.itsol.recruit.web.vm.LoginVM;
 import com.sun.xml.internal.ws.handler.HandlerException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -100,5 +106,20 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         else {
             return new ResponseDTO("Fail");
         }
+    }
+
+    @Cacheable(cacheNames = "client-token", key = "#loginVM.userName")
+    @Override
+    public TokenResponse getToken(LoginVM loginVM) {
+        UsernamePasswordAuthenticationToken authenticationString = new UsernamePasswordAuthenticationToken(
+                loginVM.getUserName(),
+                loginVM.getPassword()
+        );
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationString);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = tokenProvider.createToken(authentication, loginVM.getRememberMe());
+        TokenResponse response = new TokenResponse();
+        response.setToken(jwt);
+        return response;
     }
 }

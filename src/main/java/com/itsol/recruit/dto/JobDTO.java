@@ -1,6 +1,8 @@
 package com.itsol.recruit.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -15,18 +17,18 @@ public class JobDTO {
     Long jobPositionId;
 
     @NotEmpty
-    @Size(max=200)
+    @Size(max = 200)
     String name;
 
     @NotEmpty
-    @Size(max=300)
+    @Size(max = 300)
     String numberExperience;
 
     @NotNull
     Long workingFormId;
 
     @NotEmpty
-    @Size(max=200)
+    @Size(max = 200)
     String addressWork;
 
     @NotNull
@@ -40,9 +42,11 @@ public class JobDTO {
 
 
     @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
     Date dueDate;
 
     @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
     Date startDate;
 
     @NotEmpty

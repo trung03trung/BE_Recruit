@@ -5,9 +5,12 @@ import com.itsol.recruit.dto.ResponseDTO;
 import com.itsol.recruit.dto.request.JobRegisterRequest;
 import com.itsol.recruit.entity.*;
 import com.itsol.recruit.repository.*;
+import com.itsol.recruit.repository.repoimpl.JobRepositoryImpl;
+import com.itsol.recruit.repository.repoimpl.JobsRegisterRepositoryImpl;
 import com.itsol.recruit.repository.repoimpl.ProfileRepositoryImpl;
 import com.itsol.recruit.service.JobsRegisterService;
 import com.itsol.recruit.service.email.EmailService;
+import com.itsol.recruit.service.mapper.JobsRegisterMapper;
 import com.itsol.recruit.utils.SecurityUtil;
 import com.itsol.recruit.web.vm.JobsRegisterVM;
 import org.springframework.core.io.Resource;
@@ -25,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class JobsRegisterServiceImpl implements JobsRegisterService {
@@ -42,7 +46,11 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
 
     private final EmailService emailService;
 
-    public JobsRegisterServiceImpl(JobsRegisterRepository jobsRegisterRepository, ProfileRepositoryImpl profileRepositoryImpl, StatusJobRegisterRepository statusJobRegisterRepository, UserRepository userRepository, JobRepository jobRepository, FilePdfRepository filePdfRepository,EmailService emailService) {
+    private final JobsRegisterMapper jobsRegisterMapper;
+
+    private final JobsRegisterRepositoryImpl jobRepositoryImpl;
+
+    public JobsRegisterServiceImpl(JobsRegisterRepository jobsRegisterRepository, ProfileRepositoryImpl profileRepositoryImpl, StatusJobRegisterRepository statusJobRegisterRepository, UserRepository userRepository, JobRepository jobRepository, FilePdfRepository filePdfRepository, EmailService emailService, JobsRegisterMapper jobsRegisterMapper, JobRepositoryImpl jobRepositoryImpl, JobsRegisterRepositoryImpl jobRepositoryImpl1) {
         this.jobsRegisterRepository = jobsRegisterRepository;
         this.profileRepositoryImpl = profileRepositoryImpl;
         this.statusJobRegisterRepository = statusJobRegisterRepository;
@@ -50,6 +58,8 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
         this.jobRepository = jobRepository;
         this.filePdfRepository = filePdfRepository;
         this.emailService = emailService;
+        this.jobsRegisterMapper = jobsRegisterMapper;
+        this.jobRepositoryImpl = jobRepositoryImpl1;
     }
 
     @Override
@@ -101,6 +111,8 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
         Job job = jobRepository.findJobById(jobsRegister.getJob().getId());
         String email = emailService.buildMailInterview(job.getName(),jobsRegisterDTO.getTimeInterview().toString(),jobsRegisterDTO.getDateInterview().toString(),
                 jobsRegisterDTO.getMethodInterview(),job.getUserContact().getName(),job.getUserContact().getPhoneNumber(),jobsRegister.getUser().getUserName());
+        User user = userRepository.findUserById(jobsRegister.getUser().getId());
+        emailService.sendEmail(user.getEmail(),email);
         jobsRegisterRepository.save(jobsRegister);
         ResponseDTO response = new ResponseDTO();
         response.setCode("Success");
@@ -109,7 +121,9 @@ public class JobsRegisterServiceImpl implements JobsRegisterService {
 
     @Override
     public JobsRegisterVM searchJobRegister(JobsRegisterVM jobsRegisterVM) {
-        return null;
+        List<JobsRegister> jobs = jobsRegisterMapper.toEntity(jobRepositoryImpl.seachJobsRegister(jobsRegisterVM));
+        jobsRegisterVM.setJobsRegisters(jobs);
+        return jobsRegisterVM;
     }
 
     @Override

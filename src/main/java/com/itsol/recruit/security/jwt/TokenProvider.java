@@ -44,6 +44,7 @@ public class TokenProvider  implements InitializingBean  {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
+
     public String createToken(Authentication authentication, boolean rememberMe) {
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
         long now = Calendar.getInstance().getTimeInMillis();

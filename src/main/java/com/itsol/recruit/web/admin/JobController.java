@@ -58,7 +58,7 @@ public class JobController {
     }
 
     @PostMapping(value = "/job")
-    public ResponseEntity<Job> creatNewJob(@Valid @RequestBody JobDTO jobDTO){
+    public ResponseEntity<Job> creatNewJob( @RequestBody JobDTO jobDTO){
         return ResponseEntity.ok().body(jobService.createNewJob(jobDTO));
     }
 
