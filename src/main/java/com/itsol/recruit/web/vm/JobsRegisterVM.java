@@ -1,7 +1,5 @@
 package com.itsol.recruit.web.vm;
 
-import com.itsol.recruit.entity.Job;
-import com.itsol.recruit.entity.JobsRegister;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

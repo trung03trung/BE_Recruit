@@ -1,6 +1,5 @@
 package com.itsol.recruit.repository.repoimpl;
 
-import com.itsol.recruit.dto.StatisticalDTO;
 import com.itsol.recruit.dto.respone.ColumnChartResponse;
 import com.itsol.recruit.dto.respone.LineChartDataResponse;
 import com.itsol.recruit.entity.User;
@@ -46,66 +45,7 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
     }
 
 
-    public List<StatisticalDTO> StatisticalData(StatisticalVm statisticalVm) {
-        String strS = statisticalVm.getDatestart();
-        String strE = statisticalVm.getDateend();
-        System.out.println(statisticalVm.getDatestart());
-        System.out.println(statisticalVm.getDateend());
-        String query = "WITH time_filtered_job AS\n" +
-                "  (SELECT *\n" +
-                "   FROM job\n" +
-                "   WHERE start_recruitment_date BETWEEN to_date('"+strS+"', 'YYYY-MM-DD') AND to_date('"+strE+"', 'YYYY-MM-DD') ),\n" +
-                "     all_job AS\n" +
-                "  (SELECT count(j.id) all_job\n" +
-                "   FROM job j\n" +
-                "   JOIN status_job js ON j.status_id = js.id),\n" +
-                "     total_view_job AS\n" +
-                "  (SELECT sum(VIEWS) total_view_job\n" +
-                "   FROM time_filtered_job),\n" +
-                "     waiting_for_interview AS\n" +
-                "  (SELECT count(jr.job_id) waiting_for_interview\n" +
-                "   FROM time_filtered_job j\n" +
-                "   INNER JOIN jobs_register jr ON jr.job_id = j.id\n" +
-                "   INNER JOIN status_job_register ps ON ps.id = jr.status_id\n" +
-                "   AND ps.code = 'Chờ phỏng vấn'),\n" +
-                "     interviewing AS\n" +
-                "  (SELECT count(jr.job_id) interviewing\n" +
-                "   FROM time_filtered_job j\n" +
-                "   INNER JOIN jobs_register jr ON jr.job_id = j.id\n" +
-                "   INNER JOIN status_job_register ps ON ps.id = jr.status_id\n" +
-                "   AND ps.code = 'Đang phỏng vấn'),\n" +
-                "     total_apply AS\n" +
-                "  (SELECT count(*) total_apply\n" +
-                "   FROM time_filtered_job j\n" +
-                "   LEFT JOIN jobs_register jr ON jr.job_id = j.id),\n" +
-                "     success_recruited_applicant AS\n" +
-                "  (SELECT count(jr.job_id) success_recruited_applicant\n" +
-                "   FROM time_filtered_job j\n" +
-                "   INNER JOIN jobs_register jr ON jr.job_id = j.id\n" +
-                "   INNER JOIN status_job_register ps ON ps.id = jr.status_id\n" +
-                "   AND ps.code = 'Đã tuyển'),\n" +
-                "     false_applicant AS\n" +
-                "  (SELECT count(jr.job_id) false_applicant\n" +
-                "   FROM time_filtered_job j\n" +
-                "   INNER JOIN jobs_register jr ON jr.job_id = j.id\n" +
-                "   INNER JOIN status_job_register ps ON ps.id = jr.status_id\n" +
-                "   AND ps.code = 'Ứng viên bị từ chối')\n" +
-                "SELECT all_job,\n" +
-                "       nvl(total_view_job, 0) total_view_job,\n" +
-                "       waiting_for_interview,\n" +
-                "       interviewing,\n" +
-                "       total_apply,\n" +
-                "       success_recruited_applicant,\n" +
-                "       false_applicant\n" +
-                "FROM all_job,\n" +
-                "     total_view_job,\n" +
-                "     waiting_for_interview,\n" +
-                "     interviewing,\n" +
-                "     total_apply,\n" +
-                "     success_recruited_applicant,\n" +
-                "     false_applicant";
-        return getJdbcTemplate().query(query, new BeanPropertyRowMapper<>(StatisticalDTO.class));
-    }
+
     public int geNumberUserJe(){
         String query = "SELECT count(*) as countId\n" +
                 "FROM USERS\n" +

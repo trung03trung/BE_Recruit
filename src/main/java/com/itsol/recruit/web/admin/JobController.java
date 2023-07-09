@@ -2,18 +2,13 @@ package com.itsol.recruit.web.admin;
 
 import com.itsol.recruit.core.Constants;
 import com.itsol.recruit.dto.JobDTO;
-import com.itsol.recruit.dto.PageExtDTO;
 import com.itsol.recruit.dto.ResponseDTO;
-import com.itsol.recruit.dto.request.JobSearchRequest;
-import com.itsol.recruit.dto.respone.JobSearchResponse;
-import com.itsol.recruit.entity.Job;
 import com.itsol.recruit.service.JobService;
 import com.itsol.recruit.service.impl.PDFGenerator;
 import com.itsol.recruit.web.vm.JobFieldVM;
 import com.itsol.recruit.web.vm.JobVM;
 import com.itsol.recruit.web.vm.StatisticalVm;
 import com.lowagie.text.DocumentException;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
