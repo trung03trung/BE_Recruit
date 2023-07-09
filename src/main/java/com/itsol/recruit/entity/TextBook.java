@@ -28,14 +28,19 @@ public class TextBook {
     @Column(name = "id", nullable = false, length = 36)
     String id;
 
+    @Column(name = "name")
     String name;
 
-    String startNumber;
+    @Column(name = "start_number")
+    Integer startNumber;
 
+    @Column(name = "apply_date")
     Date applyDate;
 
+    @Column(name = "close_date")
     Date closeDate;
 
+    @Column(name = "manage_user")
     String manageUser;
 
 }

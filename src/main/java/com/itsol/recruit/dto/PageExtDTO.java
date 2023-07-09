@@ -2,31 +2,42 @@ package com.itsol.recruit.dto;
 
 import lombok.Data;
 
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
+import javax.persistence.SqlResultSetMapping;
+import java.util.Date;
 import java.util.List;
 
 @Data
-public class PageExtDTO<T>{
+@SqlResultSetMapping(
+        name = "UserInfoMapping",
+        classes = @ConstructorResult(
+                targetClass = PageExtDTO.class,
+                columns = {
+                        @ColumnResult(name = "totalElements", type = Integer.class),
+                        @ColumnResult(name = "id", type = String.class),
+                        @ColumnResult(name = "name", type = String.class),
+                        @ColumnResult(name = "startNumber", type = Integer.class),
+                        @ColumnResult(name = "applyDate", type = Date.class),
+                        @ColumnResult(name = "closeDate", type = Date.class),
+                        @ColumnResult(name = "manageUser", type = String.class)
+                }
+        )
+)
+public class PageExtDTO{
     private Integer totalElements;
     private Integer totalPages;
-    private List<T> content;
+    private List<TextBookDTO> content;
     private int pageNo;
 
     private int pageSize;
-    private Integer totalRow;
-    private Integer indexRow;
 
 
     public PageExtDTO() {
     }
 
-    /**
-     * @param totalElements
-     * @param totalPages
-     * @param content
-     */
-    public PageExtDTO(Integer totalElements, Integer totalPages, List<T> content) {
+    public PageExtDTO(Integer totalElements,List<TextBookDTO> content) {
         this.totalElements = totalElements;
-        this.totalPages = totalPages;
         this.content = content;
     }
 }

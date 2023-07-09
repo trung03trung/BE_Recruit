@@ -32,12 +32,5 @@ public class Notifications {
     @Column(name = "create_date",nullable = false)
     Date createDate;
 
-    @ManyToOne()
-    @JoinColumn(name = "res_id")
-    Job job;
-
-    @ManyToOne()
-    @JoinColumn(name = "type_id",nullable = false)
-    TypeNotifications typeNotifications;
 
 }
