@@ -28,6 +28,8 @@ public class TextBook {
     @Column(name = "id", nullable = false, length = 36)
     String id;
 
+    @Column(name = "code")
+    String code;
     @Column(name = "name")
     String name;
 
